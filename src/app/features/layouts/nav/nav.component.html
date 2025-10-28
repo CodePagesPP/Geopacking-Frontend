@@ -20,11 +20,13 @@
         </a>
 
         <a 
-            routerLink="/classes" 
-            (click)="setActive('classes')" 
-            [class.active]="activeOption === 'classes'">
-            <span class="material-icons-sharp">self_improvement</span>
-            <h3>Clases</h3>
+            routerLink="/machines" 
+            (click)="setActive('machines')" 
+            [class.active]="activeOption === 'machines'">
+            <span class="material-icons-sharp">
+             precision_manufacturing
+            </span>
+            <h3>Machines</h3>
         </a>
 
         <a 
@@ -32,7 +34,7 @@
             (click)="setActive('clients')" 
             [class.active]="activeOption === 'clients'">
             <span class="material-icons-sharp">people</span>
-            <h3>Clientes</h3>
+            <h3>C</h3>
         </a>
 
         <a 
@@ -40,7 +42,7 @@
             (click)="setActive('workers')" 
             [class.active]="activeOption === 'workers'">
             <span class="material-icons-sharp">diversity_3</span>
-            <h3>Colaboradores</h3>
+            <h3>C</h3>
         </a>
 
         <a 
@@ -59,24 +61,6 @@
             <a routerLink="/roles" (click)="setActive('roles')" [class.active]="activeOption === 'roles'">
                 <span class="material-icons-sharp">add_moderator</span>
                 <h4>Roles</h4>
-            </a>
-            </li>
-            <li>
-            <a routerLink="/rooms" (click)="setActive('rooms')" [class.active]="activeOption === 'rooms'">
-                <span class="material-icons-sharp">room_preferences</span>
-                <h4>Salas</h4>
-            </a>
-            </li>
-            <li>
-            <a routerLink="/disciplines" (click)="setActive('disciplines')" [class.active]="activeOption === 'disciplines'">
-                <span class="material-icons-sharp">tune</span>
-                <h4>Disciplinas</h4>
-            </a>
-            </li>
-            <li>
-            <a routerLink="/plans" (click)="setActive('plans')" [class.active]="activeOption === 'plans'">
-                <span class="material-icons-sharp">savings</span>
-                <h4>Planes</h4>
             </a>
             </li>
         </ul>

@@ -1,0 +1,193 @@
+<div class="list-container">
+  
+  <!-- Encabezado y Botón Crear -->
+  <header class="list-header">
+    <h1>Gestión de Máquinas</h1>
+    <button class="btn-primary" (click)="openCreateModal()">
+      &#43; Crear Máquina
+    </button>
+  </header>
+
+  <!-- Mensaje de Error Global (para lista Y formulario) -->
+  <div *ngIf="errorMsg" class="error-banner">
+    {{ errorMsg }}
+  </div>
+
+  <!-- Tabla de Extrusoras -->
+  <section class="table-section">
+    <h2>Extrusoras</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Rendimiento (kg/h)</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of (extrusoras$ | async)">
+            <td>{{ m.codigo }}</td>
+            <td>{{ m.marca }}</td>
+            <td>{{ m.modelo }}</td>
+            <td>{{ m.rendimiento }}</td>
+            <td><span class="status" [class.status-active]="m.activo">{{ m.activo ? 'Sí' : 'No' }}</span></td>
+            <td class="actions">
+              <button class="btn-edit" (click)="openEditModal(m)">Editar</button>
+              <button class="btn-delete" (click)="deleteMaquina(m)">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="(extrusoras$ | async)?.length === 0">
+            <td colspan="6">No hay extrusoras para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Tabla de Termoformadoras -->
+  <section class="table-section">
+    <h2>Termoformadoras</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Área de Formado</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of (termoformadoras$ | async)">
+            <td>{{ m.codigo }}</td>
+            <td>{{ m.marca }}</td>
+            <td>{{ m.modelo }}</td>
+            <td>{{ m.areaDeFormado }}</td>
+            <td><span class="status" [class.status-active]="m.activo">{{ m.activo ? 'Sí' : 'No' }}</span></td>
+            <td class="actions">
+              <button class="btn-edit" (click)="openEditModal(m)">Editar</button>
+              <button class="btn-delete" (click)="deleteMaquina(m)">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="(termoformadoras$ | async)?.length === 0">
+            <td colspan="6">No hay termoformadoras para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Tabla de Molinos -->
+  <section class="table-section">
+    <h2>Molinos</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of (molinos$ | async)">
+            <td>{{ m.codigo }}</td>
+            <td>{{ m.marca }}</td>
+            <td>{{ m.modelo }}</td>
+            <td><span class="status" [class.status-active]="m.activo">{{ m.activo ? 'Sí' : 'No' }}</span></td>
+            <td class="actions">
+              <button class="btn-edit" (click)="openEditModal(m)">Editar</button>
+              <button class="btn-delete" (click)="deleteMaquina(m)">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="(molinos$ | async)?.length === 0">
+            <td colspan="5">No hay molinos para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+
+    <form [formGroup]="maquinaForm" (ngSubmit)="onSubmit()">
+      <h2>
+        {{ isEditMode ? 'Editar Máquina' : 'Crear Nueva Máquina' }}
+      </h2>
+
+      <div *ngIf="errorMsg && isModalOpen" class="error-banner form-error">
+        {{ errorMsg }}
+      </div>
+
+ 
+      <div class="form-group">
+        <label for="tipo">Tipo de Máquina</label>
+        <select id="tipo" formControlName="tipo">
+          <option [disabled]="isEditMode" [value]="null">-- Seleccione un tipo --</option>
+          <option *ngFor="let tipo of tiposMaquina" [value]="tipo">
+            {{ tipo }}
+          </option>
+        </select>
+        <div *ngIf="maquinaForm.get('tipo')?.touched && maquinaForm.get('tipo')?.invalid" class="error-message">
+          El tipo es requerido.
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="codigo">Código</label>
+          <input type="text" id="codigo" formControlName="codigo">
+        </div>
+        <div class="form-group">
+          <label for="marca">Marca</label>
+          <input type="text" id="marca" formControlName="marca">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" formControlName="modelo">
+      </div>
+    
+      <div [ngSwitch]="maquinaForm.get('tipo')?.value" class="form-group">
+        <div *ngSwitchCase="'Extrusora'">
+          <label for="rendimiento">Rendimiento (kg/h)</label>
+          <input type="number" id="rendimiento" formControlName="rendimiento">
+        </div>
+        <div *ngSwitchCase="'Termoformadora'">
+          <label for="areaDeFormado">Área de Formado (ej: 500x300)</label>
+          <input type="text" id="areaDeFormado" formControlName="areaDeFormado">
+        </div>
+      </div>
+    
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input id="activo" formControlName="activo" type="checkbox">
+          <label for="activo">Activo</label>
+        </div>
+      </div>
+    
+      <div class="button-container">
+        <button type="button" (click)="cancelar()">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="maquinaForm.invalid">
+          {{ isEditMode ? 'Actualizar Máquina' : 'Crear Máquina' }}
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

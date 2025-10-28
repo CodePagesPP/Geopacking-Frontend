@@ -14,6 +14,11 @@ export class AuthService {
   private tokenKey = 'token'
   constructor(private http: HttpClient, private router: Router) {}
 
+  public getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem(this.tokenKey);
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+  
   login(credentials: AuthRequest): Observable<AuthResponse> {
   return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
     catchError((error) => {
