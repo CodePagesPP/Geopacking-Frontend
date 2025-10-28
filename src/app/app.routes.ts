@@ -19,6 +19,13 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN_ACCESS'] }
       },
+      {
+        path: 'machines',
+        title: 'Machines',
+        loadComponent: () => import('./features/machines/machines.component').then(m => m.MachinesComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN_ACCESS'] }
+      }
       ]
   },
      {
