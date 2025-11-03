@@ -22,6 +22,12 @@ export class MaquinaService {
   });
   }
 
+  getMaquinasActivas(): Observable<Maquina[]> {
+    return this.http.get<Maquina[]>(`${this.apiUrl}/activas`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
   getMaquinaById(id: number): Observable<Maquina> {
     return this.http.get<Maquina>(`${this.apiUrl}/${id}`, {
     headers: this.authService.getAuthHeaders()

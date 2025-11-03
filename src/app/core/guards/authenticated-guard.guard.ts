@@ -9,14 +9,14 @@ export const authenticatedGuardGuard: CanActivateFn = (route, state) => {
   if (authService.isAuthenticated()) {
   const roles = authService.getAuthorities();
 
-  const adminRoles = ['ADMIN_ACCESS', 'MANAGER_ACCESS', 'STAFF_ACCESS'];
+  const adminRoles = ['ADMIN_ACCESS'];
 
   if (roles.some(role => adminRoles.includes(role))) {
     router.navigate(['/dashboard']);
-  } else if (roles.includes('CLIENT_ACCESS')) {
-    router.navigate(['/c/dashboard']);
-  } else if (roles.includes('INSTRUCTOR_ACCESS')) {
-    router.navigate(['/i/dashboard']);
+  } else if (roles.includes('OPERATOR_ACCESS')) {
+    router.navigate(['/o/dashboard']);
+  } else if (roles.includes('REPORT_ACCESS')) {
+    router.navigate(['/r/dashboard']);
   }
 
   return false;

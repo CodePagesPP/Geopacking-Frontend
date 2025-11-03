@@ -24,16 +24,16 @@ export class LoginComponent {
 
         const roles = this.authService.getAuthorities();
 
-        const adminRoles = ['ADMIN_ACCESS', 'MANAGER_ACCESS', 'STAFF_ACCESS'];
+        const adminRoles = ['ADMIN_ACCESS'];
 
         if (roles.some(role => adminRoles.includes(role))) {
           this.router.navigate(['/dashboard']);
-        } else if (roles.includes('CLIENT_ACCESS')) {
-          this.router.navigate(['/c/dashboard']);
-        } else if (roles.includes('INSTRUCTOR_ACCESS')) {
-          this.router.navigate(['/i/dashboard']);
+        } else if (roles.includes('OPERATOR_ACCESS')) {
+          this.router.navigate(['/o/dashboard']);
+        } else if (roles.includes('REPORT_ACCESS')) {
+          this.router.navigate(['/r/dashboard']);
         } else {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/login']);
         }
       },
       error: (err) => {
