@@ -12,7 +12,7 @@
 
         <div class="sidebar">
         <a 
-            routerLink="/dashboard" 
+            routerLink="/o/dashboard" 
             (click)="setActive('dashboard')" 
             [class.active]="activeOption === 'dashboard'">
             <span class="material-icons-sharp active">dashboard_customize</span>
@@ -20,30 +20,15 @@
         </a>
 
         <a 
-            routerLink="/machines" 
-            (click)="setActive('machines')" 
-            [class.active]="activeOption === 'machines'">
+            routerLink="/o/scrapp" 
+            (click)="setActive('scrapp')" 
+            [class.active]="activeOption === 'scrapp'">
             <span class="material-icons-sharp">
              precision_manufacturing
             </span>
-            <h3>Machines</h3>
+            <h3>Registrar Scrapp</h3>
         </a>
 
-        <a 
-            routerLink="/tools" 
-            (click)="setActive('tools')" 
-            [class.active]="activeOption === 'tools'">
-            <span class="material-icons-sharp">build</span>
-            <h3>Tools</h3>
-        </a>
-
-        <a 
-            routerLink="/workers" 
-            (click)="setActive('workers')" 
-            [class.active]="activeOption === 'workers'">
-            <span class="material-icons-sharp">diversity_3</span>
-            <h3>Workers</h3>
-        </a>
 
         <a 
             class="menu-item" 

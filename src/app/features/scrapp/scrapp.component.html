@@ -1,0 +1,116 @@
+
+<div class="header">
+  <h2>Gestión de Scrapp</h2>
+  <button class="btn btn-primary" (click)="openForm()">
+    <span class="material-icons-sharp">add</span>
+    Registrar Nuevo Pesaje
+  </button>
+</div>
+
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-spinner"></div>
+</div>
+
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Bolsón N°</th>
+        <th>Máquina</th>
+        <th>P. Bruto (Kg)</th>
+        <th>P. Neto (Kg)</th>
+        <th>Fecha</th>
+        <th>Turno</th>
+        <th>Operador</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="registros.length === 0 && !isLoading">
+        <td colspan="9" class="text-center">No hay registros para mostrar.</td>
+      </tr>
+      <tr *ngFor="let reg of registros">
+        <td>{{ reg.id }}</td>
+        
+        <td>{{ reg.numeroBolson }}/{{ reg.anio % 100 }}</td>
+        <td>{{ reg.maquina.codigo }}</td>
+        <td>{{ reg.pesoBruto | number:'1.2-2' }}</td>
+        <td>{{ reg.pesoNeto | number:'1.2-2' }}</td>
+        <td>{{ reg.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+        <td>{{ reg.turno }}</td>
+        <td>{{ reg.operador.name }}</td>
+        <td>
+          <button class="btn btn-icon btn-secondary" (click)="onImprimir(reg.id)" title="Imprimir Etiqueta">
+            <span class="material-icons-sharp">print</span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<div class="modal-overlay" *ngIf="isFormOpen" (click)="closeForm()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <form [formGroup]="scrappForm" (ngSubmit)="onSubmit()">
+      <div class="modal-header">
+        <h3>Registrar Pesaje</h3>
+        <button type="button" class="close-btn" (click)="closeForm()">
+          <span class="material-icons-sharp">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        
+       
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+     
+        <div class="form-group">
+          <label for="maquinaId">Máquina</label>
+          <select id="maquinaId" formControlName="maquinaId">
+            <option [ngValue]="null" disabled>Seleccione una máquina...</option>
+            <option *ngFor="let maquina of maquinas" [value]="maquina.id">
+              {{ maquina.codigo }}
+            </option>
+          </select>
+          <div *ngIf="scrappForm.get('maquinaId')?.touched && scrappForm.get('maquinaId')?.errors?.['required']" class="error-text">
+            La máquina es obligatoria.
+          </div>
+        </div>
+
+     
+        <div class="form-group">
+          <label for="pesoBruto">Peso Bruto (Kg)</label>
+          <input id="pesoBruto" type="number" formControlName="pesoBruto" placeholder="Ej: 500.50">
+          <div *ngIf="scrappForm.get('pesoBruto')?.touched && scrappForm.get('pesoBruto')?.errors?.['required']" class="error-text">
+            El peso bruto es obligatorio.
+          </div>
+        </div>
+
+        <!-- Peso Neto -->
+        <div class="form-group">
+          <label for="pesoNeto">Peso Neto (Kg)</label>
+          <input id="pesoNeto" type="number" formControlName="pesoNeto" placeholder="Ej: 490.00">
+          <div *ngIf="scrappForm.get('pesoNeto')?.touched && scrappForm.get('pesoNeto')?.errors?.['required']" class="error-text">
+            El peso neto es obligatorio.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="scrappForm.invalid || isLoading">
+          {{ isLoading ? 'Guardando...' : 'Guardar y Registrar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
