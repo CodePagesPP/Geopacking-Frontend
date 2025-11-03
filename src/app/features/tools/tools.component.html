@@ -1,0 +1,76 @@
+<div class="tools-container">
+
+    <nav class="tabs">
+        <button (click)="selectTab('Material')" [class.active]="selectedToolType === 'Material'">
+            Materiales
+        </button>
+        <button (click)="selectTab('Color')" [class.active]="selectedToolType === 'Color'">
+            Colores
+        </button>
+        <button (click)="selectTab('Origen')" [class.active]="selectedToolType === 'Origen'">
+            Orígenes
+        </button>
+    </nav>
+
+    <header class="tools-header">
+        <h2>Gestión de {{ selectedToolType | titlecase }}</h2>
+        <button (click)="openCreateForm()" *ngIf="!showForm" class="btn btn-primary">
+            + Nuevo {{ selectedToolType }}
+        </button>
+    </header>
+
+    <div *ngIf="showForm" class="form-container">
+        <h3>{{ editingToolCode ? 'Editar' : 'Nuevo' }} {{ selectedToolType }}</h3>
+
+        <form [formGroup]="toolForm" (ngSubmit)="saveTool()">
+            <div class="form-group">
+                <label for="code">Código:</label>
+                <input id="code" type="text" formControlName="code" placeholder="Ej: M-001">
+                <div *ngIf="toolForm.get('code')?.invalid && toolForm.get('code')?.touched" class="error">
+                    El código es requerido.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input id="name" type="text" formControlName="name" placeholder="Ej: Acero">
+                <div *ngIf="toolForm.get('name')?.invalid && toolForm.get('name')?.touched" class="error">
+                    El nombre es requerido.
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" [disabled]="toolForm.invalid" class="btn btn-success">
+                    {{ editingToolCode ? 'Actualizar' : 'Guardar' }}
+                </button>
+                <button type="button" (click)="closeForm()" class="btn btn-secondary">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <table *ngIf="!showForm" class="tools-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tool of allTools">
+                <td>{{ tool.code }}</td>
+                <td>{{ tool.name }}</td>
+                <td class="actions">
+                    <button (click)="openEditForm(tool)" class="btn btn-edit">Editar</button>
+                    <button (click)="deleteTool(tool)" class="btn btn-delete">Eliminar</button>
+                </td>
+            </tr>
+            <tr *ngIf="allTools.length === 0">
+                <td colspan="3">No hay {{ selectedToolType }}s registrados.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
