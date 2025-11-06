@@ -44,6 +44,15 @@
             <span class="material-icons-sharp">diversity_3</span>
             <h3>Workers</h3>
         </a>
+        <a 
+            routerLink="/scrapp" 
+            (click)="setActive('scrapp')" 
+            [class.active]="activeOption === 'scrapp'">
+            <span class="material-icons-sharp">
+             precision_manufacturing
+            </span>
+            <h3>Reporte Scrapp</h3>
+        </a>
 
         <a 
             class="menu-item" 

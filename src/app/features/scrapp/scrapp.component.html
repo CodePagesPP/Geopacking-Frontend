@@ -1,10 +1,52 @@
-
 <div class="header">
   <h2>Gestión de Scrapp</h2>
-  <button class="btn btn-primary" (click)="openForm()">
-    <span class="material-icons-sharp">add</span>
-    Registrar Nuevo Pesaje
-  </button>
+
+  <div class="header-actions">
+    
+    <button 
+      *ngIf="isAdmin" 
+      class="btn btn-secondary" 
+      (click)="onImprimirReporteCompleto()" 
+      [disabled]="isLoading || registros.length === 0">
+      <span class="material-icons-sharp">print</span>
+      Imprimir Reporte A4
+    </button>
+
+    <button *ngIf="!isAdmin"  class="btn btn-primary" (click)="openForm()">
+      <span class="material-icons-sharp">add</span>
+      Registrar Nuevo Pesaje
+    </button>
+
+    <div *ngIf="isAdmin" class="filter-container">
+  <form (ngSubmit)="onAplicarFiltros()">
+    
+    <div class="form-group">
+      <label for="fechaInicio">Desde:</label>
+      <input 
+        type="date" 
+        id="fechaInicio" 
+        [(ngModel)]="filtros.fechaInicio" 
+        name="fechaInicio">
+    </div>
+    
+    <div class="form-group">
+      <label for="fechaFin">Hasta:</label>
+      <input 
+        type="date" 
+        id="fechaFin" 
+        [(ngModel)]="filtros.fechaFin" 
+        name="fechaFin">
+    </div>
+    
+    <button type="submit" class="btn btn-primary" [disabled]="!filtros.fechaInicio || !filtros.fechaFin">
+      Filtrar
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="onLimpiarFiltros()" [disabled]="!filtros.fechaInicio && !filtros.fechaFin">
+      Limpiar
+    </button>
+  </form>
+</div>
+  </div>
 </div>
 
 
@@ -34,7 +76,6 @@
       </tr>
       <tr *ngFor="let reg of registros">
         <td>{{ reg.id }}</td>
-        
         <td>{{ reg.numeroBolson }}/{{ reg.anio % 100 }}</td>
         <td>{{ reg.maquina.codigo }}</td>
         <td>{{ reg.pesoBruto | number:'1.2-2' }}</td>
@@ -49,7 +90,47 @@
         </td>
       </tr>
     </tbody>
+
+    <tfoot *ngIf="isAdmin && registros.length > 0">
+      <tr>
+        <td colspan="3" class="total-label">
+          <strong>TOTALES</strong>
+        </td>
+        
+        <td class="total-value">
+          <strong>{{ totalPesoBruto | number:'1.2-2' }}</strong>
+        </td>
+        
+        <td class="total-value">
+          <strong>{{ totalPesoNeto | number:'1.2-2' }}</strong>
+        </td>
+        
+        <td colspan="4"></td>
+      </tr>
+    </tfoot>
+
   </table>
+</div>
+
+<div *ngIf="paginacion.totalPages > 1" class="pagination-controls">
+  <button 
+    class="btn btn-secondary" 
+    (click)="onPageChange(paginacion.page - 1)" 
+    [disabled]="paginacion.page === 0 || isLoading">
+    &lt; Anterior
+  </button>
+  
+  <span>
+    Página {{ paginacion.page + 1 }} de {{ paginacion.totalPages }} 
+    (Total: {{ paginacion.totalItems }} registros)
+  </span>
+  
+  <button 
+    class="btn btn-secondary" 
+    (click)="onPageChange(paginacion.page + 1)" 
+    [disabled]="paginacion.page === (paginacion.totalPages - 1) || isLoading">
+    Siguiente &gt;
+  </button>
 </div>
 
 

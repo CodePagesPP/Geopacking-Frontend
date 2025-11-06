@@ -63,7 +63,7 @@ export class MachinesComponent implements OnInit{
 
 
   loadMaquinas(): void {
-    this.errorMsg = null; // Limpia error anterior
+    this.errorMsg = null; 
     const allMaquinas$ = this.maquinaService.getMaquinas().pipe(
       catchError(err => {
         this.errorMsg = 'Error al cargar las máquinas: ' + (err.error?.message || err.message);

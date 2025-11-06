@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
-import { HttpClient } from '@angular/common/http';
-import { RegistroScrapp, ScrappRegistroDTO } from '../models/scrapp.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { PaginatedScrappReportDTO, RegistroScrapp, ScrappRegistroDTO, ScrappReportDTO } from '../models/scrapp.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -28,5 +28,35 @@ export class ScrappService {
       headers: this.authService.getAuthHeaders(),
       responseType: 'blob' 
     });
+  }
+
+  getReportePaginado(page: number, size: number, fechaInicio?: string, fechaFin?: string): Observable<PaginatedScrappReportDTO> {
+    
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (fechaInicio) {
+      params = params.set('fechaInicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fechaFin', fechaFin);
+    }
+
+    return this.http.get<PaginatedScrappReportDTO>(`${this.apiUrl}/reporte-admin`, {headers: this.authService.getAuthHeaders(), params });
+  }
+
+
+  getReporteCompletoPdf(fechaInicio?: string, fechaFin?: string): Observable<Blob> {
+    
+    let params = new HttpParams();
+    if (fechaInicio) {
+      params = params.set('fechaInicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fechaFin', fechaFin);
+    }
+
+    return this.http.get(`${this.apiUrl}/reporte-completo-pdf`, {headers: this.authService.getAuthHeaders(), params, responseType: 'blob' });
   }
 }
