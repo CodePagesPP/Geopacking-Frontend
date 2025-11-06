@@ -40,7 +40,14 @@ export const routes: Routes = [
 
         canActivate: [roleGuard],
         data: { roles: ['ADMIN_ACCESS'] }
-      }
+      },
+      {
+        path: 'scrapp', // O llámalo 'reportes', como prefieras
+        title: 'Reporte de Scrapp',
+        loadComponent: () => import('./features/scrapp/scrapp.component').then(m => m.ScrappComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN_ACCESS'] } // Protegido para Admin
+      },
     ]
   },
   {

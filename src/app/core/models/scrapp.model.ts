@@ -18,3 +18,18 @@ export interface ScrappRegistroDTO {
   pesoBruto: number;
   pesoNeto: number;
 }
+
+export interface ScrappReportDTO {
+  registros: RegistroScrapp[];
+  totalPesoBruto: number;
+  totalPesoNeto: number;
+}
+
+export interface PaginatedScrappReportDTO {
+  registros: RegistroScrapp[];
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+  totalPesoBruto: number;
+  totalPesoNeto: number;
+}

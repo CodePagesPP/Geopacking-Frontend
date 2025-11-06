@@ -1,28 +1,46 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RegistroScrapp, ScrappRegistroDTO } from '../../core/models/scrapp.model';
 import { Maquina } from '../../core/models/machines.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ScrappService } from '../../core/services/scrapp.service';
 import { MaquinaService } from '../../core/services/machine.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-scrapp',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, FormsModule],
   templateUrl: './scrapp.component.html',
   styleUrl: './scrapp.component.css'
 })
-export class ScrappComponent {
+export class ScrappComponent implements OnInit{
   private fb = inject(FormBuilder);
   private scrappService = inject(ScrappService);
   private maquinaService = inject(MaquinaService);
+  private authService = inject(AuthService);
   public registros: RegistroScrapp[] = [];
   public maquinas: Maquina[] = [];
   public scrappForm: FormGroup;
   public isFormOpen = false;
   public isLoading = false;
   public errorMessage: string | null = null;
+
+  public isAdmin = false;
+  public totalPesoBruto = 0;
+  public totalPesoNeto = 0;
+  public paginacion = {
+    page: 0,       
+    size: 10,     
+    totalItems: 0,
+    totalPages: 0
+  };
+
+
+  public filtros = {
+    fechaInicio: '',
+    fechaFin: ''     
+  };
 
   constructor() {
     
@@ -35,29 +53,77 @@ export class ScrappComponent {
   }
 
   ngOnInit(): void {
+    this.isAdmin = this.authService.hasRole('ADMIN_ACCESS');
     this.loadMaquinas();
     this.loadRegistros();
   }
 
   loadMaquinas(): void {
-    this.maquinaService.getMaquinasActivas().subscribe({
+    this.maquinaService.getMolinosActivos().subscribe({
       next: (data) => this.maquinas = data,
       error: (err) => this.showError('Error al cargar máquinas')
     });
   }
 
-  loadRegistros(): void {
+loadRegistros(): void {
     this.isLoading = true;
-    this.scrappService.getRegistros().subscribe({
+    this.errorMessage = null;
+
+    
+    const fechaInicio = this.filtros.fechaInicio || undefined;
+    const fechaFin = this.filtros.fechaFin || undefined;
+
+    
+    this.scrappService.getReportePaginado( 
+      this.paginacion.page,
+      this.paginacion.size,
+      fechaInicio,
+      fechaFin
+    ).subscribe({
       next: (data) => {
-        this.registros = data.sort((a, b) => b.id - a.id); // Mostrar últimos primero
+        
+        this.registros = data.registros;
+        this.totalPesoBruto = data.totalPesoBruto;
+        this.totalPesoNeto = data.totalPesoNeto;
+        
+        
+        this.paginacion.page = data.currentPage; 
+        this.paginacion.totalItems = data.totalItems;
+        this.paginacion.totalPages = data.totalPages;
+        
         this.isLoading = false;
       },
-      error: (err) => {
-        this.showError('Error al cargar registros');
-        this.isLoading = false;
-      }
+      error: (err) => this.handleLoadError(err, 'Error al cargar reporte')
     });
+  }
+
+  onPageChange(nuevaPagina: number): void {
+    if (nuevaPagina >= 0 && nuevaPagina < this.paginacion.totalPages) {
+      this.paginacion.page = nuevaPagina;
+      this.loadRegistros();
+    }
+  }
+
+  onAplicarFiltros(): void {
+    this.paginacion.page = 0;
+    this.loadRegistros();
+  }
+
+  
+  onLimpiarFiltros(): void {
+    this.filtros.fechaInicio = '';
+    this.filtros.fechaFin = '';
+    this.paginacion.page = 0;
+    this.loadRegistros();
+  }
+
+  private handleLoadError(err: any, defaultMessage: string): void {
+    if (err.status === 403) {
+      this.showError('Acceso denegado. No tienes permisos.');
+    } else {
+      this.showError(err.error?.message || defaultMessage);
+    }
+    this.isLoading = false;
   }
 
   onSubmit(): void {
@@ -85,6 +151,25 @@ export class ScrappComponent {
       },
       error: (err) => {
         this.showError(err.message || 'Error al registrar el pesaje');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onImprimirReporteCompleto(): void {
+    this.isLoading = true;
+    this.scrappService.getReporteCompletoPdf(
+      this.filtros.fechaInicio || undefined,
+      this.filtros.fechaFin || undefined
+    ).subscribe({
+      next: (blob) => {
+        const file = new Blob([blob], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, '_blank');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.showError('Error al generar el reporte PDF completo');
         this.isLoading = false;
       }
     });

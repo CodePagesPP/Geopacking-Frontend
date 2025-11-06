@@ -59,6 +59,11 @@ export class AuthService {
     }
   }
 
+  public hasRole(roleName: string): boolean {
+   
+    const authorities = this.getAuthorities();
+    return authorities.includes(roleName);
+  }
 
   logout(): void{
   localStorage.removeItem(this.tokenKey);
