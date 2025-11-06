@@ -42,11 +42,18 @@ export const routes: Routes = [
         data: { roles: ['ADMIN_ACCESS'] }
       },
       {
-        path: 'scrapp', // O llámalo 'reportes', como prefieras
+        path: 'scrapp',
         title: 'Reporte de Scrapp',
         loadComponent: () => import('./features/scrapp/scrapp.component').then(m => m.ScrappComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS'] } // Protegido para Admin
+        data: { roles: ['ADMIN_ACCESS'] }
+      },
+      {
+        path: 'inventory',
+        title: 'Reporte de Inventario',
+        loadComponent: () => import('./features/inventory/inventory.component').then(m => m.InventoryComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN_ACCESS'] }
       },
     ]
   },

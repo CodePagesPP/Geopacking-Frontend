@@ -1,0 +1,104 @@
+<div class="inventario-container">
+
+  <div class="header-section">
+    <h2 class="page-title">Gestión de Inventario</h2>
+
+    <div class="stock-card">
+      <span class="stock-label">Stock Actual en Almacén</span>
+      <div class="stock-value-container">
+        <span class="stock-value">{{ stockActual | number:'1.2-2' }}</span>
+        <span class="stock-unit">Kg</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-section">
+    <div class="manual-actions">
+      <button class="btn-action btn-ingreso" (click)="abrirModal(TipoMovimiento.INGRESO)">
+        <i class="fas fa-plus-circle"></i> Generar Ingreso
+      </button>
+      <button class="btn-action btn-salida" (click)="abrirModal(TipoMovimiento.SALIDA)">
+        <i class="fas fa-minus-circle"></i> Generar Salida
+      </button>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>Desde:</label>
+        <div class="input-with-icon">
+          <input type="date" [(ngModel)]="fechaInicio">
+          <i class="far fa-calendar-alt"></i>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Hasta:</label>
+        <div class="input-with-icon">
+          <input type="date" [(ngModel)]="fechaFin">
+          <i class="far fa-calendar-alt"></i>
+        </div>
+      </div>
+      <div class="filter-buttons">
+        <button class="btn-filter" (click)="filtrar()">Filtrar</button>
+        <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>CÓDIGO</th>
+          <th>TIPO</th>
+          <th>ORIGEN</th>
+          <th class="text-right">CANTIDAD (KG)</th>
+          <th>FECHA</th>
+          <th>REGISTRADO POR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mov of movimientos">
+          <td class="font-medium">{{ mov.codigoMovimiento }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="mov.tipo === 'INGRESO' ? 'status-ingreso' : 'status-salida'">
+              {{ mov.tipo }}
+            </span>
+          </td>
+          <td>{{ mov.origen }}</td>
+          <td class="text-right font-bold">{{ mov.cantidad | number:'1.2-2' }}</td>
+          <td>{{ mov.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>{{ mov.registradoPorNombre }}</td>
+        </tr>
+        <tr *ngIf="movimientos.length === 0">
+          <td colspan="6" class="text-center no-data">No se encontraron movimientos en este rango.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <button [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">Anterior</button>
+    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+    <button [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(currentPage + 1)">Siguiente</button>
+  </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Registrar {{ tipoMovimientoModal | titlecase }} Manual</h3>
+      <button class="close-btn" (click)="cerrarModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Cantidad (Kg):</label>
+        <input type="number" [(ngModel)]="cantidadModal" placeholder="0.00" min="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-confirm" (click)="guardarMovimientoManual()">Guardar</button>
+    </div>
+  </div>
+</div>

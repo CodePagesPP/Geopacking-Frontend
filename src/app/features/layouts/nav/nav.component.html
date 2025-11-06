@@ -49,9 +49,18 @@
             (click)="setActive('scrapp')" 
             [class.active]="activeOption === 'scrapp'">
             <span class="material-icons-sharp">
-             precision_manufacturing
+            precision_manufacturing
             </span>
             <h3>Reporte Scrapp</h3>
+        </a>
+        <a 
+            routerLink="/inventory" 
+            (click)="setActive('inventory')" 
+            [class.active]="activeOption === 'inventory'">
+            <span class="material-icons-sharp">
+            inventory_2
+            </span>
+            <h3>Inventario</h3>
         </a>
 
         <a 
