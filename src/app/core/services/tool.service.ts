@@ -18,6 +18,7 @@ export class ToolService {
       case 'Material': return 'materials';
       case 'Color': return 'colors';
       case 'Origen': return 'origins';
+      case 'TypeScrapp': return 'typescrapp';
       default: throw new Error('Invalid tool type');
     }
   }

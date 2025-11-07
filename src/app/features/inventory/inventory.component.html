@@ -14,10 +14,10 @@
 
   <div class="actions-section">
     <div class="manual-actions">
-      <button class="btn-action btn-ingreso" (click)="abrirModal(TipoMovimiento.INGRESO)">
+      <button class="btn-action btn-ingreso" (click)="abrirModal(Operacion.INGRESO)">
         <i class="fas fa-plus-circle"></i> Generar Ingreso
       </button>
-      <button class="btn-action btn-salida" (click)="abrirModal(TipoMovimiento.SALIDA)">
+      <button class="btn-action btn-salida" (click)="abrirModal(Operacion.SALIDA)">
         <i class="fas fa-minus-circle"></i> Generar Salida
       </button>
     </div>
@@ -37,6 +37,17 @@
           <i class="far fa-calendar-alt"></i>
         </div>
       </div>
+      <div class="filter-group">
+        <label>Tipo Scrapp:</label>
+        <div class="input-with-icon">
+          <select [(ngModel)]="typeScrappFiltroId">
+            <option value="">-- Todos --</option>
+            <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
+              {{ type.name }}
+            </option>
+          </select>
+        </div>
+      </div>
       <div class="filter-buttons">
         <button class="btn-filter" (click)="filtrar()">Filtrar</button>
         <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
@@ -49,8 +60,9 @@
       <thead>
         <tr>
           <th>CÓDIGO</th>
-          <th>TIPO</th>
-          <th>ORIGEN</th>
+          <th>OPERACIÓN</th>
+          <th>TIPO DE REGISTRO</th>
+          <th>TIPO DE SCRAPP</th>
           <th class="text-right">CANTIDAD (KG)</th>
           <th>FECHA</th>
           <th>REGISTRADO POR</th>
@@ -60,11 +72,12 @@
         <tr *ngFor="let mov of movimientos">
           <td class="font-medium">{{ mov.codigoMovimiento }}</td>
           <td>
-            <span class="status-badge" [ngClass]="mov.tipo === 'INGRESO' ? 'status-ingreso' : 'status-salida'">
-              {{ mov.tipo }}
+            <span class="status-badge" [ngClass]="mov.operacion === 'INGRESO' ? 'status-ingreso' : 'status-salida'">
+              {{ mov.operacion }}
             </span>
           </td>
-          <td>{{ mov.origen }}</td>
+          <td>{{ mov.tipoRegistro }}</td>
+          <td>{{ mov.typeScrappNombre }}</td>
           <td class="text-right font-bold">{{ mov.cantidad | number:'1.2-2' }}</td>
           <td>{{ mov.fecha | date:'dd/MM/yyyy' }}</td>
           <td>{{ mov.registradoPorNombre }}</td>
@@ -87,7 +100,7 @@
 <div class="modal-overlay" *ngIf="mostrarModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Registrar {{ tipoMovimientoModal | titlecase }} Manual</h3>
+      <h3>Registrar {{ OperacionModal | titlecase }} Manual</h3>
       <button class="close-btn" (click)="cerrarModal()">&times;</button>
     </div>
     <div class="modal-body">
@@ -96,6 +109,15 @@
         <input type="number" [(ngModel)]="cantidadModal" placeholder="0.00" min="0">
       </div>
     </div>
+    <div class="form-group">
+    <label>Tipo de Scrapp:</label>
+    <select [(ngModel)]="typeScrappModalId">
+      <option [value]="null" disabled>-- Seleccione un tipo --</option>
+      <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
+        {{ type.name }}
+      </option>
+    </select>
+  </div>
     <div class="modal-footer">
       <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
       <button class="btn-confirm" (click)="guardarMovimientoManual()">Guardar</button>

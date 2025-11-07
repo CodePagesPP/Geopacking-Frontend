@@ -1,5 +1,5 @@
 <div class="list-container">
-  
+
   <!-- Encabezado y Botón Crear -->
   <header class="list-header">
     <h1>Gestión de Máquinas</h1>
@@ -93,6 +93,7 @@
             <th>Código</th>
             <th>Marca</th>
             <th>Modelo</th>
+            <th>Orígenes</th>
             <th>Activo</th>
             <th>Acciones</th>
           </tr>
@@ -102,6 +103,15 @@
             <td>{{ m.codigo }}</td>
             <td>{{ m.marca }}</td>
             <td>{{ m.modelo }}</td>
+
+            <td>
+              <span *ngIf="!m.origenes || m.origenes.length === 0" class="status">
+                N/A
+              </span>
+              <span *ngFor="let origen of m.origenes" class="tag">
+                {{ origen.code }} </span>
+            </td>
+
             <td><span class="status" [class.status-active]="m.activo">{{ m.activo ? 'Sí' : 'No' }}</span></td>
             <td class="actions">
               <button class="btn-edit" (click)="openEditModal(m)">Editar</button>
@@ -109,7 +119,7 @@
             </td>
           </tr>
           <tr *ngIf="(molinos$ | async)?.length === 0">
-            <td colspan="5">No hay molinos para mostrar.</td>
+            <td colspan="6">No hay molinos para mostrar.</td>
           </tr>
         </tbody>
       </table>
@@ -120,7 +130,7 @@
 
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    
+
 
     <form [formGroup]="maquinaForm" (ngSubmit)="onSubmit()">
       <h2>
@@ -131,7 +141,7 @@
         {{ errorMsg }}
       </div>
 
- 
+
       <div class="form-group">
         <label for="tipo">Tipo de Máquina</label>
         <select id="tipo" formControlName="tipo">
@@ -159,18 +169,46 @@
         <label for="modelo">Modelo</label>
         <input type="text" id="modelo" formControlName="modelo">
       </div>
-    
+
       <div [ngSwitch]="maquinaForm.get('tipo')?.value" class="form-group">
+
         <div *ngSwitchCase="'Extrusora'">
           <label for="rendimiento">Rendimiento (kg/h)</label>
           <input type="number" id="rendimiento" formControlName="rendimiento">
         </div>
+
         <div *ngSwitchCase="'Termoformadora'">
           <label for="areaDeFormado">Área de Formado (ej: 500x300)</label>
           <input type="text" id="areaDeFormado" formControlName="areaDeFormado">
         </div>
+
+        <div *ngSwitchCase="'Molino'">
+          <label>Orígenes de Material</label>
+          
+          <div class="checkbox-group" role="group" aria-labelledby="origenes-label">
+            
+            <div *ngIf="!(origenes$ | async)?.length">
+              Cargando orígenes...
+            </div>
+
+            <label *ngFor="let origen of (origenes$ | async)" class="checkbox-label">
+              <input 
+                type="checkbox"
+                [checked]="isOrigenChecked(origen.id)"
+                (change)="onOrigenChange($event, origen.id)"
+              >
+              <span>{{ origen.code }} - {{ origen.name }}</span>
+            </label>
+          </div>
+          
+          <div *ngIf="maquinaForm.get('origenIds')?.touched && maquinaForm.get('origenIds')?.errors?.['required']"
+            class="error-message">
+            Debe seleccionar al menos un origen.
+          </div>
+        </div>
+
       </div>
-    
+
 
       <div class="form-group">
         <div class="checkbox-group">
@@ -178,7 +216,7 @@
           <label for="activo">Activo</label>
         </div>
       </div>
-    
+
       <div class="button-container">
         <button type="button" (click)="cancelar()">
           Cancelar

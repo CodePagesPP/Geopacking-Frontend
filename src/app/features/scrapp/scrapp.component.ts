@@ -6,6 +6,9 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ScrappService } from '../../core/services/scrapp.service';
 import { MaquinaService } from '../../core/services/machine.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ToolService } from '../../core/services/tool.service';
+import { catchError, Observable, of } from 'rxjs';
+import { TypeScrapp } from '../../core/models/tool.model';
 
 @Component({
   selector: 'app-scrapp',
@@ -19,13 +22,14 @@ export class ScrappComponent implements OnInit{
   private scrappService = inject(ScrappService);
   private maquinaService = inject(MaquinaService);
   private authService = inject(AuthService);
+  private toolService = inject(ToolService);
   public registros: RegistroScrapp[] = [];
   public maquinas: Maquina[] = [];
   public scrappForm: FormGroup;
   public isFormOpen = false;
   public isLoading = false;
   public errorMessage: string | null = null;
-
+  public typeScrapps$: Observable<TypeScrapp[]>;
   public isAdmin = false;
   public totalPesoBruto = 0;
   public totalPesoNeto = 0;
@@ -47,15 +51,18 @@ export class ScrappComponent implements OnInit{
     // Inicializar el formulario
     this.scrappForm = this.fb.group({
       maquinaId: [null, Validators.required],
+      typeScrappId: [null, Validators.required],
       pesoBruto: [null, [Validators.required, Validators.min(0.1)]],
       pesoNeto: [null, [Validators.required, Validators.min(0.1)]]
     });
+    this.typeScrapps$ = of([]);
   }
 
   ngOnInit(): void {
     this.isAdmin = this.authService.hasRole('ADMIN_ACCESS');
     this.loadMaquinas();
     this.loadRegistros();
+    this.loadTypeScrapps();
   }
 
   loadMaquinas(): void {
@@ -63,6 +70,14 @@ export class ScrappComponent implements OnInit{
       next: (data) => this.maquinas = data,
       error: (err) => this.showError('Error al cargar máquinas')
     });
+  }
+
+  loadTypeScrapps(): void {
+    this.typeScrapps$ = this.toolService.getAll('TypeScrapp').pipe(
+      catchError(err => {
+        return of([]);
+      })
+    );
   }
 
 loadRegistros(): void {

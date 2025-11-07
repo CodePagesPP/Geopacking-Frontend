@@ -166,6 +166,19 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="typeScrappId">Tipo de Scrapp</label>
+          <select id="typeScrappId" formControlName="typeScrappId">
+            <option [ngValue]="null" disabled>Seleccione un tipo...</option>
+            <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
+              {{ type.code }} - {{ type.name }}
+            </option>
+          </select>
+          <div *ngIf="scrappForm.get('typeScrappId')?.touched && scrappForm.get('typeScrappId')?.errors?.['required']" class="error-text">
+            El tipo de scrapp es obligatorio.
+          </div>
+        </div>
+
      
         <div class="form-group">
           <label for="pesoBruto">Peso Bruto (Kg)</label>

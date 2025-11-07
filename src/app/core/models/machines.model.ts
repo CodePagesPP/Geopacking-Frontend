@@ -1,3 +1,4 @@
+import { Origen } from "./tool.model";
 
 export type TipoMaquina = 'Extrusora' | 'Termoformadora' | 'Molino';
 
@@ -23,7 +24,7 @@ export interface Termoformadora extends Maquina {
 
 export interface Molino extends Maquina {
   tipo: 'Molino';
- 
+  origenes: Origen[];
 }
 
 
@@ -48,4 +49,5 @@ export interface CreateMolinoDto {
   marca: string;
   modelo: string;
   activo: boolean;
+  origenIds:number[];
 }

@@ -2,13 +2,16 @@
 
     <nav class="tabs">
         <button (click)="selectTab('Material')" [class.active]="selectedToolType === 'Material'">
-            Materiales
+            Tipo de Materiales
         </button>
         <button (click)="selectTab('Color')" [class.active]="selectedToolType === 'Color'">
             Colores
         </button>
         <button (click)="selectTab('Origen')" [class.active]="selectedToolType === 'Origen'">
             Orígenes
+        </button>
+        <button (click)="selectTab('TypeScrapp')" [class.active]="selectedToolType === 'TypeScrapp'">
+            Tipo de Scrapp
         </button>
     </nav>
 

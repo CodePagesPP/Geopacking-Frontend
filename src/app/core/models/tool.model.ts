@@ -1,4 +1,4 @@
-export type Tools = 'Material'| 'Color' | 'Origen'
+export type Tools = 'Material'| 'Color' | 'Origen' | 'TypeScrapp'
 
 export interface Tool {
     id: number,
@@ -18,6 +18,9 @@ export interface Origen extends Tool {
     tipo: 'Origen'
 }
 
+export interface TypeScrapp extends Tool {
+    tipo: 'TypeScrapp'
+}
 export interface ToolCreateDTO {
     code: string,
     name: string,
@@ -26,5 +29,6 @@ export interface ToolCreateDTO {
 export type ToolTypeMap = {
     'Material': Material,
     'Color': Color,
-    'Origen': Origen
+    'Origen': Origen,
+    'TypeScrapp': TypeScrapp
 }

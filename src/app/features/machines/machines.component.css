@@ -395,3 +395,23 @@ input[type="checkbox"] {
   color: #ef4444;
   font-size: 0.75rem;
 }
+
+.checkbox-group {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.checkbox-label {
+  display: block; /* Un checkbox por línea */
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-label input {
+  margin-right: 10px;
+}
