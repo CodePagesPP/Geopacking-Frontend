@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { InventarioMovimiento, InventarioStockDTO, TipoMovimiento } from '../../core/models/inventario.model';
+import { InventarioMovimiento, InventarioStockDTO, Operacion } from '../../core/models/inventario.model';
 import { InventoryService } from '../../core/services/inventory.service';
 import { Page } from '../../core/models/page.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { TypeScrapp } from '../../core/models/tool.model';
+import { catchError, Observable, of } from 'rxjs';
+import { ToolService } from '../../core/services/tool.service';
 
 @Component({
   selector: 'app-inventory',
@@ -26,23 +29,29 @@ export class InventoryComponent implements OnInit {
   // Filtros
   fechaInicio: string = '';
   fechaFin: string = '';
+  typeScrappFiltroId: string = '';
+
+  public typeScrapps$: Observable<TypeScrapp[]>; 
 
   // Para el modal de registro manual
   mostrarModal: boolean = false;
-  tipoMovimientoModal: TipoMovimiento = TipoMovimiento.INGRESO;
+  OperacionModal: Operacion = Operacion.INGRESO;
   cantidadModal: number = 0;
+  typeScrappModalId: number | null = null;
 
-  public TipoMovimiento = TipoMovimiento;
+  public Operacion = Operacion;
 
-  constructor(private inventarioService: InventoryService) { }
+  constructor(private inventarioService: InventoryService, private toolService: ToolService) {this.typeScrapps$ = of([]); }
 
   ngOnInit(): void {
     this.cargarDatos();
+    this.loadTypeScrapps();
   }
 
   cargarDatos(): void {
     this.obtenerStock();
     this.listarMovimientos();
+    
   }
 
   obtenerStock(): void {
@@ -54,11 +63,24 @@ export class InventoryComponent implements OnInit {
     });
   }
 
+  loadTypeScrapps(): void {
+    this.typeScrapps$ = this.toolService.getAll('TypeScrapp').pipe(
+      catchError(err => {
+        console.error('Error al cargar tipos de scrapp', err);
+        Swal.fire('Error', 'No se pudieron cargar los tipos de scrapp', 'error');
+        return of([]);
+      })
+    );
+  }
+
   listarMovimientos(): void {
-    this.inventarioService.obtenerHistorial(this.currentPage, this.pageSize, this.fechaInicio || undefined, this.fechaFin || undefined)
+
+    const typeId = this.typeScrappFiltroId ? Number(this.typeScrappFiltroId) : undefined;
+    this.inventarioService.obtenerHistorial(this.currentPage, this.pageSize, this.fechaInicio || undefined, this.fechaFin || undefined, typeId)
       .subscribe({
         next: (page: Page<InventarioMovimiento>) => {
           this.movimientos = page.content;
+          console.log(this.movimientos)
           this.totalPages = page.totalPages;
           this.totalElements = page.totalElements;
         },
@@ -66,9 +88,10 @@ export class InventoryComponent implements OnInit {
       });
   }
 
-  abrirModal(tipo: TipoMovimiento): void {
-    this.tipoMovimientoModal = tipo;
+  abrirModal(tipo: Operacion): void {
+    this.OperacionModal = tipo;
     this.cantidadModal = 0;
+    this.typeScrappModalId = null;
     this.mostrarModal = true;
   }
 
@@ -88,6 +111,16 @@ export class InventoryComponent implements OnInit {
       return;
     }
 
+    if (!this.typeScrappModalId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Dato Faltante',
+        text: 'Debe seleccionar un tipo de scrapp.',
+        confirmButtonColor: '#3b82f6'
+      });
+      return;
+    }
+
     // Mostrar loading mientras se procesa (Opcional pero recomendado)
     Swal.fire({
       title: 'Registrando...',
@@ -99,8 +132,9 @@ export class InventoryComponent implements OnInit {
     });
 
     this.inventarioService.registrarMovimientoManual({
-      tipo: this.tipoMovimientoModal,
-      cantidad: this.cantidadModal
+      operacion: this.OperacionModal,
+      cantidad: this.cantidadModal,
+      typeScrappId: this.typeScrappModalId
     }).subscribe({
       next: () => {
         this.cerrarModal();
@@ -110,7 +144,7 @@ export class InventoryComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: '¡Registrado!',
-          text: `El movimiento de ${this.tipoMovimientoModal.toLowerCase()} se registró correctamente.`,
+          text: `El movimiento de ${this.OperacionModal.toLowerCase()} se registró correctamente.`,
           confirmButtonColor: '#10b981', // Verde éxito
           timer: 2500, // Se cierra sola después de 2.5s
           timerProgressBar: true
@@ -143,6 +177,7 @@ export class InventoryComponent implements OnInit {
   limpiarFiltros(): void {
       this.fechaInicio = '';
       this.fechaFin = '';
+      this.typeScrappFiltroId = '';
       this.filtrar();
   }
 }

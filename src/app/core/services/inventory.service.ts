@@ -20,7 +20,7 @@ export class InventoryService {
     });
   }
 
-  obtenerHistorial(page: number = 0, size: number = 10, fechaInicio?: string, fechaFin?: string): Observable<Page<InventarioMovimiento>> {
+  obtenerHistorial(page: number = 0, size: number = 10, fechaInicio?: string, fechaFin?: string, typeScrappId?: number): Observable<Page<InventarioMovimiento>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -30,6 +30,10 @@ export class InventoryService {
     }
     if (fechaFin) {
       params = params.set('fechaFin', fechaFin);
+    }
+
+    if (typeScrappId) {
+      params = params.set('typeScrappId', typeScrappId.toString());
     }
 
     return this.http.get<Page<InventarioMovimiento>>(`${this.apiUrl}/historial`, {headers: this.authService.getAuthHeaders(), params });
