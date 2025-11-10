@@ -1,0 +1,435 @@
+/* --- ESTILOS REUTILIZADOS (Copiar de products.component.css) --- */
+/* Contenedor Principal */
+.clientes-container {
+    padding: 20px 30px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: #374151;
+}
+
+/* Encabezado */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Botón Crear */
+.manual-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-action {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-ingreso {
+    background-color: #10b981;
+}
+
+.btn-ingreso:hover {
+    background-color: #059669;
+}
+
+/* --- NUEVO: Estilos Barra de Filtro --- */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.filter-input-group {
+    position: relative;
+    flex-grow: 1;
+    /* Ocupa el espacio disponible */
+    max-width: 400px;
+    /* Ancho máximo */
+}
+
+.filter-input-group .form-control {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    /* Espacio para el icono */
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.filter-input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+/* Tabla */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #f9fafb;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 15px 25px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.custom-table td {
+    padding: 15px 25px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+    font-size: 14px;
+    white-space: nowrap;
+    /* Evita que el texto se rompa */
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tr:hover {
+    background-color: #f9fafb;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.no-data {
+    color: #9ca3af;
+    padding: 30px;
+    font-style: italic;
+    white-space: normal;
+}
+
+/* Botones de Acción en Tabla */
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.btn-table {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.btn-edit {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.btn-edit:hover {
+    background-color: #bfdbfe;
+}
+
+.btn-delete {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-delete:hover {
+    background-color: #fecaca;
+}
+
+/* Botón Inhabilitar (opcional, como en la foto) */
+.btn-disable {
+    background-color: #fef3c7;
+    /* Amarillo */
+    color: #a16207;
+}
+
+.btn-disable:hover {
+    background-color: #fde68a;
+}
+
+
+/* --- ESTILOS DEL MODAL (Actualizados para Clientes) --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+    /* Para permitir scroll si el modal es muy alto */
+    padding: 40px 0;
+}
+
+.modal-content.large {
+    max-width: 900px;
+    width: 90%;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn-cancel,
+.btn-confirm {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-cancel {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.btn-confirm {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 15px;
+    /* Espacio para el scrollbar */
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.span-2 {
+    grid-column: span 2;
+}
+
+.form-group.span-3 {
+    grid-column: span 3;
+}
+
+.form-group.span-4 {
+    grid-column: span 4;
+}
+
+.form-group.span-6 {
+    grid-column: span 6;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.form-group label .text-danger {
+    color: #ef4444;
+}
+
+.form-group .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.form-group .form-control:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.form-group select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20128c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.8%205.4-12.8%200-5-1.8-9.2-5.4-12.8z%22%2F%3E%3C%2Fsport%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+.form-group.with-button {
+    position: relative;
+}
+
+.form-group.with-button input {
+    padding-right: 85px;
+}
+
+.btn-sunat {
+    position: absolute;
+    right: 5px;
+    top: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border: none;
+    background-color: #e5e7eb;
+    color: #4b5563;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-sunat:hover {
+    background-color: #d1d5db;
+}
+
+.input-with-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+}
+
+.input-with-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.input-with-checkbox label {
+    margin: 0;
+    font-weight: normal;
+}
+
+.input-with-checkbox input[type="number"] {
+    flex: 1;
+}
+
+/* Controles de Paginación */
+.pagination-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-page {
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #374151;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-page:hover:not(:disabled) {
+    background-color: #f9fafb;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

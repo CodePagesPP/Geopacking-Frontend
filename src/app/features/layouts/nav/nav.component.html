@@ -62,6 +62,24 @@
             </span>
             <h3>Inventario</h3>
         </a>
+        <a 
+            routerLink="/products" 
+            (click)="setActive('products')" 
+            [class.active]="activeOption === 'products'">
+            <span class="material-icons-sharp">
+            token
+            </span>
+            <h3>Productos</h3>
+        </a>
+        <a 
+            routerLink="/clients" 
+            (click)="setActive('clients')" 
+            [class.active]="activeOption === 'clients'">
+            <span class="material-icons-sharp">
+            people_outline
+            </span>
+            <h3>Clientes</h3>
+        </a>
 
         <a 
             class="menu-item" 

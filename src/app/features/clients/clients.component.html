@@ -1,0 +1,203 @@
+<div class="clientes-container">
+
+    <!-- Encabezado y Botón Crear -->
+    <div class="header-section">
+        <h2 class="page-title">Listado de Clientes</h2>
+        <div class="manual-actions">
+            <button class="btn-action btn-ingreso" (click)="openModal()">
+                <i class="fas fa-plus-circle"></i> Nuevo Cliente
+            </button>
+        </div>
+    </div>
+
+    <!-- Barra de Filtros (ACTUALIZADO) -->
+    <div class="filter-bar">
+        <span class="filter-label">Filtrar por:</span>
+        <div class="filter-input-group">
+            <input type="text" class="form-control" placeholder="Buscar por Nombre o N° Documento..."
+                [(ngModel)]="filtroNombre" (keyup)="onFilterChange()"> <!-- CAMBIO: de (keyup.enter) a (keyup) -->
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+
+    <!-- Tabla de Clientes (Sin cambios) -->
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>NOMBRE / RAZÓN SOCIAL</th>
+                    <th>TIPO DOC.</th>
+                    <th>NÚMERO</th>
+                    <th>TIPO CLIENTE</th>
+                    <th>TELÉFONO</th>
+                    <th>DEPARTAMENTO</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cliente of clientesList">
+                    <td class="font-medium">{{ cliente.nombre }}</td>
+                    <td>{{ cliente.tipoDocumento }}</td>
+                    <td>{{ cliente.numeroDocumento }}</td>
+                    <td>{{ cliente.tipoCliente }}</td>
+                    <td>{{ cliente.telefono || '-' }}</td>
+                    <td>{{ cliente.departamento || '-' }}</td>
+                    <td class="actions-cell">
+                        <button class="btn-table btn-edit" (click)="openModal(cliente)">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </button>
+                        <button class="btn-table btn-delete" (click)="confirmDelete(cliente.id)">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="clientesList.length === 0">
+                    <td colspan="7" class="text-center no-data">
+                        {{ filtroNombre ? 'No se encontraron coincidencias.' : 'No hay clientes registrados.' }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Controles de Paginación (Sin cambios) -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+        <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">
+            &laquo; Anterior
+        </button>
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button class="btn-page" [disabled]="currentPage + 1 === totalPages" (click)="cambiarPagina(currentPage + 1)">
+            Siguiente &raquo;
+        </button>
+    </div>
+</div>
+
+
+<!-- 
+  MODAL PARA CREAR/EDITAR CLIENTE 
+  (Sin cambios)
+-->
+<div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h3>{{ isEditMode ? 'Editar' : 'Nuevo' }} Cliente</h3>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-grid">
+
+                <!-- Fila 1 -->
+                <div class="form-group span-2">
+                    <label>Tipo de cliente</label>
+                    <select class="form-control" [(ngModel)]="currentCliente.tipoCliente">
+                        <option value="" disabled>Seleccionar</option>
+                        <option *ngFor="let tipo of tiposCliente" [value]="tipo">{{ tipo }}</option>
+                    </select>
+                </div>
+                <div class="form-group span-2">
+                    <label>Tipo Doc. Identidad <span class="text-danger">*</span></label>
+                    <select class="form-control" [(ngModel)]="currentCliente.tipoDocumento">
+                        <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
+                    </select>
+                </div>
+                <div class="form-group span-2 with-button">
+                    <label>Número <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.numeroDocumento"
+                        placeholder="00000000" [disabled]="isEditMode"> <!-- Deshabilitado en modo edición -->
+                    <button class="btn-sunat" title="Verificar si el documento ya existe" (click)="verificarDocumento()"
+                        [disabled]="!currentCliente.numeroDocumento || isEditMode">
+                        Verificar
+                    </button>
+                </div>
+
+                <!-- Fila 2 -->
+                <div class="form-group span-3">
+                    <label>Nombre / Razón Social <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.nombre">
+                </div>
+                <div class="form-group span-3">
+                    <label>Nombre comercial</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.nombreComercial">
+                </div>
+
+                <!-- Fila 3: UBIGEO -->
+                <div class="form-group span-2">
+                    <label>País</label>
+                    <select class="form-control" [(ngModel)]="currentCliente.pais" (change)="onPaisChange()">
+                        <option *ngFor="let p of paises" [value]="p">{{ p }}</option>
+                    </select>
+                </div>
+                <div class="form-group span-2">
+                    <label>Departamento</label>
+                    <select class="form-control" [(ngModel)]="currentCliente.departamento"
+                        [disabled]="disableDepartamentos">
+                        <option value="">Seleccionar</option>
+                        <option *ngFor="let d of departamentos" [value]="d">{{ d }}</option>
+                    </select>
+                </div>
+                <div class="form-group span-2">
+                    <label>Provincia</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.provincia"
+                        [disabled]="disableDepartamentos">
+                </div>
+
+                <!-- Fila 4 -->
+                <div class="form-group span-2">
+                    <label>Distrito</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.distrito"
+                        [disabled]="disableDepartamentos">
+                </div>
+                <div class="form-group span-4">
+                    <label>Dirección</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.direccion">
+                </div>
+
+                <!-- Fila 5 -->
+                <div class="form-group span-3">
+                    <label>Teléfono</label>
+                    <input type="tel" class="form-control" [(ngModel)]="currentCliente.telefono">
+                </div>
+                <div class="form-group span-3">
+                    <label>Correo electrónico</label>
+                    <input type="email" class="form-control" [(ngModel)]="currentCliente.email">
+                </div>
+
+                <!-- Fila 6 -->
+                <div class="form-group span-2">
+                    <label>Fec. Nacimiento</label>
+                    <input type="date" class="form-control" [(ngModel)]="currentCliente.fechaNacimiento">
+                </div>
+                <div class="form-group span-2 with-checkbox">
+                    <label>Monto de Crédito</label>
+                    <div class="input-with-checkbox">
+                        <input type="checkbox" id="chkCredito" [(ngModel)]="currentCliente.creditoHabilitado">
+                        <label for="chkCredito">Habilitar</label>
+                        <input type="number" class="form-control" [(ngModel)]="currentCliente.montoCredito"
+                            [disabled]="!currentCliente.creditoHabilitado">
+                    </div>
+                </div>
+                <div class="form-group span-2">
+                    <label>Observacion</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.observacion">
+                </div>
+
+                <!-- Fila 7: Contacto -->
+                <div class="form-group span-3">
+                    <label>Contacto (Nombre y Apellido)</label>
+                    <input type="text" class="form-control" [(ngModel)]="currentCliente.contactoNombre">
+                </div>
+                <div class="form-group span-3">
+                    <label>Contacto (Teléfono)</label>
+                    <input type="tel" class="form-control" [(ngModel)]="currentCliente.contactoTelefono">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+            <button class="btn-confirm" (click)="saveCliente()">Guardar</button>
+        </div>
+    </div>
+</div>
