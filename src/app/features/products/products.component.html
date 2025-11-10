@@ -1,0 +1,95 @@
+<div class="products-container">
+
+    <!-- Encabezado -->
+    <div class="header-section">
+        <h2 class="page-title">Gestión de Productos</h2>
+        <!-- Puedes poner una tarjeta de "Total Productos" aquí si quieres, similar a la de stock -->
+    </div>
+
+    <!-- Pestañas para cambiar tipo de producto -->
+    <div class="tab-container">
+        <button class="tab-btn" [class.active]="currentProductType === 'EX'" (click)="switchType('EX')">
+            Productos EX
+        </button>
+        <button class="tab-btn" [class.active]="currentProductType === 'TF'" (click)="switchType('TF')">
+            Productos TF
+        </button>
+    </div>
+
+    <!-- Sección de Acciones y Filtros -->
+    <div class="actions-section">
+        <!-- Botón de Crear -->
+        <div class="manual-actions">
+            <button class="btn-action btn-ingreso" (click)="openModal()">
+                <i class="fas fa-plus-circle"></i> Crear Producto
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CÓDIGO</th>
+                    <th>NOMBRE</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of productsList">
+                    <td class="font-medium">{{ product.id }}</td>
+                    <td>{{ product.code }}</td>
+                    <td>{{ product.name }}</td>
+                    <td class="actions-cell">
+                        <button class="btn-table btn-edit" (click)="openModal(product)">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </button>
+                        <button class="btn-table btn-delete" (click)="confirmDelete(product.code)">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="productsList.length === 0">
+                    <td colspan="4" class="text-center no-data">No se encontraron productos.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Modal para Crear/Editar Producto -->
+<div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>{{ isEditMode ? 'Editar' : 'Crear' }} Producto ({{ currentProductType }})</h3>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <!-- Campo Código -->
+            <div class="form-group">
+                <label>Código <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [(ngModel)]="modalProduct.code" [readonly]="isEditMode"
+                    placeholder="Ej: TF-001">
+                <small *ngIf="isEditMode" class="text-muted">El código no se puede modificar.</small>
+            </div>
+
+            <!-- Campo Nombre -->
+            <div class="form-group">
+                <label>Nombre <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [(ngModel)]="modalProduct.name"
+                    placeholder="Ej: Producto Termofusionado A">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+            <button class="btn-confirm" (click)="saveProduct()">
+                {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+            </button>
+        </div>
+    </div>
+</div>
