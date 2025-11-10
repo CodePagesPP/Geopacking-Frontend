@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { InventarioManualDTO, InventarioMovimiento, InventarioStockDTO } from '../models/inventario.model';
+import { InventarioManualDTO, InventarioMovimiento, InventarioStockDTO, Motivo } from '../models/inventario.model';
 import { Observable } from 'rxjs';
 import { Page } from '../models/page.model';
 import { AuthService } from './auth.service';
@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 })
 export class InventoryService {
   private apiUrl = `${environment.apiUrl}/inventario`;
+  private motivosUrl = `${this.apiUrl}/motivos`;
 
   constructor(private authService: AuthService, private http: HttpClient) { }
 
@@ -41,6 +42,12 @@ export class InventoryService {
 
   obtenerStockActual(): Observable<InventarioStockDTO> {
     return this.http.get<InventarioStockDTO>(`${this.apiUrl}/stock`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  obtenerMotivos(): Observable<Motivo[]> {
+    return this.http.get<Motivo[]>((this.motivosUrl), {
       headers: this.authService.getAuthHeaders()
     });
   }

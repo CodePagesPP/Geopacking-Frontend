@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InventarioMovimiento, InventarioStockDTO, Operacion } from '../../core/models/inventario.model';
+import { InventarioManualDTO, InventarioMovimiento, InventarioStockDTO, Motivo, Operacion } from '../../core/models/inventario.model';
 import { InventoryService } from '../../core/services/inventory.service';
 import { Page } from '../../core/models/page.model';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +19,7 @@ import { ToolService } from '../../core/services/tool.service';
 export class InventoryComponent implements OnInit {
   stockActual: number = 0;
   movimientos: InventarioMovimiento[] = [];
+  listaMotivos: Motivo[] = [];
 
   //Paginacion
   currentPage: number = 0;
@@ -38,6 +39,9 @@ export class InventoryComponent implements OnInit {
   OperacionModal: Operacion = Operacion.INGRESO;
   cantidadModal: number = 0;
   typeScrappModalId: number | null = null;
+  motivoSeleccionadoId: number | null = null;
+  nuevoMotivoNombre: string = '';
+  notaMovimiento: string = '';
 
   public Operacion = Operacion;
 
@@ -45,13 +49,26 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarDatos();
-    this.loadTypeScrapps();
+    this.cargarCatalogos();
   }
 
   cargarDatos(): void {
     this.obtenerStock();
     this.listarMovimientos();
-    
+  }
+
+  cargarCatalogos(): void {
+    this.typeScrapps$ = this.toolService.getAll('TypeScrapp').pipe(
+      catchError(err => {
+        console.error('Error al cargar tipos de scrapp', err);
+        return of([]);
+      })
+    );
+
+    this.inventarioService.obtenerMotivos().subscribe({
+      next: (data) => this.listaMotivos = data,
+      error: (err) => console.error('Error al cargar motivos', err)
+    });
   }
 
   obtenerStock(): void {
@@ -63,18 +80,7 @@ export class InventoryComponent implements OnInit {
     });
   }
 
-  loadTypeScrapps(): void {
-    this.typeScrapps$ = this.toolService.getAll('TypeScrapp').pipe(
-      catchError(err => {
-        console.error('Error al cargar tipos de scrapp', err);
-        Swal.fire('Error', 'No se pudieron cargar los tipos de scrapp', 'error');
-        return of([]);
-      })
-    );
-  }
-
   listarMovimientos(): void {
-
     const typeId = this.typeScrappFiltroId ? Number(this.typeScrappFiltroId) : undefined;
     this.inventarioService.obtenerHistorial(this.currentPage, this.pageSize, this.fechaInicio || undefined, this.fechaFin || undefined, typeId)
       .subscribe({
@@ -92,6 +98,9 @@ export class InventoryComponent implements OnInit {
     this.OperacionModal = tipo;
     this.cantidadModal = 0;
     this.typeScrappModalId = null;
+    this.motivoSeleccionadoId = null;
+    this.nuevoMotivoNombre = '';
+    this.notaMovimiento = '';
     this.mostrarModal = true;
   }
 
@@ -99,67 +108,73 @@ export class InventoryComponent implements OnInit {
     this.mostrarModal = false;
   }
 
+    verificarNuevoMotivo(): void {
+    if (this.motivoSeleccionadoId !== -1) {
+      this.nuevoMotivoNombre = '';
+    }
+  }
+
   guardarMovimientoManual(): void {
+    // Validaciones
     if (this.cantidadModal <= 0) {
-      // Alerta de Error (Validación)
-      Swal.fire({
-        icon: 'error',
-        title: 'Cantidad inválida',
-        text: 'La cantidad debe ser mayor a 0.',
-        confirmButtonColor: '#3b82f6' // Azul para mantener tu paleta
-      });
+      Swal.fire('Cantidad inválida', 'La cantidad debe ser mayor a 0.', 'warning');
       return;
     }
-
     if (!this.typeScrappModalId) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Dato Faltante',
-        text: 'Debe seleccionar un tipo de scrapp.',
-        confirmButtonColor: '#3b82f6'
-      });
+      Swal.fire('Dato Faltante', 'Debe seleccionar un tipo de scrapp.', 'warning');
+      return;
+    }
+    if (this.motivoSeleccionadoId === -1 && !this.nuevoMotivoNombre.trim()) {
+      Swal.fire('Dato Faltante', 'Debe escribir el nombre del nuevo motivo.', 'warning');
       return;
     }
 
-    // Mostrar loading mientras se procesa (Opcional pero recomendado)
     Swal.fire({
       title: 'Registrando...',
       text: 'Por favor espera',
       allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
+      didOpen: () => Swal.showLoading()
     });
 
-    this.inventarioService.registrarMovimientoManual({
+    // Construir el DTO completo
+    const dto: InventarioManualDTO = {
       operacion: this.OperacionModal,
       cantidad: this.cantidadModal,
-      typeScrappId: this.typeScrappModalId
-    }).subscribe({
+      typeScrappId: this.typeScrappModalId,
+      motivoId: (this.motivoSeleccionadoId === -1) ? null : this.motivoSeleccionadoId,
+      nuevoMotivo: (this.motivoSeleccionadoId === -1) ? this.nuevoMotivoNombre : null,
+      nota: this.notaMovimiento
+    };
+
+    this.inventarioService.registrarMovimientoManual(dto).subscribe({
       next: () => {
         this.cerrarModal();
         this.cargarDatos(); // Recarga la tabla y el stock
+        this.cargarCatalogos(); // Recarga motivos por si se creó uno nuevo
 
-        // Alerta de Éxito
         Swal.fire({
           icon: 'success',
           title: '¡Registrado!',
-          text: `El movimiento de ${this.OperacionModal.toLowerCase()} se registró correctamente.`,
-          confirmButtonColor: '#10b981', // Verde éxito
-          timer: 2500, // Se cierra sola después de 2.5s
+          text: `El movimiento se registró correctamente.`,
+          timer: 2500,
           timerProgressBar: true
         });
       },
       error: (err) => {
         console.error('Error al registrar movimiento', err);
-        // Alerta de Error (Backend)
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudo registrar el movimiento. Inténtalo de nuevo.',
-          confirmButtonColor: '#ef4444' // Rojo error
-        });
+        Swal.fire('Error', 'No se pudo registrar el movimiento.', 'error');
       }
+    });
+  }
+
+  verNota(nota: string | undefined, motivo: string | undefined): void {
+    if (!nota) return;
+    Swal.fire({
+        title: motivo || 'Nota del Movimiento',
+        text: nota,
+        icon: 'info',
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#3b82f6'
     });
   }
 

@@ -1,8 +1,8 @@
 <div class="inventario-container">
 
+  <!-- Encabezado y Stock (Sin cambios) -->
   <div class="header-section">
     <h2 class="page-title">Gestión de Inventario</h2>
-
     <div class="stock-card">
       <span class="stock-label">Stock Actual en Almacén</span>
       <div class="stock-value-container">
@@ -12,6 +12,7 @@
     </div>
   </div>
 
+  <!-- Acciones y Filtros (Sin cambios) -->
   <div class="actions-section">
     <div class="manual-actions">
       <button class="btn-action btn-ingreso" (click)="abrirModal(Operacion.INGRESO)">
@@ -21,8 +22,8 @@
         <i class="fas fa-minus-circle"></i> Generar Salida
       </button>
     </div>
-
     <div class="filters-container">
+      <!-- ... tus filtros ... -->
       <div class="filter-group">
         <label>Desde:</label>
         <div class="input-with-icon">
@@ -55,12 +56,14 @@
     </div>
   </div>
 
+  <!-- --- TABLA ACTUALIZADA --- -->
   <div class="table-container">
     <table class="custom-table">
       <thead>
         <tr>
           <th>CÓDIGO</th>
           <th>OPERACIÓN</th>
+          <th>MOTIVO</th> <!-- NUEVA COLUMNA -->
           <th>TIPO DE REGISTRO</th>
           <th>TIPO DE SCRAPP</th>
           <th class="text-right">CANTIDAD (KG)</th>
@@ -76,6 +79,16 @@
               {{ mov.operacion }}
             </span>
           </td>
+          <!-- NUEVA CELDA (Motivo y Nota) -->
+          <td>
+            <div class="motivo-cell">
+              <span>{{ mov.motivoNombre || '-' }}</span>
+              <i *ngIf="mov.nota" 
+                class="fas fa-sticky-note note-icon" 
+                (click)="verNota(mov.nota, mov.motivoNombre)"
+                title="Ver nota: {{mov.nota}}"></i>
+            </div>
+          </td>
           <td>{{ mov.tipoRegistro }}</td>
           <td>{{ mov.typeScrappNombre }}</td>
           <td class="text-right font-bold">{{ mov.cantidad | number:'1.2-2' }}</td>
@@ -83,12 +96,13 @@
           <td>{{ mov.registradoPorNombre }}</td>
         </tr>
         <tr *ngIf="movimientos.length === 0">
-          <td colspan="6" class="text-center no-data">No se encontraron movimientos en este rango.</td>
+          <td colspan="8" class="text-center no-data">No se encontraron movimientos en este rango.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <!-- Paginación (Sin cambios) -->
   <div class="pagination-container" *ngIf="totalPages > 1">
     <button [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">Anterior</button>
     <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
@@ -97,27 +111,57 @@
 
 </div>
 
+<!-- --- MODAL ACTUALIZADO --- -->
 <div class="modal-overlay" *ngIf="mostrarModal">
   <div class="modal-content">
     <div class="modal-header">
       <h3>Registrar {{ OperacionModal | titlecase }} Manual</h3>
       <button class="close-btn" (click)="cerrarModal()">&times;</button>
     </div>
+
+    <!-- NUEVO CUERPO DEL MODAL -->
     <div class="modal-body">
+
+      <!-- 1. Tipo de Scrapp -->
       <div class="form-group">
-        <label>Cantidad (Kg):</label>
-        <input type="number" [(ngModel)]="cantidadModal" placeholder="0.00" min="0">
+        <label>Tipo de Scrapp <span class="text-danger">*</span></label>
+        <select class="form-control" [(ngModel)]="typeScrappModalId">
+          <option [value]="null" disabled>-- Seleccione un tipo --</option>
+          <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
+            {{ type.name }}
+          </option>
+        </select>
       </div>
+
+      <!-- 2. Cantidad -->
+      <div class="form-group">
+        <label>Cantidad (Kg) <span class="text-danger">*</span></label>
+        <input type="number" class="form-control" [(ngModel)]="cantidadModal" placeholder="0.00" min="0.01" step="0.01">
+      </div>
+
+      <!-- 3. Motivo -->
+      <div class="form-group">
+        <label>Motivo</label>
+        <select class="form-control" [(ngModel)]="motivoSeleccionadoId" (change)="verificarNuevoMotivo()">
+          <option [ngValue]="null">-- Sin motivo --</option>
+          <option *ngFor="let m of listaMotivos" [value]="m.id">{{ m.nombre }}</option>
+          <option [ngValue]="-1" class="new-motivo-option">+ Agregar nuevo motivo...</option>
+        </select>
+      </div>
+      
+      <!-- 4. Input Nuevo Motivo (Condicional) -->
+      <div class="form-group" *ngIf="motivoSeleccionadoId === -1">
+        <input type="text" class="form-control new-motivo-input" [(ngModel)]="nuevoMotivoNombre" placeholder="Nombre del nuevo motivo">
+      </div>
+
+      <!-- 5. Nota -->
+      <div class="form-group">
+        <label>Nota / Observación</label>
+        <textarea class="form-control" [(ngModel)]="notaMovimiento" rows="3" placeholder="Detalles adicionales opcionales..."></textarea>
+      </div>
+
     </div>
-    <div class="form-group">
-    <label>Tipo de Scrapp:</label>
-    <select [(ngModel)]="typeScrappModalId">
-      <option [value]="null" disabled>-- Seleccione un tipo --</option>
-      <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
-        {{ type.name }}
-      </option>
-    </select>
-  </div>
+    
     <div class="modal-footer">
       <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
       <button class="btn-confirm" (click)="guardarMovimientoManual()">Guardar</button>
