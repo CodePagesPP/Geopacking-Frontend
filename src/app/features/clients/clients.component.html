@@ -105,10 +105,7 @@
                     <label>Número <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" [(ngModel)]="currentCliente.numeroDocumento"
                         placeholder="00000000" [disabled]="isEditMode"> <!-- Deshabilitado en modo edición -->
-                    <button class="btn-sunat" title="Verificar si el documento ya existe" (click)="verificarDocumento()"
-                        [disabled]="!currentCliente.numeroDocumento || isEditMode">
-                        Verificar
-                    </button>
+                                    
                 </div>
 
                 <!-- Fila 2 -->

@@ -33,7 +33,7 @@ export class ClientesComponent implements OnInit {
   // ... (el resto de tus variables: currentCliente, tiposCliente, etc. no cambian) ...
   currentCliente: ClienteDTO = this.createEmptyDto();
   editClienteId: number | null = null; 
-  tiposCliente = ['Interno', 'Distribuidor', 'Mayorista', 'Minorista', 'Final'];
+  tiposCliente = ['Interno', 'Distribuidor', 'Mayorista', 'Minorista'];
   tiposDocumento = ['RUC', 'DNI', 'CE', 'Pasaporte', 'Doc.trib.no.dom.sin.ruc'];
   paises = ['PERU', 'BOLIVIA', 'CHILE', 'ECUADOR', 'COLOMBIA', 'OTRO'];
   departamentos: string[] = [];
