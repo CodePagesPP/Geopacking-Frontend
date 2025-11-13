@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
@@ -30,6 +30,20 @@ export class ClienteService {
     return this.http.get<Page<Cliente>>(this.apiUrl, {
       headers: this.authService.getAuthHeaders(),
       params: params,
+    });
+  }
+
+  exportClientes(filtro?: string): Observable<HttpResponse<Blob>> {
+    let params = new HttpParams();
+    if (filtro) {
+      params = params.set('filtro', filtro);
+    }
+
+    return this.http.get(`${this.apiUrl}/export/excel`, {
+      headers: this.authService.getAuthHeaders(), 
+      params: params,
+      observe: 'response',     
+      responseType: 'blob'     
     });
   }
 

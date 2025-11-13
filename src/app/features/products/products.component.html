@@ -1,95 +1,173 @@
 <div class="products-container">
 
-    <!-- Encabezado -->
-    <div class="header-section">
-        <h2 class="page-title">Gestión de Productos</h2>
-        <!-- Puedes poner una tarjeta de "Total Productos" aquí si quieres, similar a la de stock -->
-    </div>
 
-    <!-- Pestañas para cambiar tipo de producto -->
-    <div class="tab-container">
-        <button class="tab-btn" [class.active]="currentProductType === 'EX'" (click)="switchType('EX')">
-            Productos EX
-        </button>
-        <button class="tab-btn" [class.active]="currentProductType === 'TF'" (click)="switchType('TF')">
-            Productos TF
-        </button>
-    </div>
+  <div class="header-section">
+    <h2 class="page-title">Inventario de Productos</h2>
+  </div>
 
-    <!-- Sección de Acciones y Filtros -->
-    <div class="actions-section">
-        <!-- Botón de Crear -->
-        <div class="manual-actions">
-            <button class="btn-action btn-ingreso" (click)="openModal()">
-                <i class="fas fa-plus-circle"></i> Crear Producto
+
+  <div class="tab-container">
+    <button class="tab-btn" [class.active]="currentProductType === 'EX'" (click)="switchType('EX')">
+      Productos EX
+    </button>
+    <button class="tab-btn" [class.active]="currentProductType === 'TF'" (click)="switchType('TF')">
+      Productos TF
+    </button>
+  </div>
+
+  <div class="actions-section">
+    <div class="manual-actions">
+      <button class="btn-action btn-ingreso" (click)="openModal()">
+        <i class="fas fa-plus-circle"></i> Crear Producto
+      </button>
+    </div>
+  </div>
+
+
+  <div class="table-container">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>CÓDIGO</th>
+          <th>NOMBRE</th>
+          <th>MARCA</th>
+          <th>CATEGORÍA</th>
+          <th>MATERIAL</th>
+          <th>COLOR</th>
+          <th>ESTADO</th>
+          <th class="text-center">ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of productsList">
+          <td class="font-medium">{{ product.code }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.marca || '-' }}</td>
+          <td>{{ product.categoria || '-' }}</td>
+          <td>{{ product.material?.name || '-' }}</td>
+          <td>{{ product.color?.name || '-' }}</td>
+          <td>
+            <span class="status-badge" [class.status-active]="product.activo">
+              {{ product.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <button class="btn-table btn-edit" (click)="openModal(product)">
+              <i class="fas fa-pencil-alt"></i> Editar
             </button>
-        </div>
-    </div>
-
-    <!-- Tabla de Productos -->
-    <div class="table-container">
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>CÓDIGO</th>
-                    <th>NOMBRE</th>
-                    <th class="text-center">ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let product of productsList">
-                    <td class="font-medium">{{ product.id }}</td>
-                    <td>{{ product.code }}</td>
-                    <td>{{ product.name }}</td>
-                    <td class="actions-cell">
-                        <button class="btn-table btn-edit" (click)="openModal(product)">
-                            <i class="fas fa-pencil-alt"></i> Editar
-                        </button>
-                        <button class="btn-table btn-delete" (click)="confirmDelete(product.code)">
-                            <i class="fas fa-trash-alt"></i> Eliminar
-                        </button>
-                    </td>
-                </tr>
-                <tr *ngIf="productsList.length === 0">
-                    <td colspan="4" class="text-center no-data">No se encontraron productos.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
+            <button class="btn-table btn-delete" (click)="confirmDelete(product.code)">
+              <i class="fas fa-trash-alt"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="productsList.length === 0">
+          <td colspan="8" class="text-center no-data">No se encontraron productos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<!-- Modal para Crear/Editar Producto -->
+
 <div class="modal-overlay" *ngIf="mostrarModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>{{ isEditMode ? 'Editar' : 'Crear' }} Producto ({{ currentProductType }})</h3>
-            <button class="close-btn" (click)="closeModal()">&times;</button>
-        </div>
-        <div class="modal-body">
 
-            <!-- Campo Código -->
-            <div class="form-group">
-                <label>Código <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" [(ngModel)]="modalProduct.code" [readonly]="isEditMode"
-                    placeholder="Ej: TF-001">
-                <small *ngIf="isEditMode" class="text-muted">El código no se puede modificar.</small>
-            </div>
-
-            <!-- Campo Nombre -->
-            <div class="form-group">
-                <label>Nombre <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" [(ngModel)]="modalProduct.name"
-                    placeholder="Ej: Producto Termofusionado A">
-            </div>
-
-        </div>
-        <div class="modal-footer">
-            <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
-            <button class="btn-confirm" (click)="saveProduct()">
-                {{ isEditMode ? 'Actualizar' : 'Guardar' }}
-            </button>
-        </div>
+  <div class="modal-content large">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Editar' : 'Crear' }} Producto ({{ currentProductType }})</h3>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
     </div>
+
+   
+    <form #productForm="ngForm">
+      <div class="modal-body">
+        
+     
+        <div class="form-grid">
+
+         
+          <div class="form-group span-2">
+            <label>Código Interno <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.code" name="code" required
+                   [readonly]="isEditMode" placeholder="Ej: P-001">
+            <small *ngIf="isEditMode" class="text-muted">El código no se puede modificar.</small>
+          </div>
+          <div class="form-group span-4">
+            <label>Nombre del Producto <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.name" name="name" required
+                   placeholder="Ej: Producto A">
+          </div>
+
+         
+          <div class="form-group span-3">
+            <label>Referencia</label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.referencia" name="referencia">
+          </div>
+          <div class="form-group span-3">
+            <label>Marca</label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.marca" name="marca">
+          </div>
+
+       
+          <div class="form-group span-3">
+            <label>Línea</label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.linea" name="linea">
+          </div>
+          <div class="form-group span-3">
+            <label>Categoría</label>
+            <input type="text" class="form-control" [(ngModel)]="modalProduct.categoria" name="categoria">
+          </div>
+
+         
+          <div class="form-group span-2">
+            <label>Unidad de Medida <span class="text-danger">*</span></label>
+            <select class="form-control" [(ngModel)]="modalProduct.unidadDeMedida" name="unidadDeMedida" required>
+              <option *ngFor="let u of unidadesDeMedida" [value]="u">{{ u }}</option>
+            </select>
+          </div>
+          <div class="form-group span-2">
+            <label>Peso Unitario (g)</label>
+            <input type="number" class="form-control" [(ngModel)]="modalProduct.pesoUnitario" name="pesoUnitario"
+                   placeholder="0.00">
+          </div>
+          <div class="form-group span-2 with-checkbox">
+            <label>Estado</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="chkActivo" [(ngModel)]="modalProduct.activo" name="activo">
+              <label for="chkActivo">Activo</label>
+            </div>
+          </div>
+          
+ 
+          <div class="form-group span-3">
+            <label>Material <span class="text-danger">*</span></label>
+            <select class="form-control" [(ngModel)]="modalProduct.materialId" name="materialId" required>
+              <option [ngValue]="null" disabled>-- Seleccione Material --</option>
+              <option *ngFor="let m of (materials$ | async)" [value]="m.id">
+                {{ m.code }} - {{ m.name }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group span-3">
+            <label>Color <span class="text-danger">*</span></label>
+            <select class="form-control" [(ngModel)]="modalProduct.colorId" name="colorId" required>
+              <option [ngValue]="null" disabled>-- Seleccione Color --</option>
+              <option *ngFor="let c of (colors$ | async)" [value]="c.id">
+                {{ c.code }} - {{ c.name }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+      
+        <button class="btn-confirm" (click)="saveProduct()" [disabled]="productForm.invalid">
+          {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+
+  </div>
 </div>

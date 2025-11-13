@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Products, Product, ProductCreateDTO, ProductoEX, ProductoTF } from '../../core/models/products.model';
+import { Products, Product, ProductoEX, ProductoTF, ProductoDTO } from '../../core/models/products.model';
 import { ProductsService } from '../../core/services/products.service';
 import Swal from 'sweetalert2';
+import { Color, Material } from '../../core/models/tool.model';
+import { catchError, Observable, of } from 'rxjs';
+import { ToolService } from '../../core/services/tool.service';
 
 @Component({
   selector: 'app-products',
@@ -14,20 +17,44 @@ import Swal from 'sweetalert2';
 })
 export class ProductsComponent implements OnInit {
 
-  // Estado de la UI
-  currentProductType: Products = 'EX'; // Inicia en la pestaña 'EX'
+ 
+  currentProductType: Products = 'EX'; 
   productsList: (ProductoEX | ProductoTF)[] = [];
+  public materials$: Observable<Material[]>;
+  public colors$: Observable<Color[]>;
+  public unidadesDeMedida: string[] = ['UND', 'KG', 'MTR', 'LTO'];
 
-  // Modal
   mostrarModal: boolean = false;
   isEditMode: boolean = false;
-  modalProduct: ProductCreateDTO = { code: '', name: '' };
-  originalCode: string = ''; // Para guardar el código original al editar
+  modalProduct: ProductoDTO = this.getNewProductDTO();
+  originalCode: string = '';
 
-  constructor(private productsService: ProductsService) { }
+  constructor(private productsService: ProductsService, private toolService: ToolService) {
+    this.materials$ = of([]);
+    this.colors$ = of([]);
+   }
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadDropdowns();
+  }
+
+
+  loadDropdowns(): void {
+    this.materials$ = this.toolService.getAll('Material').pipe(
+      catchError(err => {
+        console.error('Error cargando Materiales', err);
+        Swal.fire('Error', 'No se pudieron cargar los materiales', 'error');
+        return of([]);
+      })
+    );
+    this.colors$ = this.toolService.getAll('Color').pipe(
+      catchError(err => {
+        console.error('Error cargando Colores', err);
+        Swal.fire('Error', 'No se pudieron cargar los colores', 'error');
+        return of([]);
+      })
+    );
   }
 
   // Carga los productos según la pestaña activa
@@ -49,17 +76,46 @@ export class ProductsComponent implements OnInit {
     this.loadProducts();
   }
 
-  // Abre el modal (para crear o editar)
+  private getNewProductDTO(): ProductoDTO {
+    return {
+      name: '',
+      code: '',
+      referencia: '',
+      marca: '',
+      linea: '',
+      categoria: '',
+      unidadDeMedida: 'UND', 
+      pesoUnitario: null,
+      activo: true, 
+      materialId: null,
+      colorId: null
+    };
+  }
+
+ 
   openModal(product?: Product): void {
     if (product) {
-      // Modo Edición
+   
       this.isEditMode = true;
-      this.modalProduct = { code: product.code, name: product.name };
+      this.modalProduct = {
+        id: product.id,
+        name: product.name,
+        code: product.code,
+        referencia: product.referencia,
+        marca: product.marca,
+        linea: product.linea,
+        categoria: product.categoria,
+        unidadDeMedida: product.unidadDeMedida,
+        pesoUnitario: product.pesoUnitario,
+        activo: product.activo,
+        materialId: product.material?.id || null, 
+        colorId: product.color?.id || null      
+      };
       this.originalCode = product.code;
     } else {
-      // Modo Creación
+      
       this.isEditMode = false;
-      this.modalProduct = { code: '', name: '' };
+      this.modalProduct = this.getNewProductDTO(); 
       this.originalCode = '';
     }
     this.mostrarModal = true;
@@ -71,11 +127,7 @@ export class ProductsComponent implements OnInit {
 
   // Guarda (Crea o Actualiza) un producto
   saveProduct(): void {
-    if (!this.modalProduct.code || !this.modalProduct.name) {
-      Swal.fire('Campos incompletos', 'El código y el nombre son obligatorios.', 'warning');
-      return;
-    }
-
+   
     Swal.fire({
       title: 'Guardando...',
       text: 'Por favor espera',
@@ -90,7 +142,7 @@ export class ProductsComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.closeModal();
-        this.loadProducts(); // Recarga la lista
+        this.loadProducts(); 
         Swal.fire('¡Guardado!', `El producto se ${this.isEditMode ? 'actualizó' : 'creó'} correctamente.`, 'success');
       },
       error: (err) => {
@@ -118,7 +170,7 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  // Elimina el producto
+ 
   private deleteProduct(code: string): void {
     this.productsService.delete(code, this.currentProductType).subscribe({
       next: () => {

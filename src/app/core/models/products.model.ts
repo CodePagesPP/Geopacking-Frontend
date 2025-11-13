@@ -1,9 +1,20 @@
+import { Color, Material } from "./tool.model";
+
 export type Products = 'EX' | 'TF'
 
 export interface Product {
-    id: number,
-    code: string,
-    name: string
+  id: number;
+  name: string;
+  code: string;
+  referencia: string;
+  marca: string;
+  linea: string;
+  categoria: string;
+  unidadDeMedida: string;
+  pesoUnitario: number;
+  activo: boolean;
+  material: Material | null;
+  color: Color | null;
 }
 
 export interface ProductoEX extends Product {
@@ -14,9 +25,19 @@ export interface ProductoTF extends Product {
     tipo: 'TF'
 }
 
-export interface ProductCreateDTO {
-    code: string,
-    name: string,
+export interface ProductoDTO {
+  id?: number;
+  name: string;
+  code: string;
+  referencia: string;
+  marca: string;
+  linea: string;
+  categoria: string;
+  unidadDeMedida: string;
+  pesoUnitario: number | null;
+  activo: boolean;
+  materialId: number | null;
+  colorId: number | null;
 }
 
 export type ProductTypeMap = {

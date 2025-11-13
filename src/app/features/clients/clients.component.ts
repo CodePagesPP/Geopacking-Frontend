@@ -5,6 +5,7 @@ import { Cliente, ClienteDTO } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/clients.service';
 import Swal from 'sweetalert2';
 import { Page } from '../../core/models/page.model';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-clientes',
@@ -24,13 +25,12 @@ export class ClientesComponent implements OnInit {
 
   filtroNombre: string = '';
   
-  // NUEVA variable para el timer del debounce
+  
   private filterTimeout: any = null;
 
   mostrarModal: boolean = false;
   isEditMode: boolean = false;
   
-  // ... (el resto de tus variables: currentCliente, tiposCliente, etc. no cambian) ...
   currentCliente: ClienteDTO = this.createEmptyDto();
   editClienteId: number | null = null; 
   tiposCliente = ['Interno', 'Distribuidor', 'Mayorista', 'Minorista'];
@@ -38,7 +38,7 @@ export class ClientesComponent implements OnInit {
   paises = ['PERU', 'BOLIVIA', 'CHILE', 'ECUADOR', 'COLOMBIA', 'OTRO'];
   departamentos: string[] = [];
   disableDepartamentos: boolean = true;
-  
+  isExporting: boolean = false;
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
@@ -58,21 +58,65 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  // NUEVO: Este método se llamará en CADA pulsación de tecla
-  onFilterChange(): void {
-    // 1. Limpia el timer anterior (si existe)
-    clearTimeout(this.filterTimeout);
 
-    // 2. Crea un nuevo timer
-    this.filterTimeout = setTimeout(() => {
-      // 3. Después de 300ms, llama a la función de filtrado
-      this.filtrarClientes();
-    }, 300); // 300ms es un buen tiempo de espera
+  exportarExcel(): void {
+    this.isExporting = true; // Bloquea el botón
+
+    this.clienteService.exportClientes(this.filtroNombre).subscribe({
+      next: (response: HttpResponse<Blob>) => {
+       
+        const contentDisposition = response.headers.get('content-disposition');
+        let filename = 'Reporte_Clientes.xlsx'; 
+        
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (filenameMatch && filenameMatch.length > 1) {
+            filename = filenameMatch[1];
+          }
+        }
+
+     
+        const blob = response.body;
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          
+        
+          document.body.appendChild(a);
+          a.click();
+          
+        
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }
+        
+        this.isExporting = false;
+      },
+      error: (err) => {
+        this.isExporting = false;
+        console.error('Error al exportar Excel:', err);
+        Swal.fire('Error', 'No se pudo generar el archivo Excel.', 'error');
+      }
+    });
   }
 
-  // Esta función ahora solo resetea la página y llama a la carga
+ 
+  onFilterChange(): void {
+   
+    clearTimeout(this.filterTimeout);
+
+   
+    this.filterTimeout = setTimeout(() => {
+     
+      this.filtrarClientes();
+    }, 300); 
+  }
+
+ 
   filtrarClientes(): void {
-    this.currentPage = 0; // Volver a la página 1 al filtrar
+    this.currentPage = 0; 
     this.loadClientes();
   }
 
@@ -84,7 +128,6 @@ export class ClientesComponent implements OnInit {
     this.loadClientes();
   }
 
-  // ... (El resto de tus métodos: createEmptyDto, openModal, closeModal, saveCliente, etc. NO CAMBIAN) ...
 
   createEmptyDto(): ClienteDTO {
     return {
