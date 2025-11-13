@@ -1,6 +1,4 @@
-/* --- ESTILOS REUTILIZADOS DE INVENTARIO --- */
 
-/* Contenedor Principal */
 .products-container {
     padding: 20px 30px;
     background-color: #f9fafb;
@@ -9,13 +7,13 @@
     color: #374151;
 }
 
-/* Encabezado */
+
 .header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    /* Reducido para dar espacio a tabs */
+   
 }
 
 .page-title {
@@ -24,7 +22,7 @@
     color: #111827;
 }
 
-/* Sección de Acciones y Filtros */
+
 .actions-section {
     display: flex;
     justify-content: space-between;
@@ -60,13 +58,13 @@
     background-color: #059669;
 }
 
-/* Filtros */
+
 .filters-container {
     display: flex;
     align-items: flex-end;
     gap: 15px;
     flex-wrap: wrap;
-    /* Para responsividad */
+   
 }
 
 .filter-group {
@@ -95,7 +93,7 @@
     outline: none;
     transition: border-color 0.2s;
     height: 38px;
-    /* Altura fija */
+ 
 }
 
 .input-with-icon input:focus,
@@ -119,7 +117,7 @@
     border: none;
     transition: background-color 0.2s;
     height: 38px;
-    /* Altura fija */
+   
 }
 
 .btn-filter {
@@ -140,7 +138,7 @@
     background-color: #d1d5db;
 }
 
-/* Tabla */
+
 .table-container {
     background: white;
     border-radius: 12px;
@@ -198,7 +196,7 @@
     font-style: italic;
 }
 
-/* Modal Styles */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -305,9 +303,7 @@
 }
 
 
-/* --- ESTILOS NUEVOS PARA ESTE COMPONENTE --- */
 
-/* Contenedor de Pestañas */
 .tab-container {
     display: flex;
     gap: 10px;
@@ -326,7 +322,7 @@
     color: #6b7280;
     transition: all 0.2s ease;
     margin-bottom: -2px;
-    /* Para que el borde activo sobreescriba el borde general */
+   
 }
 
 .tab-btn:hover {
@@ -338,7 +334,7 @@
     border-bottom-color: #3b82f6;
 }
 
-/* Celda de Acciones en la Tabla */
+
 .actions-cell {
     display: flex;
     justify-content: center;
@@ -375,4 +371,233 @@
 
 .btn-delete:hover {
     background-color: #fecaca;
+}
+
+.modal-content.large {
+    max-width: 800px; 
+}
+
+
+.form-grid {
+    display: grid;
+    
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px 20px; 
+}
+
+
+.form-grid .span-2 {
+    grid-column: span 2;
+}
+.form-grid .span-3 {
+    grid-column: span 3;
+}
+.form-grid .span-4 {
+    grid-column: span 4;
+}
+.form-grid .span-6 {
+    grid-column: span 6;
+}
+
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    height: 38px; 
+    box-sizing: border-box;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    font-weight: normal; 
+    cursor: pointer;
+}
+
+
+.form-group select[multiple].form-control {
+    height: 120px;
+    padding: 5px; 
+}
+
+.form-group select[multiple].form-control option {
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+.form-group select[multiple].form-control option:checked {
+    background-color: #3b82f6;
+    color: white;
+}
+
+
+.btn-confirm[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%; 
+    max-width: 450px; 
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-height: 90vh; 
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0; 
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+
+.modal-body {
+    overflow-y: auto;
+    padding-right: 10px; 
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px; 
+}
+
+.form-group .text-danger {
+    font-size: 0.9em;
+    color: #ef4444;
+}
+
+.form-group .text-muted {
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.form-group input.form-control,
+.form-group select.form-control,
+.form-group textarea.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px; 
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input.form-control:focus,
+.form-group select.form-control:focus,
+.form-group textarea.form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.form-group input.form-control[readonly] {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+    flex-shrink: 0; 
+}
+
+.btn-cancel,
+.btn-confirm {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+.btn-cancel:hover {
+    background-color: #d1d5db;
+}
+
+.btn-confirm {
+    background-color: #3b82f6;
+    color: white;
+}
+.btn-confirm:hover {
+    background-color: #2563eb;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #f3f4f6; 
+    color: #4b5563;
+}
+.status-badge.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+
+.status-badge.status-inactive {
+    background-color: #fee2e2; 
+    color: #b91c1c; 
 }

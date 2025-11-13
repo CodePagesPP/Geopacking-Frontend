@@ -283,6 +283,12 @@
     color: white;
 }
 
+
+.btn-confirm[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .modal-body {
     max-height: 70vh;
     overflow-y: auto;
@@ -432,4 +438,49 @@
 .btn-page:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+
+.btn-export-excel {
+  /* Color verde similar a Excel */
+  background-color: #1D6F42; 
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio entre el icono y el texto */
+  transition: background-color 0.2s;
+}
+
+.btn-export-excel:hover {
+  background-color: #165934;
+}
+
+.btn-export-excel i {
+  font-size: 16px; /* Tamaño del icono */
+}
+
+/* Estilo para cuando está deshabilitado */
+.btn-export-excel[disabled] {
+  background-color: #999;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Ajuste para la barra de filtros */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espacio entre el input y el botón */
+  margin-bottom: 20px;
+}
+
+.filter-input-group {
+  flex-grow: 1; /* Hace que el input ocupe el espacio disponible */
+  position: relative;
 }

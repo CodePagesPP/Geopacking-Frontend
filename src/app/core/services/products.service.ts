@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { ProductCreateDTO, Products, ProductTypeMap } from '../models/products.model';
+import { ProductoDTO, Products, ProductTypeMap } from '../models/products.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -46,14 +46,14 @@ export class ProductsService {
     });
   }
 
-  create<K extends Products>(data: ProductCreateDTO, productType: K): Observable<ProductTypeMap[K]> {
+  create<K extends Products>(data: ProductoDTO, productType: K): Observable<ProductTypeMap[K]> {
     const endpoint = this.getEndpoint(productType);
     return this.http.post<ProductTypeMap[K]>(`${this.apiUrl}/${endpoint}`, data, {
       headers: this.authService.getAuthHeaders()
     });
   }
 
-  update<K extends Products>(code: string, data: ProductCreateDTO, productType: K): Observable<ProductTypeMap[K]> {
+  update<K extends Products>(code: string, data: ProductoDTO, productType: K): Observable<ProductTypeMap[K]> {
     const endpoint = this.getEndpoint(productType);
     return this.http.put<ProductTypeMap[K]>(`${this.apiUrl}/${endpoint}/${code}`, data, {
       headers: this.authService.getAuthHeaders()

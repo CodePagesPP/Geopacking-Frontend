@@ -240,7 +240,6 @@ tr:last-child td {
 .btn-delete { background-color: #fee2e2; color: #b91c1c; }
 .btn-delete:hover { background-color: #fecaca; }
 
-/* Banner de Error (para lista y formulario) */
 .error-banner {
   padding: 1rem;
   background-color: #fef2f2;
@@ -249,12 +248,12 @@ tr:last-child td {
   border-radius: 8px;
   margin-bottom: 1rem;
 }
-/* Error específico del formulario */
+
 .form-error {
   margin-top: 1rem;
 }
 
-/* --- ESTILOS DEL MODAL --- */
+
 
 .modal-overlay {
   position: fixed;
@@ -337,8 +336,9 @@ select:focus {
 
 .checkbox-group {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+  flex-direction: column;
 }
 
 input[type="checkbox"] {
