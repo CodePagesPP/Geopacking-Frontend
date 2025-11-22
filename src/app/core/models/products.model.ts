@@ -2,7 +2,7 @@ import { Color, Material } from "./tool.model";
 
 export type Products = 'EX' | 'TF'
 
-export interface Product {
+export interface ProductBase {
   id: number;
   name: string;
   code: string;
@@ -13,17 +13,18 @@ export interface Product {
   unidadDeMedida: string;
   pesoUnitario: number;
   activo: boolean;
-  material: Material | null;
   color: Color | null;
 }
 
-export interface ProductoEX extends Product {
-    tipo: 'EX'
+export interface ProductoEX extends ProductBase {
+    material: Material | null;
 }
 
-export interface ProductoTF extends Product {
-    tipo: 'TF'
+export interface ProductoTF extends ProductBase {
+    productoBase: ProductoEX | null;
 }
+
+export type Product = ProductoEX | ProductoTF;
 
 export interface ProductoDTO {
   id?: number;

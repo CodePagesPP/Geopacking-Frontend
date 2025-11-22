@@ -6,6 +6,7 @@ export type TipoMaquina = 'Extrusora' | 'Termoformadora' | 'Molino';
 export interface Maquina {
   id: number;
   codigo: string;
+  nroSerie: string;
   marca: string;
   modelo: string;
   activo: boolean;
@@ -30,6 +31,7 @@ export interface Molino extends Maquina {
 
 export interface CreateExtrusoraDto {
   codigo: string;
+  nroSerie: string;
   marca: string;
   modelo: string;
   activo: boolean;
@@ -38,6 +40,7 @@ export interface CreateExtrusoraDto {
 
 export interface CreateTermoformadoraDto {
   codigo: string;
+  nroSerie: string;
   marca: string;
   modelo: string;
   activo: boolean;
@@ -46,6 +49,7 @@ export interface CreateTermoformadoraDto {
 
 export interface CreateMolinoDto {
   codigo: string;
+  nroSerie: string;
   marca: string;
   modelo: string;
   activo: boolean;

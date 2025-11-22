@@ -1,51 +1,59 @@
 <div class="header">
-  <h2>Gestión de Scrapp</h2>
+  <h2>Registro de Molienda</h2>
 
-  <div class="header-actions">
-    
-    <button 
-      *ngIf="isAdmin" 
-      class="btn btn-secondary" 
-      (click)="onImprimirReporteCompleto()" 
-      [disabled]="isLoading || registros.length === 0">
-      <span class="material-icons-sharp">print</span>
-      Imprimir Reporte A4
-    </button>
+  <div class="header-controls">
 
-    <button *ngIf="!isAdmin"  class="btn btn-primary" (click)="openForm()">
-      <span class="material-icons-sharp">add</span>
-      Registrar Nuevo Pesaje
-    </button>
+    <div *ngIf="isAdmin" class="filter-row">
+      <form (ngSubmit)="onAplicarFiltros()" class="filter-form">
+        
+        <div class="date-inputs">
+          <div class="input-group">
+            <label for="fechaInicio">Desde:</label>
+            <input 
+              type="date" 
+              id="fechaInicio" 
+              [(ngModel)]="filtros.fechaInicio" 
+              name="fechaInicio">
+          </div>
+          
+          <div class="input-group">
+            <label for="fechaFin">Hasta:</label>
+            <input 
+              type="date" 
+              id="fechaFin" 
+              [(ngModel)]="filtros.fechaFin" 
+              name="fechaFin">
+          </div>
+        </div>
 
-    <div *ngIf="isAdmin" class="filter-container">
-  <form (ngSubmit)="onAplicarFiltros()">
-    
-    <div class="form-group">
-      <label for="fechaInicio">Desde:</label>
-      <input 
-        type="date" 
-        id="fechaInicio" 
-        [(ngModel)]="filtros.fechaInicio" 
-        name="fechaInicio">
+        <div class="filter-buttons">
+          <button type="submit" class="btn btn-primary btn-sm" [disabled]="!filtros.fechaInicio || !filtros.fechaFin">
+            Filtrar
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="onLimpiarFiltros()" [disabled]="!filtros.fechaInicio && !filtros.fechaFin">
+            Limpiar
+          </button>
+        </div>
+
+      </form>
     </div>
-    
-    <div class="form-group">
-      <label for="fechaFin">Hasta:</label>
-      <input 
-        type="date" 
-        id="fechaFin" 
-        [(ngModel)]="filtros.fechaFin" 
-        name="fechaFin">
+
+    <div class="actions-row">
+      <button 
+        *ngIf="isAdmin" 
+        class="btn btn-secondary" 
+        (click)="onImprimirReporteCompleto()" 
+        [disabled]="isLoading || registros.length === 0">
+        <span class="material-icons-sharp">print</span>
+        Imprimir Reporte A4
+      </button>
+
+      <button class="btn btn-primary" (click)="openForm()">
+        <span class="material-icons-sharp">add</span>
+        Registrar Nuevo Pesaje
+      </button>
     </div>
-    
-    <button type="submit" class="btn btn-primary" [disabled]="!filtros.fechaInicio || !filtros.fechaFin">
-      Filtrar
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="onLimpiarFiltros()" [disabled]="!filtros.fechaInicio && !filtros.fechaFin">
-      Limpiar
-    </button>
-  </form>
-</div>
+
   </div>
 </div>
 

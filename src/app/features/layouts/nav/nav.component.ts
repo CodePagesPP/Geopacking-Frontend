@@ -78,12 +78,12 @@ export class NavComponent implements OnInit {
             {
               label: 'Registro de Molienda',
               icon: 'edit_note',
-              route: '/produccion/molino/registro',
+              route: '/produccion/registroDeMolienda',
             },
             {
-              label: 'Listado de Registros',
+              label: 'Listado de Registro de Molienda',
               icon: 'list_alt',
-              route: '/produccion/molino/listado',
+              route: '/produccion/listadoRegistroMolienda',
             },
           ],
         },

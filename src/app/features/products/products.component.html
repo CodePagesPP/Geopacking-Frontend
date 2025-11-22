@@ -32,7 +32,7 @@
           <th>NOMBRE</th>
           <th>MARCA</th>
           <th>CATEGORÍA</th>
-          <th>MATERIAL</th>
+          <th>REFERENCIA</th>
           <th>COLOR</th>
           <th>ESTADO</th>
           <th class="text-center">ACCIONES</th>
@@ -44,7 +44,7 @@
           <td>{{ product.name }}</td>
           <td>{{ product.marca || '-' }}</td>
           <td>{{ product.categoria || '-' }}</td>
-          <td>{{ product.material?.name || '-' }}</td>
+          <td>{{ product.referencia || '-' }}</td>
           <td>{{ product.color?.name || '-' }}</td>
           <td>
             <span class="status-badge" [class.status-active]="product.activo">
@@ -77,27 +77,22 @@
       <button class="close-btn" (click)="closeModal()">&times;</button>
     </div>
 
-   
+
     <form #productForm="ngForm">
       <div class="modal-body">
-        
-     
         <div class="form-grid">
-
-         
           <div class="form-group span-2">
             <label>Código Interno <span class="text-danger">*</span></label>
             <input type="text" class="form-control" [(ngModel)]="modalProduct.code" name="code" required
-                   [readonly]="isEditMode" placeholder="Ej: P-001">
+              [readonly]="isEditMode" placeholder="Ej: P-001">
             <small *ngIf="isEditMode" class="text-muted">El código no se puede modificar.</small>
           </div>
           <div class="form-group span-4">
             <label>Nombre del Producto <span class="text-danger">*</span></label>
             <input type="text" class="form-control" [(ngModel)]="modalProduct.name" name="name" required
-                   placeholder="Ej: Producto A">
+              placeholder="Ej: Producto A">
           </div>
 
-         
           <div class="form-group span-3">
             <label>Referencia</label>
             <input type="text" class="form-control" [(ngModel)]="modalProduct.referencia" name="referencia">
@@ -107,7 +102,6 @@
             <input type="text" class="form-control" [(ngModel)]="modalProduct.marca" name="marca">
           </div>
 
-       
           <div class="form-group span-3">
             <label>Línea</label>
             <input type="text" class="form-control" [(ngModel)]="modalProduct.linea" name="linea">
@@ -117,7 +111,6 @@
             <input type="text" class="form-control" [(ngModel)]="modalProduct.categoria" name="categoria">
           </div>
 
-         
           <div class="form-group span-2">
             <label>Unidad de Medida <span class="text-danger">*</span></label>
             <select class="form-control" [(ngModel)]="modalProduct.unidadDeMedida" name="unidadDeMedida" required>
@@ -127,7 +120,7 @@
           <div class="form-group span-2">
             <label>Peso Unitario (g)</label>
             <input type="number" class="form-control" [(ngModel)]="modalProduct.pesoUnitario" name="pesoUnitario"
-                   placeholder="0.00">
+              placeholder="0.00">
           </div>
           <div class="form-group span-2 with-checkbox">
             <label>Estado</label>
@@ -136,17 +129,33 @@
               <label for="chkActivo">Activo</label>
             </div>
           </div>
-          
- 
+
           <div class="form-group span-3">
-            <label>Material <span class="text-danger">*</span></label>
+            <label>
+              {{ currentProductType === 'EX' ? 'Material Base' : 'Producto Base (Insumo)' }}
+              <span class="text-danger">*</span>
+            </label>
+
             <select class="form-control" [(ngModel)]="modalProduct.materialId" name="materialId" required>
-              <option [ngValue]="null" disabled>-- Seleccione Material --</option>
-              <option *ngFor="let m of (materials$ | async)" [value]="m.id">
-                {{ m.code }} - {{ m.name }}
+
+              <option [ngValue]="null" disabled>
+                -- Seleccione {{ currentProductType === 'EX' ? 'Material' : 'Producto Base' }} --
               </option>
+
+              <ng-container *ngIf="currentProductType === 'EX'">
+                <option *ngFor="let m of (materials$ | async)" [value]="m.id">
+                  {{ m.code }} - {{ m.name }}
+                </option>
+              </ng-container>
+
+              <ng-container *ngIf="currentProductType === 'TF'">
+                <option *ngFor="let p of (exProductsForMaterial$ | async)" [value]="p.id">
+                  {{ p.code }} - {{ p.name }}
+                </option>
+              </ng-container>
             </select>
           </div>
+
           <div class="form-group span-3">
             <label>Color <span class="text-danger">*</span></label>
             <select class="form-control" [(ngModel)]="modalProduct.colorId" name="colorId" required>
@@ -162,7 +171,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
-      
+
         <button class="btn-confirm" (click)="saveProduct()" [disabled]="productForm.invalid">
           {{ isEditMode ? 'Actualizar' : 'Guardar' }}
         </button>
