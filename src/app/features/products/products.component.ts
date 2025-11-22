@@ -17,7 +17,6 @@ import { ToolService } from '../../core/services/tool.service';
 })
 export class ProductsComponent implements OnInit {
 
- 
   currentProductType: Products = 'EX'; 
   productsList: (ProductoEX | ProductoTF)[] = [];
   public materials$: Observable<Material[]>;
@@ -32,7 +31,7 @@ export class ProductsComponent implements OnInit {
   constructor(private productsService: ProductsService, private toolService: ToolService) {
     this.materials$ = of([]);
     this.colors$ = of([]);
-   }
+  }
 
   ngOnInit(): void {
     this.loadProducts();

@@ -118,10 +118,12 @@ aside .close {
 aside .sidebar {
     background: white;
     display: flex;
-    flex-direction: column;
-    height: 80vh;
+    flex-direction: column; /* Elementos uno debajo del otro */
+    height: 86vh; /* Altura controlada */
     position: relative;
     top: 3rem;
+    overflow-y: auto; /* IMPORTANTE: Permite scroll si el menú es muy largo */
+    overflow-x: hidden; /* Evita scroll lateral */
 }
 
 aside h3 {
@@ -137,17 +139,12 @@ aside .sidebar a {
     position: relative;
     height: 3.7rem;
     transition: all 300ms ease;
+    text-decoration: none; /* Por si acaso */
 }
 
 aside .sidebar a span {
     font-size: 1.6rem;
     transition: all 300ms ease;
-}
-
-aside .sidebar a:last-child {
-    position: absolute;
-    bottom: 2rem;
-    width: 100%;
 }
 
 aside .sidebar a.active {
@@ -348,4 +345,111 @@ main {
     background: rgba(0,0,0,0.3);
     z-index: 99;
   }
+}
+
+/* --- Estilos adicionales para multinivel --- */
+
+/* Submenú (Nivel 2) */
+.submenu {
+    background: #f6f6f9; /* Un gris muy suave para diferenciar el fondo */
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sub-item {
+    padding-left: 3.5rem !important; /* Indentación para nivel 2 */
+    height: 3rem !important; /* Un poco más compactos */
+}
+
+.sub-item h4 {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.icon-sm {
+    font-size: 1.2rem !important; /* Iconos más pequeños */
+}
+
+/* Sub-submenú (Nivel 3) */
+.sub-submenu {
+    background: #ececf0; /* Un poco más oscuro para profundidad */
+}
+
+.deep-item {
+    padding-left: 5rem !important; /* Indentación extra para nivel 3 */
+    height: 2.5rem !important;
+    color: #677483;
+}
+
+.deep-item h5 {
+    font-size: 0.8rem;
+}
+
+.icon-xs {
+    font-size: 1rem !important;
+}
+
+/* Flechas de expansión */
+.arrow {
+    position: absolute;
+    right: 1rem;
+    font-size: 1.2rem !important;
+}
+
+.arrow-sm {
+    font-size: 1rem !important;
+    margin-left: auto; /* Empuja la flecha a la derecha en el contenedor flex */
+    margin-right: 1rem;
+}
+
+.parent-sub {
+    justify-content: space-between !important; /* Para separar texto de flecha */
+    padding-right: 0;
+}
+
+/* Estados Activos */
+/* Nivel 1 Activo */
+aside .sidebar a.active {
+    background: #e7d7c979;
+    color: var(--color-gold); /* Asegúrate de tener definida esta variable o usa un color fijo */
+    margin-left: 0;
+}
+
+/* Nivel 2 Activo (RouterLinkActive) */
+.active-sub {
+    color: #ff7782 !important; /* O el color primario de tu marca */
+    background: rgba(132, 139, 200, 0.18);
+}
+
+/* Nivel 3 Activo */
+.active-deep {
+    color: #ff7782 !important;
+    font-weight: bold;
+}
+
+/* Ajustes generales */
+aside .sidebar {
+    /* Permitir scroll si el menú es muy largo al desplegar todo */
+    overflow-y: auto; 
+    scrollbar-width: none; /* Ocultar scrollbar en Firefox */
+}
+aside .sidebar::-webkit-scrollbar {
+    display: none; /* Ocultar scrollbar en Chrome */
+}
+
+.menu-dropdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.logout-btn {
+    margin-top: auto; /* Esto empuja el botón al final del espacio disponible */
+    margin-bottom: 2rem; /* Un margen para que no pegue al borde */
+}
+
+/* Corrección para que los items anidados no tengan margin-left excesivo */
+.menu-dropdown a {
+    margin-left: 0 !important; 
+    padding-left: 2rem; /* Usamos padding en vez de margin para la indentación */
+    width: 100%;
 }
