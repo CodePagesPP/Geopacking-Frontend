@@ -18,7 +18,7 @@
         <tr>
           <th>DNI</th>
           <th>Nombre Completo</th>
-          <th>Rol</th>
+          
           <th>Fecha Creación</th>
           <th>Acciones</th>
         </tr>
@@ -27,7 +27,6 @@
         <tr *ngFor="let operador of operadores$ | async">
           <td>{{ operador.dni }}</td>
           <td>{{ operador.name }} {{ operador.lastName }}</td>
-          <td><span class="badge badge-op">{{ operador.role }}</span></td>
           <td>{{ operador.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>
             <button class="btn btn-sm btn-secondary" (click)="openEditForm(operador)">Editar</button>
@@ -54,7 +53,7 @@
         <tr>
           <th>DNI</th>
           <th>Nombre Completo</th>
-          <th>Rol</th>
+       
           <th>Fecha Creación</th>
           <th>Acciones</th>
         </tr>
@@ -63,7 +62,7 @@
         <tr *ngFor="let ayudante of ayudantes$ | async">
           <td>{{ ayudante.dni }}</td>
           <td>{{ ayudante.name }} {{ ayudante.lastName }}</td>
-          <td><span class="badge badge-rep">{{ ayudante.role }}</span></td>
+         
           <td>{{ ayudante.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>
             <button class="btn btn-sm btn-secondary" (click)="openEditForm(ayudante)">Editar</button>
