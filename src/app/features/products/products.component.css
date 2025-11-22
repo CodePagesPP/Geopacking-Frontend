@@ -25,7 +25,7 @@
 
 .actions-section {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: flex-end;
     margin-bottom: 25px;
     flex-wrap: wrap;
@@ -600,4 +600,43 @@
 .status-badge.status-inactive {
     background-color: #fee2e2; 
     color: #b91c1c; 
+}
+
+
+/* Contenedor que parece un input pero contiene lista */
+.checkbox-list-container {
+  border: 1px solid #d1d5db; /* Gris suave */
+  border-radius: 6px;
+  padding: 10px;
+  max-height: 150px; /* Altura máxima antes de scroll */
+  overflow-y: auto;  /* Scroll vertical si es necesario */
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2563eb; /* Color azul al marcar */
+}
+
+.checkbox-item label {
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #374151;
+  margin: 0; /* Quitar margin por defecto */
+}
+
+.checkbox-item:hover {
+  background-color: #f3f4f6; /* Efecto hover suave */
 }

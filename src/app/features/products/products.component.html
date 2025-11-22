@@ -44,7 +44,18 @@
           <td>{{ product.name }}</td>
           <td>{{ product.marca || '-' }}</td>
           <td>{{ product.categoria || '-' }}</td>
-          <td>{{ product.material?.name || '-' }}</td>
+          <td>
+            <span *ngIf="currentProductType === 'TF'">
+              {{ product.material?.name || '-' }}
+            </span>
+
+            <span *ngIf="currentProductType === 'EX'">
+              <ng-container *ngFor="let m of product.materiales; let isLast=last">
+                {{ m.name }}{{ !isLast ? ', ' : '' }}
+              </ng-container>
+              <span *ngIf="!product.materiales || product.materiales.length === 0">-</span>
+            </span>
+          </td>
           <td>{{ product.color?.name || '-' }}</td>
           <td>
             <span class="status-badge" [class.status-active]="product.activo">
@@ -124,7 +135,7 @@
               <option *ngFor="let u of unidadesDeMedida" [value]="u">{{ u }}</option>
             </select>
           </div>
-          <div class="form-group span-2">
+          <div class="form-group span-2" *ngIf="currentProductType === 'TF'">
             <label>Peso Unitario (g)</label>
             <input type="number" class="form-control" [(ngModel)]="modalProduct.pesoUnitario" name="pesoUnitario"
                    placeholder="0.00">
@@ -138,7 +149,7 @@
           </div>
           
  
-          <div class="form-group span-3">
+          <div class="form-group span-3" *ngIf="currentProductType === 'TF'">
             <label>Material <span class="text-danger">*</span></label>
             <select class="form-control" [(ngModel)]="modalProduct.materialId" name="materialId" required>
               <option [ngValue]="null" disabled>-- Seleccione Material --</option>
@@ -146,6 +157,32 @@
                 {{ m.code }} - {{ m.name }}
               </option>
             </select>
+          </div>
+
+          <div class="form-group span-3" *ngIf="currentProductType === 'EX'">
+            <label>Materiales <span class="text-danger">*</span></label>
+            
+            <div class="checkbox-list-container">
+              
+              <div *ngFor="let m of (materials$ | async)" class="checkbox-item">
+                <input type="checkbox" 
+                      [id]="'mat-' + m.id" 
+                      [checked]="isMaterialSelected(m.id)"
+                      (change)="toggleMaterial(m.id, $event)">
+                
+                <label [for]="'mat-' + m.id">
+                  {{ m.code }} - {{ m.name }}
+                </label>
+              </div>
+
+              <div *ngIf="(materials$ | async)?.length === 0" class="text-muted">
+                No hay materiales disponibles.
+              </div>
+
+            </div>
+            <small class="text-muted" *ngIf="modalProduct.materialesIds.length === 0">
+              Seleccione al menos un material.
+            </small>
           </div>
           <div class="form-group span-3">
             <label>Color <span class="text-danger">*</span></label>

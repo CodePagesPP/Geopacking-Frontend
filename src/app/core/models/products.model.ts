@@ -11,18 +11,21 @@ export interface Product {
   linea: string;
   categoria: string;
   unidadDeMedida: string;
-  pesoUnitario: number;
+  pesoUnitario?: number;
   activo: boolean;
-  material: Material | null;
+  material?: Material | null;      // Para TF
+  materiales?: Material[];
   color: Color | null;
 }
 
 export interface ProductoEX extends Product {
-    tipo: 'EX'
+    tipo: 'EX',
+    materiales: Material[];
 }
 
 export interface ProductoTF extends Product {
-    tipo: 'TF'
+    tipo: 'TF',
+    material: Material;
 }
 
 export interface ProductoDTO {
@@ -36,7 +39,8 @@ export interface ProductoDTO {
   unidadDeMedida: string;
   pesoUnitario: number | null;
   activo: boolean;
-  materialId: number | null;
+  materialId: number | null;      // ID único para TF
+  materialesIds: number[];
   colorId: number | null;
 }
 

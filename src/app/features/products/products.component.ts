@@ -87,6 +87,7 @@ export class ProductsComponent implements OnInit {
       pesoUnitario: null,
       activo: true, 
       materialId: null,
+      materialesIds: [],
       colorId: null
     };
   }
@@ -96,6 +97,19 @@ export class ProductsComponent implements OnInit {
     if (product) {
    
       this.isEditMode = true;
+
+      let matId = null;
+      let matIds: number[] = [];
+
+      if (this.currentProductType === 'TF') {
+         // Si es TF, tomamos el material simple
+         matId = product.material?.id || null;
+      } else {
+         // Si es EX, mapeamos el array de objetos a array de IDs
+         // Verificamos que product.materiales exista para evitar errores
+         matIds = product.materiales ? product.materiales.map(m => m.id) : [];
+      }
+
       this.modalProduct = {
         id: product.id,
         name: product.name,
@@ -105,9 +119,10 @@ export class ProductsComponent implements OnInit {
         linea: product.linea,
         categoria: product.categoria,
         unidadDeMedida: product.unidadDeMedida,
-        pesoUnitario: product.pesoUnitario,
+        pesoUnitario: product.pesoUnitario || null,
         activo: product.activo,
-        materialId: product.material?.id || null, 
+        materialId: matId,        // Asignamos si es TF
+        materialesIds: matIds, 
         colorId: product.color?.id || null      
       };
       this.originalCode = product.code;
@@ -126,6 +141,13 @@ export class ProductsComponent implements OnInit {
 
   // Guarda (Crea o Actualiza) un producto
   saveProduct(): void {
+
+    if (this.currentProductType === 'EX') {
+      this.modalProduct.pesoUnitario = null;
+      this.modalProduct.materialId = null; // EX no usa el ID simple
+    } else {
+      this.modalProduct.materialesIds = []; // TF no usa la lista
+    }
    
     Swal.fire({
       title: 'Guardando...',
@@ -151,6 +173,28 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+
+  isMaterialSelected(id: number): boolean {
+    return this.modalProduct.materialesIds?.includes(id) || false;
+  }
+
+  // Agrega o quita el ID del array cuando se hace click
+  toggleMaterial(id: number, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    
+    // Aseguramos que el array esté inicializado
+    if (!this.modalProduct.materialesIds) {
+      this.modalProduct.materialesIds = [];
+    }
+
+    if (isChecked) {
+      // Si se marca, lo agregamos
+      this.modalProduct.materialesIds.push(id);
+    } else {
+      // Si se desmarca, lo filtramos (quitamos)
+      this.modalProduct.materialesIds = this.modalProduct.materialesIds.filter(item => item !== id);
+    }
+  }
   // Pregunta antes de eliminar
   confirmDelete(code: string): void {
     Swal.fire({

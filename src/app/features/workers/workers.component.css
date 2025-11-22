@@ -1,13 +1,26 @@
-/* --- Estilos Generales --- */
+
 :host {
   font-family: Arial, sans-serif;
   padding: 20px;
   display: block;
 }
 
-/* NUEVO: Contenedor para cada sección del CRUD */
+.main-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;          
+  margin-bottom: 30px;            
+  padding-bottom: 15px;         
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.main-header h1 {
+  margin: 0; 
+  font-size: 24px;
+  color: #333;
+}
 .crud-section + .crud-section {
-  margin-top: 40px; /* Añade espacio entre las dos tablas */
+  margin-top: 40px;
 }
 
 .crud-header {
@@ -17,7 +30,7 @@
   margin-bottom: 20px;
 }
 
-/* --- Estilos de Botones (similares a los de tu modal) --- */
+
 .btn {
   padding: 10px 18px;
   border: none;
@@ -34,7 +47,7 @@
 .btn-secondary { background-color: #6c757d; }
 .btn-danger { background-color: #dc3545; }
 
-/* --- Estilos de Tabla --- */
+
 .table-container {
   overflow-x: auto;
 }
@@ -59,7 +72,7 @@ td:last-child {
   gap: 8px;
 }
 
-/* --- Estilos del Formulario (Modal) --- */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -97,7 +110,7 @@ td:last-child {
   margin-bottom: 24px;
 }
 
-/* Campos que ocupan toda la fila */
+
 .form-grid .form-group:nth-child(5) {
   grid-column: 1 / -1;
 }
@@ -120,7 +133,7 @@ td:last-child {
   border: 1px solid #ccc;
   border-radius: 6px;
   width: 100%;
-  box-sizing: border-box; /* Importante */
+  box-sizing: border-box;
 }
 
 .modal-actions {

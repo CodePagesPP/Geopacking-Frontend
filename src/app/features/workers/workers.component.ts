@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, filter, Observable, switchMap } from 'rxjs';
 import { ConfirmationService } from '../../core/services/confirmation.service';
-import { Operador, Reporte, UserResponse } from '../../core/models/worker.model';
+import { Operador, Reporte, UserRequest, UserResponse } from '../../core/models/worker.model';
 import { WorkersService } from '../../core/services/workers.service';
 import { CommonModule } from '@angular/common';
-type WorkerType = 'OPERADOR' | 'REPORTE';
+import Swal from 'sweetalert2';
+type WorkerType = 'OPERADOR' | 'AYUDANTE';
 @Component({
   selector: 'app-workers',
   standalone: true,
@@ -21,7 +22,7 @@ export class WorkersComponent {
 
  
   public operadores$ = new BehaviorSubject<UserResponse[]>([]);
-  public reportes$ = new BehaviorSubject<UserResponse[]>([]);
+  public ayudantes$ = new BehaviorSubject<UserResponse[]>([]);
 
  
   public showForm = false;
@@ -33,7 +34,8 @@ export class WorkersComponent {
   ngOnInit(): void {
     this.initForm();
     this.loadOperadores();
-    this.loadReportes();
+    this.loadAyudantes();
+    
   }
 
   initForm(): void {
@@ -43,113 +45,120 @@ export class WorkersComponent {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       sex: ['', Validators.required],
+      role: ['', Validators.required],
       password: ['']
     });
   }
 
   loadOperadores(): void {
-    this.workersService.getAllOperators().subscribe(data => this.operadores$.next(data));
+    this.workersService.getAll('OPERATOR').subscribe(data => this.operadores$.next(data));
+    
   }
 
-  loadReportes(): void {
-    this.workersService.getAllReport().subscribe(data => this.reportes$.next(data));
+  loadAyudantes(): void {
+    // Asumiendo que en tu BD el rol se llama 'AYUDANTE'
+    this.workersService.getAll('AYUDANTE').subscribe(data => this.ayudantes$.next(data));
   }
 
  
 
-  openNewForm(type: WorkerType): void {
+  openNewForm(): void {
     this.isEditing = false;
     this.showForm = true;
-    this.currentWorkerType = type;
-    this.workerForm.reset({ sex: '' });
-    
+    this.currentWorkerId = null;
+    this.workerForm.reset({ sex: '', role: '' });
+    this.workerForm.get('role')?.enable();
   
     this.workerForm.get('password')?.setValidators([Validators.required]);
     this.workerForm.get('password')?.updateValueAndValidity();
   }
 
-  openEditForm(worker: UserResponse, type: WorkerType): void {
+  openEditForm(worker: UserResponse): void {
     this.isEditing = true;
     this.showForm = true;
-    this.currentWorkerType = type;
     this.currentWorkerId = worker.id;
     
-   
+    // Password opcional
     this.workerForm.get('password')?.clearValidators();
     this.workerForm.get('password')?.updateValueAndValidity();
-
   
+    // Llenamos el formulario
     this.workerForm.patchValue({
       dni: worker.dni,
       name: worker.name,
       lastName: worker.lastName,
-      sex: (worker as any).sex || '' 
+      sex: worker.sex,
+      role: worker.role // El backend debe devolver el string correcto
     });
+
+    // Generalmente bloqueamos el cambio de rol al editar para evitar conflictos
+    this.workerForm.get('role')?.disable();
   }
 
   closeForm(): void {
     this.showForm = false;
     this.currentWorkerId = null;
-    this.currentWorkerType = null;
   }
 
   saveWorker(): void {
     if (this.workerForm.invalid) return;
 
-    const payload: Operador | Reporte = { ...this.workerForm.value };
-    if (!payload.password) {
-      delete payload.password;
-    }
+    // Usamos getRawValue() para obtener el campo 'role' aunque esté disabled (en edición)
+    const formValues = this.workerForm.getRawValue();
+    
+    const payload: UserRequest = {
+      dni: formValues.dni,
+      name: formValues.name,
+      lastName: formValues.lastName,
+      sex: formValues.sex,
+      password: formValues.password,
+      role: formValues.role // El rol viene del select
+    };
 
-    let obs: Observable<UserResponse>;
+    if (!payload.password) delete payload.password;
 
-    // Lógica para decidir qué servicio llamar
-    if (this.isEditing && this.currentWorkerId) {
-      obs = this.currentWorkerType === 'OPERADOR'
-        ? this.workersService.updateOperator(this.currentWorkerId, payload)
-        : this.workersService.updateReport(this.currentWorkerId, payload as Reporte);
-    } else {
-      obs = this.currentWorkerType === 'OPERADOR'
-        ? this.workersService.createOperator(payload)
-        : this.workersService.createReport(payload as Reporte);
-    }
+    const operation = (this.isEditing && this.currentWorkerId)
+      ? this.workersService.update(this.currentWorkerId, payload)
+      : this.workersService.create(payload);
 
-    obs.subscribe(() => {
-      // Recargamos solo la lista que modificamos
-      if (this.currentWorkerType === 'OPERADOR') {
+    operation.subscribe({
+      next: () => {
+        // Éxito: Refrescamos las listas
+        // Puedes refrescar ambas para asegurarte, o solo la del rol tocado
         this.loadOperadores();
-      } else {
-        this.loadReportes();
+        this.loadAyudantes();
+        
+        this.closeForm();
+        Swal.fire('Éxito', 'Usuario guardado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire('Error', 'No se pudo guardar. Verifique DNI.', 'error');
       }
-      this.closeForm();
     });
   }
 
   // --- Manejo de Eliminación ---
 
-  onDelete(worker: UserResponse, type: WorkerType): void {
+  onDelete(worker: UserResponse): void {
     this.confirmationService.confirm({
-      title: `Eliminar ${type === 'OPERADOR' ? 'Operador' : 'Reporte'}`,
-      message: `¿Estás seguro de que deseas eliminar a ${worker.name} ${worker.lastName}?`,
+      title: 'Eliminar Usuario',
+      message: `¿Eliminar a ${worker.name} (${worker.role})?`,
       confirmText: 'Sí, eliminar',
-      cancelText: 'No, cancelar'
+      cancelText: 'Cancelar'
     })
     .pipe(
-      filter(confirmed => confirmed === true),
-      switchMap(() => {
-        // Decidimos qué servicio de eliminación llamar
-        return type === 'OPERADOR'
-          ? this.workersService.deleteOperator(worker.id)
-          : this.workersService.deleteReport(worker.id);
-      })
+      filter(ok => ok === true),
+      switchMap(() => this.workersService.delete(worker.id))
     )
-    .subscribe(() => {
-      // Recargamos la lista correspondiente
-      if (type === 'OPERADOR') {
+    .subscribe({
+      next: () => {
+        // Refrescar todo
         this.loadOperadores();
-      } else {
-        this.loadReportes();
-      }
+        this.loadAyudantes();
+        Swal.fire('Eliminado', 'Usuario eliminado.', 'success');
+      },
+      error: () => Swal.fire('Error', 'No se pudo eliminar.', 'error')
     });
   }
 }
