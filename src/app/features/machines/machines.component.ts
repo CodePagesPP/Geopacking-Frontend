@@ -41,6 +41,7 @@ export class MachinesComponent implements OnInit{
     this.maquinaForm = this.fb.group({
       tipo: [null, [Validators.required]],
       codigo: ['', [Validators.required]],
+      nroSerie: ['', [Validators.required]],
       marca: ['', [Validators.required]],
       modelo: ['', [Validators.required]],
       activo: [true, [Validators.required]],

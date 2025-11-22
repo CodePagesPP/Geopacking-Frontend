@@ -228,3 +228,105 @@ tbody tr:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.header {
+  margin-top: 4%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Alineado arriba por si los controles crecen */
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  flex-wrap: wrap; /* Para responsive */
+  gap: 1rem;
+}
+
+.header h2 {
+  margin: 0;
+  color: #333;
+  align-self: center; /* Centra el título verticalmente respecto al bloque */
+}
+
+/* Contenedor derecho que agrupa Filtros y Botones */
+.header-controls {
+  display: flex;
+  flex-direction: column; /* Apila filtros arriba y botones abajo */
+  align-items: flex-end;  /* Alinea todo a la derecha */
+  gap: 1rem; /* Espacio entre la fila de filtros y la fila de botones */
+}
+
+/* --- ESTILOS DE LOS FILTROS (Fila Superior) --- */
+.filter-form {
+  display: flex;
+  align-items: flex-end; /* Alinea los inputs y botones en la parte baja */
+  gap: 1rem; /* Espacio entre fechas y botones */
+  background-color: #f9f9f9;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 1rem; /* Espacio entre "Desde" y "Hasta" */
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column; /* Label arriba del input */
+  gap: 0.25rem;
+}
+
+.input-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.input-group input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem; /* Espacio entre Filtrar y Limpiar */
+}
+
+/* Botones pequeños para los filtros */
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* --- ESTILOS DE LAS ACCIONES (Fila Inferior) --- */
+.actions-row {
+  display: flex;
+  gap: 1rem; /* Espacio entre Imprimir y Registrar */
+}
+
+/* Ajuste responsive para móviles */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .header-controls {
+    align-items: stretch;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-inputs {
+    flex-direction: column;
+  }
+  
+  .actions-row {
+    flex-direction: column;
+  }
+}
