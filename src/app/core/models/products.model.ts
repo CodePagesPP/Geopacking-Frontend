@@ -14,10 +14,13 @@ export interface ProductBase {
   pesoUnitario: number;
   activo: boolean;
   color: Color | null;
+  material?: Material | null;      // Para TF
+  materiales?: Material[];
 }
 
 export interface ProductoEX extends ProductBase {
     material: Material | null;
+    materiales: Material[];
 }
 
 export interface ProductoTF extends ProductBase {
@@ -38,6 +41,7 @@ export interface ProductoDTO {
   pesoUnitario: number | null;
   activo: boolean;
   materialId: number | null;
+  materialesIds: number[];
   colorId: number | null;
 }
 

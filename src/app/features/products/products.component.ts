@@ -7,6 +7,8 @@ import {
   ProductoEX,
   ProductoTF,
   ProductoDTO,
+  Product,
+  ProductBase,
 } from '../../core/models/products.model';
 import { ProductsService } from '../../core/services/products.service';
 import Swal from 'sweetalert2';
@@ -109,22 +111,24 @@ export class ProductsComponent implements OnInit {
       pesoUnitario: null,
       activo: true,
       materialId: null,
+      materialesIds: [],
       colorId: null,
     };
   }
 
   // --- AQUÍ ESTÁ LA LÓGICA CORREGIDA ---
-  openModal(product?: ProductoEX | ProductoTF): void {
+  openModal(product?: ProductBase): void {
     if (product) {
       this.isEditMode = true;
       this.originalCode = product.code;
 
       // Determinamos cuál es el ID del "Material" dependiendo del tipo
       let currentMaterialId: number | null = null;
+      let matIds: number[] = [];
 
       if (this.currentProductType === 'EX') {
         // Si es EX, el backend manda objeto 'material'
-        currentMaterialId = (product as ProductoEX).material?.id || null;
+        matIds = product.materiales ? product.materiales.map(m => m.id) : [];
       } else {
         // Si es TF, el backend manda objeto 'productoBase'
         currentMaterialId = (product as ProductoTF).productoBase?.id || null;
@@ -140,8 +144,9 @@ export class ProductsComponent implements OnInit {
         unidadDeMedida: product.unidadDeMedida,
         pesoUnitario: product.pesoUnitario,
         activo: product.activo,
+        
         colorId: product.color?.id || null,
-
+        materialesIds: matIds,
         // Aquí asignamos el ID que calculamos arriba
         materialId: currentMaterialId,
       };
@@ -151,6 +156,28 @@ export class ProductsComponent implements OnInit {
       this.originalCode = '';
     }
     this.mostrarModal = true;
+  }
+
+  isMaterialSelected(id: number): boolean {
+    return this.modalProduct.materialesIds?.includes(id) || false;
+  }
+
+  // Agrega o quita el ID del array cuando se hace click
+  toggleMaterial(id: number, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    
+    // Aseguramos que el array esté inicializado
+    if (!this.modalProduct.materialesIds) {
+      this.modalProduct.materialesIds = [];
+    }
+
+    if (isChecked) {
+      // Si se marca, lo agregamos
+      this.modalProduct.materialesIds.push(id);
+    } else {
+      // Si se desmarca, lo filtramos (quitamos)
+      this.modalProduct.materialesIds = this.modalProduct.materialesIds.filter(item => item !== id);
+    }
   }
 
   closeModal(): void {
