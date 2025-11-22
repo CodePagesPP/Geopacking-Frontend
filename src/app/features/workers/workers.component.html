@@ -1,10 +1,15 @@
 <!-- Sección de Operadores -->
+<div class="main-header">
+  <h1>Gestión de Personal</h1>
+  <button class="btn btn-primary btn-lg" (click)="openNewForm()">
+    <i class="fas fa-plus-circle"></i> Crear Nuevo Usuario
+  </button>
+</div>
+
 <div class="crud-section">
   <div class="crud-header">
-    <h2>Gestión de Operadores</h2>
-    <button class="btn btn-primary" (click)="openNewForm('OPERADOR')">
-      Nuevo Operador
-    </button>
+    <h2>Lista de Operadores</h2>
+    
   </div>
 
   <div class="table-container">
@@ -22,15 +27,15 @@
         <tr *ngFor="let operador of operadores$ | async">
           <td>{{ operador.dni }}</td>
           <td>{{ operador.name }} {{ operador.lastName }}</td>
-          <td>{{ operador.role }}</td>
+          <td><span class="badge badge-op">{{ operador.role }}</span></td>
           <td>{{ operador.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>
-            <button class="btn btn-sm btn-secondary" (click)="openEditForm(operador, 'OPERADOR')">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="onDelete(operador, 'OPERADOR')">Eliminar</button>
+            <button class="btn btn-sm btn-secondary" (click)="openEditForm(operador)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(operador)">Eliminar</button>
           </td>
         </tr>
         <tr *ngIf="(operadores$ | async)?.length === 0">
-          <td colspan="5">No se encontraron operadores.</td>
+          <td colspan="5" class="text-center">No se encontraron operadores.</td>
         </tr>
       </tbody>
     </table>
@@ -40,10 +45,7 @@
 <!-- Sección de Reportes -->
 <div class="crud-section">
   <div class="crud-header">
-    <h2>Gestión de Reportes</h2>
-    <button class="btn btn-primary" (click)="openNewForm('REPORTE')">
-      Nuevo Reporte
-    </button>
+    <h2>Lista de Ayudantes</h2>
   </div>
 
   <div class="table-container">
@@ -58,18 +60,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let reporte of reportes$ | async">
-          <td>{{ reporte.dni }}</td>
-          <td>{{ reporte.name }} {{ reporte.lastName }}</td>
-          <td>{{ reporte.role }}</td>
-          <td>{{ reporte.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <tr *ngFor="let ayudante of ayudantes$ | async">
+          <td>{{ ayudante.dni }}</td>
+          <td>{{ ayudante.name }} {{ ayudante.lastName }}</td>
+          <td><span class="badge badge-rep">{{ ayudante.role }}</span></td>
+          <td>{{ ayudante.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>
-            <button class="btn btn-sm btn-secondary" (click)="openEditForm(reporte, 'REPORTE')">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="onDelete(reporte, 'REPORTE')">Eliminar</button>
+            <button class="btn btn-sm btn-secondary" (click)="openEditForm(ayudante)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(ayudante)">Eliminar</button>
           </td>
         </tr>
-        <tr *ngIf="(reportes$ | async)?.length === 0">
-          <td colspan="5">No se encontraron reportes.</td>
+        <tr *ngIf="(ayudantes$ | async)?.length === 0">
+          <td colspan="5" class="text-center">No se encontraron Ayudantes.</td>
         </tr>
       </tbody>
     </table>
@@ -88,6 +90,16 @@
 
     <!-- El formulario es el mismo -->
     <div class="form-grid">
+
+
+      <div class="form-group span-2">
+        <label for="role">Rol de Usuario <span class="text-danger">*</span></label>
+        <select id="role" formControlName="role" class="form-control">
+          <option value="" disabled>-- Seleccione Rol --</option>
+          <option value="OPERATOR">Operador</option>
+          <option value="AYUDANTE">Ayudante</option>
+          </select>
+      </div>
       <!-- DNI -->
       <div class="form-group">
         <label for="dni">DNI</label>
@@ -123,7 +135,7 @@
       </div>
       <div class="form-group" *ngIf="isEditing">
         <label for="password">Nueva Contraseña (Opcional)</label>
-        <input id="password" type="password" formControlName="password" class="form-control" placeholder="Dejar en blanco para no cambiar">
+        <input id="password" type="password" formControlName="password" class="form-control" placeholder="No cambiar">
       </div>
     </div>
 

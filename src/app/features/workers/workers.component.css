@@ -5,6 +5,22 @@
   display: block;
 }
 
+
+.main-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;          
+  margin-bottom: 30px;            
+  padding-bottom: 15px;         
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.main-header h1 {
+  margin: 0; 
+  font-size: 24px;
+  color: #333;
+}
+
 /* NUEVO: Contenedor para cada sección del CRUD */
 .crud-section + .crud-section {
   margin-top: 40px; /* Añade espacio entre las dos tablas */

@@ -3,9 +3,19 @@ export interface UserResponse {
   dni: string;
   name: string;
   lastName: string;
-  role: string;
+  role: string; // "OPERADOR", "AYUDANTE", "ADMIN"
+  sex: string;
   createdAt: string; 
   updatedAt?: string;
+}
+
+export interface UserRequest {
+  dni: string;
+  name: string;
+  lastName: string;
+  sex: string;
+  password?: string;
+  role: string; 
 }
 
 
