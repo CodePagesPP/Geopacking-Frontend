@@ -20,7 +20,7 @@ export class ToolsComponent implements OnInit {
   selectedToolType: Tools = 'Material';
   toolForm!: FormGroup;
   showForm = false;
-  editingToolCode: string | null = null;
+  editingToolCode: number | null = null;
   errorMsg: string | null = null;
 
   constructor(
@@ -57,7 +57,7 @@ export class ToolsComponent implements OnInit {
   }
 
   openEditForm(tool: Tool): void {
-    this.editingToolCode = tool.code;
+    this.editingToolCode = tool.id;
     this.toolForm.setValue({
       code: tool.code,
       name: tool.name
@@ -107,7 +107,7 @@ export class ToolsComponent implements OnInit {
     ).subscribe({
       next: () => {
 
-        this.toolService.delete(tool.code, this.selectedToolType).subscribe({
+        this.toolService.delete(tool.id, this.selectedToolType).subscribe({
           next: () => this.loadTools(),
           error: (err) => this.errorMsg = 'Error al eliminar: ' + (err.message || err.error?.message)
         });

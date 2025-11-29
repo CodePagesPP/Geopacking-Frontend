@@ -134,14 +134,27 @@ export class MachinesComponent implements OnInit{
     this.isEditMode = true;
     this.selectedMaquina = maquina;
     this.errorMsg = null;
-    this.maquinaForm.patchValue(maquina); // Carga los campos base
 
-    // Lógica para rellenar el formulario de orígenes si es un Molino
+    // 1. Crear controles (se inicializa en vacío [])
+    this.actualizarControlesDinamicos(maquina.tipo);
+
+    // 2. Llenar datos básicos
+    this.maquinaForm.patchValue(maquina, { emitEvent: false });
+
     if (maquina.tipo === 'Molino') {
-      // Extrae los IDs de los orígenes que el molino ya tiene
-      const origenIds = (maquina as Molino).origenes.map(o => o.id);
-      // Rellena el control 'origenIds' del formulario
-      this.maquinaForm.patchValue({ origenIds: origenIds });
+      const origenes = (maquina as Molino).origenes || [];
+      const origenIds = origenes.map(o => o.id);
+      
+      console.log('Intentando marcar IDs:', origenIds);
+
+     setTimeout(() => {
+        const control = this.maquinaForm.get('origenIds');
+        if (control) {
+            control.setValue(origenIds);
+            control.updateValueAndValidity(); // Fuerza a Angular a revisar este campo
+            console.log('Valor establecido en el control:', control.value);
+        }
+      }, 50); // 50ms es imperceptible para el humano pero una eternidad para la máquina
     }
 
     this.maquinaForm.get('tipo')?.disable();
@@ -180,7 +193,8 @@ export class MachinesComponent implements OnInit{
 
 isOrigenChecked(origenId: number): boolean {
   const currentIds = this.maquinaForm.get('origenIds')?.value || [];
-  return currentIds.includes(origenId);
+  
+   return currentIds.some((id: any) => id == origenId);
 }
 
  

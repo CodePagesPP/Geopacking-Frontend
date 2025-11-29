@@ -73,6 +73,7 @@
         <th>P. Bruto (Kg)</th>
         <th>P. Neto (Kg)</th>
         <th>Fecha</th>
+        <th>Hora</th>
         <th>Turno</th>
         <th>Operador</th>
         <th>Acciones</th>
@@ -89,6 +90,7 @@
         <td>{{ reg.pesoBruto | number:'1.2-2' }}</td>
         <td>{{ reg.pesoNeto | number:'1.2-2' }}</td>
         <td>{{ reg.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+        <td>{{ reg.horaCreacion }}</td>
         <td>{{ reg.turno }}</td>
         <td>{{ reg.operador.name }}</td>
         <td>

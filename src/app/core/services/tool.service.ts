@@ -55,16 +55,17 @@ export class ToolService {
     });
   }
 
-  update<K extends Tools>(code: string, data: ToolCreateDTO, toolType: K): Observable<ToolTypeMap[K]> {
+  update<K extends Tools>(id: number, data: ToolCreateDTO, toolType: K): Observable<ToolTypeMap[K]> {
     const endpoint = this.getEndpoint(toolType);
-    return this.http.put<ToolTypeMap[K]>(`${this.apiUrl}/${endpoint}/${code}`, data, {
+    
+    return this.http.put<ToolTypeMap[K]>(`${this.apiUrl}/${endpoint}/${id}`, data, {
       headers: this.authService.getAuthHeaders()
     });
   }
 
-  delete(code: string, toolType: Tools): Observable<void> {
+  delete(id: number, toolType: Tools): Observable<void> {
     const endpoint = this.getEndpoint(toolType);
-    return this.http.delete<void>(`${this.apiUrl}/${endpoint}/${code}`, {
+    return this.http.delete<void>(`${this.apiUrl}/${endpoint}/${id}`, {
       headers: this.authService.getAuthHeaders()
     });
   }

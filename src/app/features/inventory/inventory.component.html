@@ -126,8 +126,8 @@
       <div class="form-group">
         <label>Tipo de Scrapp <span class="text-danger">*</span></label>
         <select class="form-control" [(ngModel)]="typeScrappModalId">
-          <option [value]="null" disabled>-- Seleccione un tipo --</option>
-          <option *ngFor="let type of (typeScrapps$ | async)" [value]="type.id">
+          <option [ngValue]="null" disabled>-- Seleccione un tipo --</option>
+          <option *ngFor="let type of (typeScrapps$ | async)" [ngValue]="type.id">
             {{ type.name }}
           </option>
         </select>
@@ -144,7 +144,9 @@
         <label>Motivo</label>
         <select class="form-control" [(ngModel)]="motivoSeleccionadoId" (change)="verificarNuevoMotivo()">
           <option [ngValue]="null">-- Sin motivo --</option>
-          <option *ngFor="let m of listaMotivos" [value]="m.id">{{ m.nombre }}</option>
+          
+          <option *ngFor="let m of listaMotivos" [ngValue]="m.id">{{ m.nombre }}</option>
+          
           <option [ngValue]="-1" class="new-motivo-option">+ Agregar nuevo motivo...</option>
         </select>
       </div>

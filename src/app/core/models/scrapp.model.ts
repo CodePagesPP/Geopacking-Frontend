@@ -8,6 +8,7 @@ export interface RegistroScrapp {
   pesoBruto: number;
   pesoNeto: number;
   fechaCreacion: string;
+  horaCreacion: string;
   turno: string;
   maquina: Maquina;
   operador: User;
