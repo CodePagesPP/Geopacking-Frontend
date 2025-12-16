@@ -44,12 +44,12 @@ export class NavComponent implements OnInit {
             {
               label: 'Plan de Producción EX',
               icon: 'description',
-              route: '/produccion/extrusion/plan',
+              route: '/produccion/planProduccionEX',
             },
             {
               label: 'Órdenes de Producción EX',
               icon: 'assignment',
-              route: '/produccion/extrusion/ordenes',
+              route: '/produccion/ordenProduccionEX',
             },
           ],
         },

@@ -101,6 +101,28 @@ export const routes: Routes = [
         data: { roles: ['ADMIN_ACCESS'] },
         children: [
           {
+            path: 'planProduccionEX',
+            title: 'Plan de Producción EX',
+            loadComponent: () =>
+              import('./features/plan-prod-ex/plan-prod-ex.component').then(
+                (m) => m.PlanProdExComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+
+          {
+            path: 'ordenProduccionEX',
+            title: 'Orden de Producción EX',
+            loadComponent: () =>
+              import('./features/orden-prod-ex/orden-prod-ex.component').then(
+                (m) => m.OrdenProdEXComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+
+          {
             path: 'registroDeMolienda',
             title: 'Registro de Molienda',
             loadComponent: () =>
