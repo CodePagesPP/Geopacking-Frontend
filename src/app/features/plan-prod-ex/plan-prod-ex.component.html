@@ -1,0 +1,110 @@
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h2>Plan de Producción <span style="color: #3498db;">Extrusión</span></h2>
+            <small style="color: #7f8c8d;">Gestión de Órdenes de Trabajo</small>
+        </div>
+        <button class="btn btn-primary" (click)="abrirModal()">
+            + Nueva Orden
+        </button>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Fecha</th>
+                    <th>Máquina</th>
+                    <th>Producto</th>
+                    <th>Progreso (Kg)</th>
+                    <th>Estado</th>
+                    <th>Creado Por</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ot of listaOrdenes">
+                    <td style="font-weight: bold;">{{ ot.codigo }}</td>
+                    <td>{{ ot.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ ot.maquinaNombre }}</td>
+                    <td>{{ ot.productoNombre }}</td>
+                    <td>
+                        <div style="font-size: 0.85rem; margin-bottom: 2px;">
+                            {{ ot.producidoKg }} / {{ ot.requerimientoKg }}
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" [class.success]="ot.estado === 'COMPLETADO'"
+                                [style.width.%]="(ot.producidoKg! / ot.requerimientoKg!) * 100">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge" [class.espera]="ot.estado === 'EN_ESPERA'"
+                            [class.proceso]="ot.estado === 'EN_PROCESO'"
+                            [class.completado]="ot.estado === 'COMPLETADO'">
+                            {{ ot.estado?.replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ ot.creadaPorId }}
+                    </td>
+                </tr>
+
+                <tr *ngIf="listaOrdenes.length === 0">
+                    <td colspan="7" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                        No hay órdenes registradas actualmente.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3>Generar Orden</h3>
+            <button class="close-btn" (click)="cerrarModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form (ngSubmit)="guardarOrden()">
+
+                <div class="form-group">
+                    <label class="form-label">Máquina Extrusora</label>
+                    <select class="form-control" [(ngModel)]="nuevaOrden.maquinaId" name="maquina">
+                        <option value="0" disabled selected>-- Seleccione --</option>
+                        <option *ngFor="let maq of listaMaquinasExtrusoras" [value]="maq.id">
+                            {{ maq.codigo }} - {{ maq.marca }} {{ maq.modelo }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Producto EX</label>
+                    <select class="form-control" [(ngModel)]="nuevaOrden.productoId" name="producto">
+                        <option value="0" disabled selected>-- Seleccione --</option>
+                        <option *ngFor="let prod of listaProductosEX" [value]="prod.id">
+                            {{ prod.code }} - {{ prod.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Requerimiento (Kg)</label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevaOrden.requerimientoKg" name="req"
+                        placeholder="Ej: 500">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
