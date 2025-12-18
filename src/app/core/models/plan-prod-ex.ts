@@ -16,4 +16,23 @@ export interface OrdenTrabajoEX {
     creadaPorUsername?: string;
     producidoKg?: number;
     estado?: 'EN_ESPERA' | 'EN_PROCESO' | 'COMPLETADO';
+    prioridad?: number;
+}
+
+export interface Bobina {
+  codigo?: string;
+  pesoBruto: number;
+  pesoNeto: number;
+}
+
+export interface MaterialEX {
+  nombre: string;
+  cantidadKg: number;
+}
+
+export interface TurnoHistorial {
+    id: number;
+    fechaHoraFin: string;
+    totalKilosProducidos: number;
+    cantidadBobinas: number;
 }
