@@ -90,12 +90,16 @@
     <div class="seccion-form">
       <h4>Registrar Materiales</h4>
       <div class="form-inline">
+        
         <select [(ngModel)]="nuevoMaterial.nombre" class="input-dato">
           <option value="">Seleccionar Material...</option>
-          <option value="Polietileno">Polietileno</option>
-          <option value="Pigmento">Pigmento</option>
-          <option value="Reciclado">Reciclado</option>
+          
+          <option *ngFor="let mat of otSeleccionada?.materialesProducto" [value]="mat.name">
+            {{ mat.name }}
+          </option>
+          
         </select>
+
         <input type="number" [(ngModel)]="nuevoMaterial.cantidadKg" placeholder="Kg" class="input-dato">
         <button (click)="registrarMaterial()" class="btn-agregar">+</button>
       </div>

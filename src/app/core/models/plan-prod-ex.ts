@@ -1,5 +1,6 @@
 import { Maquina } from "./machines.model";
-import { ProductoDTO } from "./products.model";
+import { ProductoDTO, ProductoEX } from "./products.model";
+import { Material } from "./tool.model";
 
 export interface OrdenTrabajoEX {
     id?: number;
@@ -17,6 +18,7 @@ export interface OrdenTrabajoEX {
     producidoKg?: number;
     estado?: 'EN_ESPERA' | 'EN_PROCESO' | 'COMPLETADO';
     prioridad?: number;
+    materialesProducto?: Material[];
 }
 
 export interface Bobina {
