@@ -88,9 +88,16 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN_ACCESS'] },
         children: [
-          // Aquí mapeamos todas las subopciones al InventoryComponent por ahora
-          // O puedes crear componentes específicos para cada uno luego
-          
+          {
+            path: 'insumos',
+            title: 'Insumos',
+            loadComponent: () =>
+              import('./features/insumos/insumos.component').then(
+                (m) => m.InsumosComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
         ],
       },
 

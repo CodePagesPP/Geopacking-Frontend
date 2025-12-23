@@ -5,24 +5,16 @@
 
     <div *ngIf="isAdmin" class="filter-row">
       <form (ngSubmit)="onAplicarFiltros()" class="filter-form">
-        
+
         <div class="date-inputs">
           <div class="input-group">
             <label for="fechaInicio">Desde:</label>
-            <input 
-              type="date" 
-              id="fechaInicio" 
-              [(ngModel)]="filtros.fechaInicio" 
-              name="fechaInicio">
+            <input type="date" id="fechaInicio" [(ngModel)]="filtros.fechaInicio" name="fechaInicio">
           </div>
-          
+
           <div class="input-group">
             <label for="fechaFin">Hasta:</label>
-            <input 
-              type="date" 
-              id="fechaFin" 
-              [(ngModel)]="filtros.fechaFin" 
-              name="fechaFin">
+            <input type="date" id="fechaFin" [(ngModel)]="filtros.fechaFin" name="fechaFin">
           </div>
         </div>
 
@@ -30,7 +22,8 @@
           <button type="submit" class="btn btn-primary btn-sm" [disabled]="!filtros.fechaInicio || !filtros.fechaFin">
             Filtrar
           </button>
-          <button type="button" class="btn btn-secondary btn-sm" (click)="onLimpiarFiltros()" [disabled]="!filtros.fechaInicio && !filtros.fechaFin">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="onLimpiarFiltros()"
+            [disabled]="!filtros.fechaInicio && !filtros.fechaFin">
             Limpiar
           </button>
         </div>
@@ -39,10 +32,7 @@
     </div>
 
     <div class="actions-row">
-      <button 
-        *ngIf="isAdmin" 
-        class="btn btn-secondary" 
-        (click)="onImprimirReporteCompleto()" 
+      <button *ngIf="isAdmin" class="btn btn-secondary" (click)="onImprimirReporteCompleto()"
         [disabled]="isLoading || registros.length === 0">
         <span class="material-icons-sharp">print</span>
         Imprimir Reporte A4
@@ -70,6 +60,7 @@
         <th>ID</th>
         <th>Bolsón N°</th>
         <th>Máquina</th>
+        <th>Tipo Scrapp</th>
         <th>P. Bruto (Kg)</th>
         <th>P. Neto (Kg)</th>
         <th>Fecha</th>
@@ -87,6 +78,7 @@
         <td>{{ reg.id }}</td>
         <td>{{ reg.numeroBolson }}/{{ reg.anio % 100 }}</td>
         <td>{{ reg.maquina.codigo }}</td>
+        <td>{{ reg.typeScrapp?.name }}</td>
         <td>{{ reg.pesoBruto | number:'1.2-2' }}</td>
         <td>{{ reg.pesoNeto | number:'1.2-2' }}</td>
         <td>{{ reg.fechaCreacion | date:'dd/MM/yyyy' }}</td>
@@ -106,15 +98,15 @@
         <td colspan="3" class="total-label">
           <strong>TOTALES</strong>
         </td>
-        
+
         <td class="total-value">
           <strong>{{ totalPesoBruto | number:'1.2-2' }}</strong>
         </td>
-        
+
         <td class="total-value">
           <strong>{{ totalPesoNeto | number:'1.2-2' }}</strong>
         </td>
-        
+
         <td colspan="4"></td>
       </tr>
     </tfoot>
@@ -123,21 +115,17 @@
 </div>
 
 <div *ngIf="paginacion.totalPages > 1" class="pagination-controls">
-  <button 
-    class="btn btn-secondary" 
-    (click)="onPageChange(paginacion.page - 1)" 
+  <button class="btn btn-secondary" (click)="onPageChange(paginacion.page - 1)"
     [disabled]="paginacion.page === 0 || isLoading">
     &lt; Anterior
   </button>
-  
+
   <span>
-    Página {{ paginacion.page + 1 }} de {{ paginacion.totalPages }} 
+    Página {{ paginacion.page + 1 }} de {{ paginacion.totalPages }}
     (Total: {{ paginacion.totalItems }} registros)
   </span>
-  
-  <button 
-    class="btn btn-secondary" 
-    (click)="onPageChange(paginacion.page + 1)" 
+
+  <button class="btn btn-secondary" (click)="onPageChange(paginacion.page + 1)"
     [disabled]="paginacion.page === (paginacion.totalPages - 1) || isLoading">
     Siguiente &gt;
   </button>
@@ -156,23 +144,54 @@
       </div>
 
       <div class="modal-body">
-        
-       
+
+
         <div *ngIf="errorMessage" class="alert alert-danger">
           {{ errorMessage }}
         </div>
 
-     
+
         <div class="form-group">
           <label for="maquinaId">Máquina</label>
-          <select id="maquinaId" formControlName="maquinaId">
+          <select id="maquinaId" formControlName="maquinaId" (change)="onMaquinaChange()">
             <option [ngValue]="null" disabled>Seleccione una máquina...</option>
-            <option *ngFor="let maquina of maquinas" [value]="maquina.id">
+            <option *ngFor="let maquina of maquinas" [ngValue]="maquina.id">
               {{ maquina.codigo }}
             </option>
           </select>
-          <div *ngIf="scrappForm.get('maquinaId')?.touched && scrappForm.get('maquinaId')?.errors?.['required']" class="error-text">
+          <div *ngIf="scrappForm.get('maquinaId')?.touched && scrappForm.get('maquinaId')?.errors?.['required']"
+            class="error-text">
             La máquina es obligatoria.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Origen de la Máquina</label>
+
+          <div *ngIf="origenesDisponibles.length === 0" class="info-box">
+            <small>
+              {{ scrappForm.get('maquinaId')?.value
+              ? 'Esta máquina no tiene orígenes configurados.'
+              : 'Seleccione una máquina primero.' }}
+            </small>
+          </div>
+
+          <div *ngIf="origenesDisponibles.length > 0" class="radio-group-container">
+
+            <div *ngFor="let origen of origenesDisponibles" class="radio-item">
+              <input type="radio" [id]="'origen_' + origen.id" name="origenId" formControlName="origenId"
+                [value]="origen.id">
+
+              <label [for]="'origen_' + origen.id" class="radio-btn">
+                {{ origen.name }}
+              </label>
+            </div>
+
+          </div>
+
+          <div *ngIf="scrappForm.get('origenId')?.touched && scrappForm.get('origenId')?.errors?.['required']"
+            class="error-message">
+            Es obligatorio seleccionar un origen.
           </div>
         </div>
 
@@ -184,16 +203,18 @@
               {{ type.code }} - {{ type.name }}
             </option>
           </select>
-          <div *ngIf="scrappForm.get('typeScrappId')?.touched && scrappForm.get('typeScrappId')?.errors?.['required']" class="error-text">
+          <div *ngIf="scrappForm.get('typeScrappId')?.touched && scrappForm.get('typeScrappId')?.errors?.['required']"
+            class="error-text">
             El tipo de scrapp es obligatorio.
           </div>
         </div>
 
-     
+
         <div class="form-group">
           <label for="pesoBruto">Peso Bruto (Kg)</label>
           <input id="pesoBruto" type="number" formControlName="pesoBruto" placeholder="Ej: 500.50">
-          <div *ngIf="scrappForm.get('pesoBruto')?.touched && scrappForm.get('pesoBruto')?.errors?.['required']" class="error-text">
+          <div *ngIf="scrappForm.get('pesoBruto')?.touched && scrappForm.get('pesoBruto')?.errors?.['required']"
+            class="error-text">
             El peso bruto es obligatorio.
           </div>
         </div>
@@ -202,7 +223,8 @@
         <div class="form-group">
           <label for="pesoNeto">Peso Neto (Kg)</label>
           <input id="pesoNeto" type="number" formControlName="pesoNeto" placeholder="Ej: 490.00">
-          <div *ngIf="scrappForm.get('pesoNeto')?.touched && scrappForm.get('pesoNeto')?.errors?.['required']" class="error-text">
+          <div *ngIf="scrappForm.get('pesoNeto')?.touched && scrappForm.get('pesoNeto')?.errors?.['required']"
+            class="error-text">
             El peso neto es obligatorio.
           </div>
         </div>

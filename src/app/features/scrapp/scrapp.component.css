@@ -330,3 +330,57 @@ tbody tr:hover {
     flex-direction: column;
   }
 }
+
+.radio-group-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Espacio entre botones */
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.radio-item input[type="radio"] {
+  display: none;
+}
+
+.radio-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+}
+
+.radio-btn:hover {
+  background-color: #f5f5f5;
+  border-color: #bbb;
+}
+
+.radio-item input[type="radio"]:checked + .radio-btn {
+  background-color: #3498db; /* Azul (o tu color primario) */
+  color: white;
+  border-color: #3498db;
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+  font-weight: 500;
+}
+
+.info-box {
+  background-color: #f8f9fa;
+  border: 1px dashed #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  color: #666;
+  margin-top: 5px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

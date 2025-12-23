@@ -1,5 +1,6 @@
 import { User } from "./auth.model";
 import { Maquina } from "./machines.model";
+import { Origen, TypeScrapp } from "./tool.model";
 
 export interface RegistroScrapp {
   id: number;
@@ -12,10 +13,14 @@ export interface RegistroScrapp {
   turno: string;
   maquina: Maquina;
   operador: User;
+  typeScrapp?: TypeScrapp;
+  origen?: Origen;
 }
 
 export interface ScrappRegistroDTO {
   maquinaId: number;
+  origenId: number;
+  typeScrappId: number;
   pesoBruto: number;
   pesoNeto: number;
 }

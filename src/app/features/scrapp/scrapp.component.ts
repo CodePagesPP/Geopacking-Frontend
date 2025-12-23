@@ -1,23 +1,32 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RegistroScrapp, ScrappRegistroDTO } from '../../core/models/scrapp.model';
-import { Maquina } from '../../core/models/machines.model';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  RegistroScrapp,
+  ScrappRegistroDTO,
+} from '../../core/models/scrapp.model';
+import { Maquina, Molino } from '../../core/models/machines.model';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ScrappService } from '../../core/services/scrapp.service';
 import { MaquinaService } from '../../core/services/machine.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToolService } from '../../core/services/tool.service';
 import { catchError, Observable, of } from 'rxjs';
-import { TypeScrapp } from '../../core/models/tool.model';
+import { Origen, TypeScrapp } from '../../core/models/tool.model';
 
 @Component({
   selector: 'app-scrapp',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, DatePipe, FormsModule],
   templateUrl: './scrapp.component.html',
-  styleUrl: './scrapp.component.css'
+  styleUrl: './scrapp.component.css',
 })
-export class ScrappComponent implements OnInit{
+export class ScrappComponent implements OnInit {
   private fb = inject(FormBuilder);
   private scrappService = inject(ScrappService);
   private maquinaService = inject(MaquinaService);
@@ -25,6 +34,7 @@ export class ScrappComponent implements OnInit{
   private toolService = inject(ToolService);
   public registros: RegistroScrapp[] = [];
   public maquinas: Maquina[] = [];
+  public origenesDisponibles: Origen[] = [];
   public scrappForm: FormGroup;
   public isFormOpen = false;
   public isLoading = false;
@@ -34,26 +44,24 @@ export class ScrappComponent implements OnInit{
   public totalPesoBruto = 0;
   public totalPesoNeto = 0;
   public paginacion = {
-    page: 0,       
-    size: 10,     
+    page: 0,
+    size: 10,
     totalItems: 0,
-    totalPages: 0
+    totalPages: 0,
   };
-
 
   public filtros = {
     fechaInicio: '',
-    fechaFin: ''     
+    fechaFin: '',
   };
 
   constructor() {
-    
-    // Inicializar el formulario
     this.scrappForm = this.fb.group({
       maquinaId: [null, Validators.required],
+      origenId: [null, Validators.required],
       typeScrappId: [null, Validators.required],
       pesoBruto: [null, [Validators.required, Validators.min(0.1)]],
-      pesoNeto: [null, [Validators.required, Validators.min(0.1)]]
+      pesoNeto: [null, [Validators.required, Validators.min(0.1)]],
     });
     this.typeScrapps$ = of([]);
   }
@@ -67,50 +75,66 @@ export class ScrappComponent implements OnInit{
 
   loadMaquinas(): void {
     this.maquinaService.getMolinosActivos().subscribe({
-      next: (data) => this.maquinas = data,
-      error: (err) => this.showError('Error al cargar máquinas')
+      next: (data) => (this.maquinas = data),
+      error: (err) => this.showError('Error al cargar máquinas'),
     });
   }
 
   loadTypeScrapps(): void {
     this.typeScrapps$ = this.toolService.getAll('TypeScrapp').pipe(
-      catchError(err => {
+      catchError((err) => {
         return of([]);
       })
     );
   }
 
-loadRegistros(): void {
+  onMaquinaChange(): void {
+    const maquinaId = this.scrappForm.get('maquinaId')?.value;
+    this.scrappForm.get('origenId')?.setValue(null);
+    this.origenesDisponibles = [];
+
+    if (!maquinaId) return;
+
+    const maquinaSeleccionada = this.maquinas.find((m) => m.id == maquinaId);
+
+    if (maquinaSeleccionada && maquinaSeleccionada.tipo === 'Molino') {
+      const molino = maquinaSeleccionada as Molino;
+
+      if (molino.origenes && molino.origenes.length > 0) {
+        this.origenesDisponibles = molino.origenes;
+      }
+    }
+  }
+
+  loadRegistros(): void {
     this.isLoading = true;
     this.errorMessage = null;
 
-    
     const fechaInicio = this.filtros.fechaInicio || undefined;
     const fechaFin = this.filtros.fechaFin || undefined;
 
-    
-    this.scrappService.getReportePaginado( 
-      this.paginacion.page,
-      this.paginacion.size,
-      fechaInicio,
-      fechaFin
-    ).subscribe({
-      next: (data) => {
-        
-        this.registros = data.registros;
-        console.log(this.registros);
-        this.totalPesoBruto = data.totalPesoBruto;
-        this.totalPesoNeto = data.totalPesoNeto;
-        
-        
-        this.paginacion.page = data.currentPage; 
-        this.paginacion.totalItems = data.totalItems;
-        this.paginacion.totalPages = data.totalPages;
-        
-        this.isLoading = false;
-      },
-      error: (err) => this.handleLoadError(err, 'Error al cargar reporte')
-    });
+    this.scrappService
+      .getReportePaginado(
+        this.paginacion.page,
+        this.paginacion.size,
+        fechaInicio,
+        fechaFin
+      )
+      .subscribe({
+        next: (data) => {
+          this.registros = data.registros;
+          console.log(this.registros);
+          this.totalPesoBruto = data.totalPesoBruto;
+          this.totalPesoNeto = data.totalPesoNeto;
+
+          this.paginacion.page = data.currentPage;
+          this.paginacion.totalItems = data.totalItems;
+          this.paginacion.totalPages = data.totalPages;
+
+          this.isLoading = false;
+        },
+        error: (err) => this.handleLoadError(err, 'Error al cargar reporte'),
+      });
   }
 
   onPageChange(nuevaPagina: number): void {
@@ -125,7 +149,6 @@ loadRegistros(): void {
     this.loadRegistros();
   }
 
-  
   onLimpiarFiltros(): void {
     this.filtros.fechaInicio = '';
     this.filtros.fechaFin = '';
@@ -162,40 +185,40 @@ loadRegistros(): void {
       next: (nuevoRegistro) => {
         this.isLoading = false;
         this.closeForm();
-        this.loadRegistros(); 
-        
+        this.loadRegistros();
       },
       error: (err) => {
         this.showError(err.message || 'Error al registrar el pesaje');
         this.isLoading = false;
-      }
+      },
     });
   }
 
   onImprimirReporteCompleto(): void {
     this.isLoading = true;
-    this.scrappService.getReporteCompletoPdf(
-      this.filtros.fechaInicio || undefined,
-      this.filtros.fechaFin || undefined
-    ).subscribe({
-      next: (blob) => {
-        const file = new Blob([blob], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(file);
-        window.open(fileURL, '_blank');
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.showError('Error al generar el reporte PDF completo');
-        this.isLoading = false;
-      }
-    });
+    this.scrappService
+      .getReporteCompletoPdf(
+        this.filtros.fechaInicio || undefined,
+        this.filtros.fechaFin || undefined
+      )
+      .subscribe({
+        next: (blob) => {
+          const file = new Blob([blob], { type: 'application/pdf' });
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL, '_blank');
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.showError('Error al generar el reporte PDF completo');
+          this.isLoading = false;
+        },
+      });
   }
 
   onImprimir(registroId: number): void {
     this.isLoading = true;
     this.scrappService.getEtiquetaPdf(registroId).subscribe({
       next: (blob) => {
-      
         const file = new Blob([blob], { type: 'application/pdf' });
         const fileURL = URL.createObjectURL(file);
         window.open(fileURL, '_blank');
@@ -204,7 +227,7 @@ loadRegistros(): void {
       error: (err) => {
         this.showError('Error al generar la etiqueta PDF');
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -222,7 +245,7 @@ loadRegistros(): void {
 
   showError(message: string): void {
     this.errorMessage = message;
-    
-    setTimeout(() => this.errorMessage = null, 5000);
+
+    setTimeout(() => (this.errorMessage = null), 5000);
   }
 }
