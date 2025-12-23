@@ -1,1 +1,152 @@
-<p>insumos works!</p>
+<div class="inventario-container">
+
+    <div class="header-section">
+        <h2 class="page-title">Gestión de Insumos</h2>
+        <div class="stock-card">
+            <span class="stock-label">Stock Actual en Almacén</span>
+            <small class="d-block text-muted" style="font-size: 0.8rem;" *ngIf="!filtros.materialId">
+                (Seleccione un material)
+            </small>
+            <div class="stock-value-container">
+                <span class="stock-value">{{ stockActual | number:'1.2-2' }}</span>
+                <span class="stock-unit">Kg</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-section">
+
+        <div class="manual-actions">
+            <button class="btn-action btn-ingreso" (click)="abrirModal(Operacion.INGRESO)">
+                <i class="fas fa-plus-circle"></i> Generar Ingreso
+            </button>
+            <button class="btn-action btn-salida" (click)="abrirModal(Operacion.SALIDA)">
+                <i class="fas fa-minus-circle"></i> Generar Salida
+            </button>
+        </div>
+
+        <div class="filters-container">
+
+            <div class="filter-group">
+                <label>Desde:</label>
+                <div class="input-with-icon">
+                    <input type="date" [(ngModel)]="filtros.fechaInicio">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Hasta:</label>
+                <div class="input-with-icon">
+                    <input type="date" [(ngModel)]="filtros.fechaFin">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Material:</label>
+                <div class="input-with-icon">
+                    <select [(ngModel)]="filtros.materialId" (change)="onMaterialFilterChange($event)">
+                        <option [value]="null">-- Todos --</option>
+                        <option *ngFor="let m of materiales" [value]="m.id">
+                            {{ m.code }} - {{ m.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="btn-filter" (click)="filtrar()">Filtrar</button>
+                <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>FECHA</th>
+                    <th>OPERACIÓN</th>
+                    <th>MOTIVO</th>
+                    <th>TIPO DE REGISTRO</th>
+                    <th>MATERIAL</th>
+                    <th class="text-right">CANTIDAD (KG)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of registros">
+                    <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                    <td>
+                        <span class="status-badge"
+                            [ngClass]="item.operacion === 'INGRESO' ? 'status-ingreso' : 'status-salida'">
+                            {{ item.operacion }}
+                        </span>
+                    </td>
+                    <td>{{ item.motivoNombre || '-' }}</td>
+                    <td>{{ item.tipoRegistro }}</td>
+                    <td>{{ item.materialNombre }}</td>
+                    <td class="text-right font-bold">{{ item.cantidad | number:'1.2-2' }}</td>
+                </tr>
+
+                <tr *ngIf="registros.length === 0">
+                    <td colspan="7" class="text-center no-data">No se encontraron movimientos.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-container" *ngIf="totalPages > 1">
+        <button [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">Anterior</button>
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(currentPage + 1)">Siguiente</button>
+    </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="isFormOpen">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Registrar {{ tipoOperacion | titlecase }}</h3>
+            <button class="close-btn" (click)="cerrarModal()">&times;</button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Material <span class="text-danger">*</span></label>
+                    <select class="form-control" formControlName="materialId">
+                        <option [ngValue]="null" disabled>-- Seleccione un material --</option>
+                        <option *ngFor="let m of materiales" [ngValue]="m.id">
+                            {{ m.code }} - {{ m.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Cantidad (Kg) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" formControlName="cantidad" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label>Motivo</label>
+                    <select class="form-control" formControlName="motivoSelect" (change)="onMotivoChange($event)">
+                        <option [ngValue]="null">-- Sin motivo --</option>
+                        <option *ngFor="let mot of motivos" [ngValue]="mot.id">{{ mot.nombre }}</option>
+                        <option value="NUEVO" class="new-motivo-option">+ Agregar nuevo motivo...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" *ngIf="mostrarInputNuevoMotivo">
+                    <textarea class="form-control new-motivo-input" formControlName="nuevoMotivoText" rows="2"
+                        placeholder="Escriba el nuevo motivo aquí..."></textarea>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-confirm" [disabled]="form.invalid">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
