@@ -143,7 +143,10 @@ export class NavComponent implements OnInit {
             },
           ],
         },
-        { label: 'Insumos', icon: 'science', route: '/inventario/insumos' },
+        { label: 'Insumos', 
+          icon: 'science', 
+          route: '/inventario/insumos'
+        },
         {
           label: 'Material de Empaque',
           icon: 'inventory',

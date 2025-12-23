@@ -82,7 +82,6 @@ export const routes: Routes = [
         ],
       },
 
-      // --- NUEVA RUTA: INVENTARIO (/inventario/...) ---
       {
         path: 'inventario',
         canActivate: [roleGuard],
@@ -101,7 +100,6 @@ export const routes: Routes = [
         ],
       },
 
-      // --- NUEVA RUTA: PRODUCCIÓN (/produccion/...) ---
       {
         path: 'produccion',
         canActivate: [roleGuard],
