@@ -1,0 +1,126 @@
+.contenedor-historial {
+  padding: 20px;
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.titulo-vista {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* --- TOOLBAR --- */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.filtros-fecha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.grupo-input label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.input-fecha {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-filtrar {
+  background-color: #8ab4f8; /* Azul claro tipo imagen */
+  color: #000;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px; /* Alinear con inputs */
+}
+
+.btn-limpiar {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.btn-imprimir {
+  background-color: #555; /* Gris oscuro tipo imagen */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-imprimir:hover {
+  background-color: #333;
+}
+
+/* --- TABLA --- */
+.tabla-container {
+  overflow-x: auto;
+}
+
+.tabla-custom {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla-custom th {
+  background-color: #f8f9fa;
+  color: #555;
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #dee2e6;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.tabla-custom td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.tabla-custom tr:hover {
+  background-color: #f1f1f1;
+}
+
+.vacio {
+  text-align: center;
+  padding: 30px;
+  color: #888;
+  font-style: italic;
+}

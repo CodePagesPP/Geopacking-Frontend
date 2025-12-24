@@ -1,0 +1,58 @@
+<div class="contenedor-historial">
+  
+  <h2 class="titulo-vista">Historial de Bobinas (Stock)</h2>
+
+  <div class="toolbar">
+    <div class="filtros-fecha">
+      <div class="grupo-input">
+        <label>Desde:</label>
+        <input type="date" [(ngModel)]="fechaDesde" class="input-fecha">
+      </div>
+      <div class="grupo-input">
+        <label>Hasta:</label>
+        <input type="date" [(ngModel)]="fechaHasta" class="input-fecha">
+      </div>
+      
+      <button class="btn-filtrar" (click)="filtrar()">Filtrar</button>
+      <button class="btn-limpiar" (click)="limpiar()">Limpiar</button>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-imprimir" (click)="imprimirReporte()">
+        🖨 Imprimir Reporte Stock (PDF)
+      </button>
+    </div>
+  </div>
+
+  <div class="tabla-container">
+    <table class="tabla-custom">
+      <thead>
+        <tr>
+          <th>FECHA</th>
+          <th>COD. BOBINA</th>
+          <th>OPERACIÓN (OT)</th>
+          <th>COD. PRODUCTO</th>
+          <th>OPERADOR</th>
+          <th>P. BRUTO</th>
+          <th>P. NETO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of listaFiltrada">
+          <td>{{ b.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td style="font-weight: bold;">{{ b.codigoBobina }}</td>
+          <td>{{ b.operacion }}</td>
+          <td>{{ b.codigoProducto }}</td>
+          <td>{{ b.operador }}</td>
+          <td>{{ b.pesoBruto }} Kg</td>
+          <td>{{ b.pesoNeto }} Kg</td>
+        </tr>
+        
+        <tr *ngIf="listaFiltrada.length === 0">
+          <td colspan="7" class="vacio">No hay registros para mostrar.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
