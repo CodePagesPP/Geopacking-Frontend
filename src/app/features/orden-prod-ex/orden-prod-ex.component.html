@@ -4,12 +4,10 @@
     <h2 class="titulo-panel">OT Pendientes</h2>
 
     <div class="lista-ots" cdkDropList (cdkDropListDropped)="onDrop($event)">
-      
-      <div *ngFor="let ot of listaOTs" 
-          class="tarjeta-ot" 
-          [class.activa]="ot.id === otSeleccionada?.id"
-          cdkDrag>
-        
+
+      <div *ngFor="let ot of listaOTs; let i = index" class="tarjeta-ot" [class.activa]="ot.id === otSeleccionada?.id"
+        cdkDrag>
+
         <div class="custom-placeholder" *cdkDragPlaceholder></div>
 
         <div class="info-ot">
@@ -21,112 +19,245 @@
         </div>
 
         <div class="controles-ot">
-          
           <div class="flechas-handle" cdkDragHandle>
-            <span class="flecha-icono">⬆</span>
-            <span class="flecha-icono">⬇</span>
+            <span class="flecha-icono">☰</span>
           </div>
 
-          <button class="btn-iniciar" 
-                  (click)="seleccionarOT(ot)"
-                  [class.btn-en-proceso]="ot.id === otSeleccionada?.id">
-            <span *ngIf="ot.id === otSeleccionada?.id">▶ En Proceso</span>
-            <span *ngIf="ot.id !== otSeleccionada?.id">☐ Iniciar</span>
-          </button>
+          <button class="btn-iniciar" (click)="seleccionarOT(ot)"
+            [disabled]="!esIniciable(i) && ot.id !== otSeleccionada?.id"
+            [ngStyle]="{'opacity': (!esIniciable(i) && ot.id !== otSeleccionada?.id) ? '0.5' : '1'}"
+            [class.btn-en-proceso]="ot.id === otSeleccionada?.id">
 
+            <span *ngIf="ot.id === otSeleccionada?.id">▶ En Proceso</span>
+
+            <span *ngIf="ot.id !== otSeleccionada?.id">
+              {{ esIniciable(i) ? '☐ Iniciar' : 'En Espera' }}
+            </span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="panel-registro">
-  
-  <div *ngIf="!otSeleccionada" class="placeholder-box">
-    <p>⬅ Selecciona una OT e Iníciala para comenzar.</p>
-  </div>
 
-  <div *ngIf="otSeleccionada">
-    
-    <div class="header-ot">
-      <h3>Producción: {{ otSeleccionada.codigo }}</h3>
-      <div class="datos-ot">
-         <span><strong>Máquina:</strong> {{ otSeleccionada.maquinaNombre }}</span>
-         <span><strong>Producto:</strong> {{ otSeleccionada.productoNombre }}</span>
-         <span><strong>Avance Total:</strong> {{ otSeleccionada.producidoKg | number:'1.2-2' }} / {{ otSeleccionada.requerimientoKg }} Kg</span>
-      </div>
+  <div class="panel-registro">
+
+    <div *ngIf="!otSeleccionada" class="placeholder-box">
+      <p>⬅ Selecciona una OT de las 3 primeras para comenzar.</p>
     </div>
 
-    <div class="seccion-form">
-      <h4>Registrar Bobina</h4>
-      <div class="form-inline">
-        <input type="text" [value]="otSeleccionada.maquinaNombre" disabled class="input-fijo">
-        <input type="text" [value]="otSeleccionada.productoNombre" disabled class="input-fijo">
-        
-        <input type="number" [(ngModel)]="nuevaBobina.pesoBruto" placeholder="P. Bruto" class="input-dato">
-        <input type="number" [(ngModel)]="nuevaBobina.pesoNeto" placeholder="P. Neto" class="input-dato">
-        
-        <button (click)="registrarBobina()" class="btn-agregar">+</button>
+    <div *ngIf="otSeleccionada">
+
+      <div class="header-ot">
+        <h3>Producción: {{ otSeleccionada.codigo }}</h3>
+        <div class="datos-ot">
+          <span><strong>Máquina:</strong> {{ otSeleccionada.maquinaNombre }}</span>
+          <span><strong>Producto:</strong> {{ otSeleccionada.productoNombre }}</span>
+          <span><strong>Avance:</strong> {{ otSeleccionada.producidoKg | number:'1.2-2' }} / {{
+            otSeleccionada.requerimientoKg }} Kg</span>
+        </div>
       </div>
 
-      <div class="contenedor-tabla-resumen">
-        <table class="tabla-produccion">
-          <thead><tr><th>Cód</th><th>Bruto</th><th>Neto</th></tr></thead>
+      <fieldset class="seccion-borde">
+        <legend>Registrar Bobina</legend>
+
+        <div class="form-grid-bobina">
+          <div class="grupo-dato">
+            <label>Hora Inicio</label>
+            <input type="time" [(ngModel)]="nuevaBobina.horaInicio" class="input-dato">
+          </div>
+          <div class="grupo-dato">
+            <label>Hora Fin</label>
+            <input type="time" [(ngModel)]="nuevaBobina.horaFin" class="input-dato">
+          </div>
+
+          <div class="grupo-dato">
+            <label>P. Bruto</label>
+            <input type="number" [(ngModel)]="nuevaBobina.pesoBruto" placeholder="0.00" class="input-dato">
+          </div>
+          <div class="grupo-dato">
+            <label>P. Neto</label>
+            <input type="number" [(ngModel)]="nuevaBobina.pesoNeto" placeholder="0.00" class="input-dato">
+          </div>
+
+          <button (click)="registrarBobina()" class="btn-agregar">+</button>
+        </div>
+
+        <div class="contenedor-tabla-resumen">
+          <table class="tabla-produccion">
+            <thead>
+              <tr>
+                <th>Cód</th>
+                <th>H.Inicio</th>
+                <th>H.Fin</th>
+                <th>P.Bruto</th>
+                <th>P.Neto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of bobinasTurno">
+                <td>{{ b.codigo }}</td>
+                <td>{{ b.horaInicio }}</td>
+                <td>{{ b.horaFin }}</td>
+                <td>{{ b.pesoBruto }}</td>
+                <td>{{ b.pesoNeto }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="cuadro-total">
+            <small>TOTAL TURNO: </small>
+            <strong>{{ totalKilosTurno | number:'1.2-2' }} Kg</strong>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="seccion-borde">
+        <legend>Registrar Materiales</legend>
+        <div class="form-inline">
+          <div class="grupo-dato">
+            <label>Material</label>
+            <select [(ngModel)]="nuevoMaterial.nombre" class="input-dato">
+              <option value="">Seleccionar Material...</option>
+              <option *ngFor="let mat of otSeleccionada?.materialesProducto" [value]="mat.name">
+                {{ mat.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="grupo-dato">
+            <label>Cantidad (Kg)</label>
+            <input type="number" [(ngModel)]="nuevoMaterial.cantidadKg" placeholder="Kg" class="input-dato">
+          </div>
+          
+          <button (click)="registrarMaterial()" class="btn-agregar">+</button>
+        </div>
+
+        <table class="tabla-produccion small">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>Kg</th>
+              <th>%</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr *ngFor="let b of bobinasTurno">
-              <td>{{ b.codigo }}</td>
-              <td>{{ b.pesoBruto }}</td>
-              <td>{{ b.pesoNeto }}</td>
+            <tr *ngFor="let m of materialesTurno">
+              <td>{{ m.nombre }}</td>
+
+              <td>{{ m.cantidadKg | number:'1.2-2' }}</td>
+
+              <td>
+                {{ totalKilosMaterial > 0 ? ((m.cantidadKg / totalKilosMaterial) * 100 | number:'1.1-1') : '0' }}%
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr style="font-weight: bold; background-color: #eee;">
+              <td>TOTAL</td>
+              <td>{{ totalKilosMaterial | number:'1.2-2' }}</td>
+              <td>100%</td>
+            </tr>
+          </tfoot>
+        </table>
+      </fieldset>
+
+      <fieldset class="seccion-borde">
+        <legend>Registrar Scrapp</legend>
+        <div class="form-inline">
+          <div class="grupo-dato">
+            <label>Scrapp</label>
+            <select [(ngModel)]="nuevoScrapp.tipo" class="input-dato">
+              <option value="">Tipo Scrapp...</option>
+              <option *ngFor="let t of tiposScrappDisponibles" [value]="t.name">{{ t.name }}</option>
+            </select>
+          </div>
+          
+          <div class="grupo-dato">
+            <label>Cantidad (Kg)</label>
+            <input type="number" [(ngModel)]="nuevoScrapp.cantidad" placeholder="Kg" class="input-dato">
+          </div>
+          
+          <button (click)="registrarScrapp()" class="btn-agregar" style="background-color: #d9534f;">+</button>
+        </div>
+
+        <table class="tabla-produccion small" *ngIf="listaScrapp.length > 0">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Kg</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of listaScrapp; let idx = index">
+              <td>{{ s.tipo }}</td>
+              <td>{{ s.cantidad }}</td>
+              <td><small (click)="listaScrapp.splice(idx,1)" style="color:red; cursor:pointer;">X</small></td>
             </tr>
           </tbody>
         </table>
+      </fieldset>
 
-        <div class="cuadro-total">
-          <small>TURNO ACTUAL</small>
-          <strong>{{ totalKilosTurno | number:'1.2-2' }} Kg</strong>
-        </div>
+      <div class="tabla-resumen-final">
+        <h4 style="margin-top: 0;">Balance de Turno</h4>
+
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid #ccc;">
+              <th style="text-align: left; padding: 5px;">Ítem</th>
+              <th style="text-align: right; padding: 5px;">Kilos</th>
+              <th style="text-align: right; padding: 5px;">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 5px;">Total Material</td>
+              <td style="text-align: right;">{{ totalKilosMaterial | number:'1.2-2' }} Kg</td>
+              <td style="text-align: right; font-weight: bold; color: var(--primary-color);">
+                {{ totalBalanceKilos > 0 ? ((totalKilosMaterial / totalBalanceKilos) * 100 | number:'1.2-2') : '0.00' }}
+                %
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding: 5px;">Total Scrapp</td>
+              <td style="text-align: right;">{{ totalKilosScrapp | number:'1.2-2' }} Kg</td>
+              <td style="text-align: right; font-weight: bold; color: var(--primary-color);">
+                {{ totalBalanceKilos > 0 ? ((totalKilosScrapp / totalBalanceKilos) * 100 | number:'1.2-2') : '0.00' }} %
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr style="font-weight: bold; border-top: 2px solid #333; background-color: #e9ecef;">
+              <td style="padding: 10px 5px;">TOTAL:</td>
+              <td style="text-align: right;">{{ totalBalanceKilos | number:'1.2-2' }} Kg</td>
+              <td style="text-align: right;">100.00 %</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
-    </div>
 
-    <div class="seccion-form">
-      <h4>Registrar Materiales</h4>
-      <div class="form-inline">
-        
-        <select [(ngModel)]="nuevoMaterial.nombre" class="input-dato">
-          <option value="">Seleccionar Material...</option>
-          
-          <option *ngFor="let mat of otSeleccionada?.materialesProducto" [value]="mat.name">
-            {{ mat.name }}
-          </option>
-          
-        </select>
-
-        <input type="number" [(ngModel)]="nuevoMaterial.cantidadKg" placeholder="Kg" class="input-dato">
-        <button (click)="registrarMaterial()" class="btn-agregar">+</button>
+      <div class="area-comentarios">
+        <label>Observaciones del Turno:</label>
+        <textarea [(ngModel)]="comentariosTurno" rows="3" class="input-full"
+          placeholder="Escriba incidencias..."></textarea>
       </div>
 
-      <table class="tabla-produccion small">
-        <thead><tr><th>Material</th><th>Cant.</th></tr></thead>
-        <tbody>
-          <tr *ngFor="let m of materialesTurno">
-            <td>{{ m.nombre }}</td>
-            <td>{{ m.cantidadKg }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <button class="btn-fin-turno" (click)="finTurno()">FINALIZAR TURNO (Guardar)</button>
+
+      <div class="historial-container">
+        <h5>Historial de esta OT</h5>
+        <ul>
+          <li *ngFor="let h of historialTurnos">
+            {{ h.fechaHoraFin | date:'shortTime' }} - {{ h.cantidadBobinas }} bobinas - <strong>{{
+              h.totalKilosProducidos | number:'1.2-2' }} Kg</strong>
+          </li>
+        </ul>
+      </div>
+
     </div>
-
-    <button class="btn-fin-turno" (click)="finTurno()">FIN TURNO (Guardar)</button>
-
-    <div class="historial-container">
-      <h5>Historial de esta OT</h5>
-      <ul>
-        <li *ngFor="let h of historialTurnos">
-          {{ h.fechaHoraFin | date:'shortTime' }} - {{ h.cantidadBobinas }} bobinas - <strong>{{ h.totalKilosProducidos | number:'1.2-2' }} Kg</strong>
-        </li>
-      </ul>
-    </div>
-
   </div>
-</div>
 
 </div>

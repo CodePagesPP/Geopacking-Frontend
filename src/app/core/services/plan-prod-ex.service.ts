@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service'; 
-import { OrdenTrabajoEX, TurnoHistorial } from '../models/plan-prod-ex';
+import { BobinaHistorialDTO, OrdenTrabajoEX, TurnoHistorial } from '../models/plan-prod-ex';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ import { OrdenTrabajoEX, TurnoHistorial } from '../models/plan-prod-ex';
 export class PlanProdExService {
 
   private apiUrl = `${environment.apiUrl}/orden-trabajo-ex`; 
+  private apiUrlBobinas = `${environment.apiUrl}/bobinas`; 
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -22,6 +23,12 @@ export class PlanProdExService {
 
   listar(): Observable<OrdenTrabajoEX[]> {
     return this.http.get<OrdenTrabajoEX[]>(`${this.apiUrl}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  listarot(): Observable<OrdenTrabajoEX[]> {
+    return this.http.get<OrdenTrabajoEX[]>(`${this.apiUrl}/ot`, {
       headers: this.authService.getAuthHeaders()
     });
   }
@@ -52,4 +59,29 @@ finalizarTurno(datos: any): Observable<Blob> {
         headers: this.authService.getAuthHeaders()
     });
   }
+
+  obtenerHistorialBobinas(desde?: string, hasta?: string): Observable<BobinaHistorialDTO[]> {
+  let params = new HttpParams();
+  if (desde && hasta) {
+    params = params.set('inicio', desde).set('fin', hasta);
+  }
+
+  return this.http.get<BobinaHistorialDTO[]>(`${this.apiUrlBobinas}/historial`, {
+    headers: this.authService.getAuthHeaders(),
+    params: params 
+  });
+}
+
+descargarReporteStock(desde?: string, hasta?: string): Observable<Blob> {
+  let params = new HttpParams();
+  if (desde && hasta) {
+    params = params.set('inicio', desde).set('fin', hasta);
+  }
+
+  return this.http.get(`${this.apiUrlBobinas}/reporte-pdf`, { 
+    responseType: 'blob',
+    headers: this.authService.getAuthHeaders(),
+    params: params
+  });
+}
 }

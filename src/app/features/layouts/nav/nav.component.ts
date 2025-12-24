@@ -174,6 +174,7 @@ export class NavComponent implements OnInit {
       icon: 'bar_chart',
       children: [
         { label: 'General', icon: 'analytics', route: '/reportes/general' },
+        { label: 'Historial Bobinas', icon: 'analytics', route: '/reportes/historial-bobinas' }
       ],
     },
     {

@@ -1,5 +1,3 @@
-import { Maquina } from "./machines.model";
-import { ProductoDTO, ProductoEX } from "./products.model";
 import { Material } from "./tool.model";
 
 export interface OrdenTrabajoEX {
@@ -23,6 +21,18 @@ export interface OrdenTrabajoEX {
 
 export interface Bobina {
   codigo?: string;
+  pesoBruto: number;
+  pesoNeto: number;
+  horaInicio: string; 
+  horaFin: string; 
+}
+
+export interface BobinaHistorialDTO {
+  fecha: string;
+  codigoBobina: string;
+  operacion: string;
+  codigoProducto: string;
+  operador: string;
   pesoBruto: number;
   pesoNeto: number;
 }

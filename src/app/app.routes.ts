@@ -150,6 +150,24 @@ export const routes: Routes = [
       },
 
       // --- REPORTES ---
+
+      {
+        path: 'reportes',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN_ACCESS'] },
+        children: [
+          {
+            path: 'historial-bobinas',
+            title: 'Historial Bobinas',
+            loadComponent: () =>
+              import('./features/historial-bobina/historial-bobina.component').then(
+                (m) => m.HistorialBobinaComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          }
+        ],
+      },
       {
         path: '', // Este lo dejaste fuera de producción en el menú antiguo, lo mantengo aquí si quieres
         title: '',

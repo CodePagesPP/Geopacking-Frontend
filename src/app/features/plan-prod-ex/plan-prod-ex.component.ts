@@ -25,12 +25,13 @@ export class PlanProdExComponent implements OnInit {
   listaProductosEX: ProductoEX[] = [];
 
   usuarioId: number = 1;
-
+  usuarioname: string = 'Cargando...';
   nuevaOrden: OrdenTrabajoEX = {
     maquinaId: 0,
     productoId: 0,
     requerimientoKg: 0,
     creadaPorId: 1,
+    creadaPorUsername: 'Cargando...'
   };
 
   constructor(
@@ -40,21 +41,20 @@ export class PlanProdExComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. Buscamos el token en lugar del objeto 'user'
+    
     const token = localStorage.getItem('token');
 
     if (token) {
       try {
-        // 2. Truco Ninja: Decodificamos la parte del medio del token (Payload)
-        // El token tiene 3 partes separadas por puntos. La segunda (índice 1) tiene los datos.
+        
         const payload = JSON.parse(atob(token.split('.')[1]));
 
-        console.log('🔍 LO QUE HAY DENTRO DEL TOKEN:', payload); // <--- MIRA ESTO EN CONSOLA
+        console.log('🔍 LO QUE HAY DENTRO DEL TOKEN:', payload); 
 
-        // 3. Buscamos el ID dentro del payload
-        // (A veces se llama 'id', 'userId', o 'sub' si usaste el email como ID)
+        
         if (payload.id) {
           this.usuarioId = payload.id;
+          this.usuarioname = payload.name;
         } else if (payload.userId) {
           this.usuarioId = payload.userId;
         } else {
@@ -69,9 +69,9 @@ export class PlanProdExComponent implements OnInit {
 
     console.log('✅ ID DE USUARIO FINAL:', this.usuarioId);
 
-    // Asignamos el ID encontrado (o el 1 por defecto si falló todo)
+    
     this.nuevaOrden.creadaPorId = this.usuarioId;
-
+    this.nuevaOrden.creadaPorUsername = this.usuarioname;
     this.cargarDatosIniciales();
   }
 
