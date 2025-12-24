@@ -138,16 +138,20 @@
               <th>Material</th>
               <th>Kg</th>
               <th>%</th>
-            </tr>
+              <th></th> </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let m of materialesTurno">
+            <tr *ngFor="let m of materialesTurno; let i = index">
               <td>{{ m.nombre }}</td>
 
               <td>{{ m.cantidadKg | number:'1.2-2' }}</td>
 
               <td>
                 {{ totalKilosMaterial > 0 ? ((m.cantidadKg / totalKilosMaterial) * 100 | number:'1.1-1') : '0' }}%
+              </td>
+              
+              <td>
+                  <small (click)="materialesTurno.splice(i,1)" style="color:red; cursor:pointer; font-weight:bold;">X</small>
               </td>
             </tr>
           </tbody>
@@ -157,7 +161,7 @@
               <td>TOTAL</td>
               <td>{{ totalKilosMaterial | number:'1.2-2' }}</td>
               <td>100%</td>
-            </tr>
+              <td></td> </tr>
           </tfoot>
         </table>
       </fieldset>
