@@ -62,6 +62,7 @@ export class ScrappComponent implements OnInit {
       typeScrappId: [null, Validators.required],
       pesoBruto: [null, [Validators.required, Validators.min(0.1)]],
       pesoNeto: [null, [Validators.required, Validators.min(0.1)]],
+      observaciones: ['']
     });
     this.typeScrapps$ = of([]);
   }

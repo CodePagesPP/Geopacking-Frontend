@@ -15,6 +15,7 @@ export interface RegistroScrapp {
   operador: User;
   typeScrapp?: TypeScrapp;
   origen?: Origen;
+  observaciones?: string;
 }
 
 export interface ScrappRegistroDTO {
@@ -23,6 +24,7 @@ export interface ScrappRegistroDTO {
   typeScrappId: number;
   pesoBruto: number;
   pesoNeto: number;
+  observaciones?: string;
 }
 
 export interface ScrappReportDTO {
