@@ -209,70 +209,77 @@ tr:hover {
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 
-
-
-.filtros-container {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: flex-end; 
+.fila-filtros th {
+    background-color: #f1f3f5; 
+    padding: 8px 5px;
+    vertical-align: top;
 }
 
-.filtro-grupo {
-    display: flex;
-    flex-direction: column;
-}
-
-.filtro-grupo label {
-    font-size: 0.85rem;
-    color: #7f8c8d;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
 
 .form-control-sm {
-    padding: 6px 10px;
-    border: 1px solid #ddd;
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
     border-radius: 4px;
-    font-size: 0.9rem;
-    min-width: 130px;
+    font-size: 0.8rem;
+    background-color: #fff;
 }
 
-.filtro-acciones {
+.full-width {
+    width: 100%;
+}
+
+
+.date-filter-group {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 3px;
 }
 
-.btn-filtrar {
+.mb-1 {
+    margin-bottom: 3px;
+}
+
+
+.action-buttons-group {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-filtrar-icon, .btn-limpiar-icon {
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-filtrar-icon {
     background-color: #3498db;
     color: white;
-    border: none;
-    padding: 7px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
 }
 
-.btn-filtrar:hover {
+.btn-filtrar-icon:hover {
     background-color: #2980b9;
 }
 
-.btn-limpiar {
-    background-color: #ecf0f1;
-    color: #7f8c8d;
-    border: 1px solid #bdc3c7;
-    padding: 7px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
+.btn-limpiar-icon {
+    background-color: #e74c3c;
+    color: white;
 }
 
-.btn-limpiar:hover {
-    background-color: #dfe6e9;
-    color: #2c3e50;
+.btn-limpiar-icon:hover {
+    background-color: #c0392b;
+}
+
+table th {
+    text-align: left;
+    font-size: 0.9rem;
+    color: #555;
 }
