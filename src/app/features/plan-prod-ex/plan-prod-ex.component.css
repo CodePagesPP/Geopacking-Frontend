@@ -1,4 +1,4 @@
-/* --- LAYOUT GENERAL --- */
+
 .container {
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,7 +19,7 @@
   font-weight: 600;
 }
 
-/* --- BOTONES --- */
+
 .btn {
   padding: 0.6rem 1.2rem;
   border: none;
@@ -34,7 +34,7 @@
 }
 
 .btn-primary {
-  background-color: #3498db; /* Azul */
+  background-color: #3498db; 
   color: white;
 }
 
@@ -57,12 +57,12 @@
   font-size: 1.1rem;
 }
 
-/* --- TARJETA Y TABLA --- */
+
 .card {
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* Para bordes redondeados */
+  overflow: hidden; 
 }
 
 table {
@@ -99,7 +99,7 @@ tr:hover {
   background-color: #fcfcfc;
 }
 
-/* --- BADGES (Etiquetas de Estado) --- */
+
 .badge {
   padding: 4px 8px;
   border-radius: 12px;
@@ -112,7 +112,7 @@ tr:hover {
 .badge.proceso { background-color: #fff3cd; color: #856404; }
 .badge.completado { background-color: #d4edda; color: #155724; }
 
-/* --- BARRA DE PROGRESO --- */
+
 .progress-container {
   background-color: #e9ecef;
   border-radius: 4px;
@@ -131,14 +131,13 @@ tr:hover {
 
 .progress-bar.success { background-color: #2ecc71; }
 
-/* --- MODAL (POPUP) --- */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro transparente */
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -173,7 +172,7 @@ tr:hover {
   color: #95a5a6;
 }
 
-/* --- FORMULARIO --- */
+
 .form-group { margin-bottom: 1.2rem; }
 
 .form-label {
@@ -189,7 +188,7 @@ tr:hover {
   border: 1px solid #dcdcdc;
   border-radius: 5px;
   font-size: 1rem;
-  box-sizing: border-box; /* Importante para padding */
+  box-sizing: border-box; 
 }
 
 .form-control:focus {
@@ -205,6 +204,75 @@ tr:hover {
   margin-top: 1.5rem;
 }
 
-/* Animaciones */
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+
+
+
+.filtros-container {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end; 
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+}
+
+.filtro-grupo label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-control-sm {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    min-width: 130px;
+}
+
+.filtro-acciones {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filtrar {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-filtrar:hover {
+    background-color: #2980b9;
+}
+
+.btn-limpiar {
+    background-color: #ecf0f1;
+    color: #7f8c8d;
+    border: 1px solid #bdc3c7;
+    padding: 7px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-limpiar:hover {
+    background-color: #dfe6e9;
+    color: #2c3e50;
+}

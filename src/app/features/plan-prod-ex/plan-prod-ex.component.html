@@ -10,6 +10,49 @@
         </button>
     </div>
 
+    <div class="filtros-container">
+        <div class="filtro-grupo">
+            <label>Máquina:</label>
+            <select [(ngModel)]="filtroMaquina" class="form-control-sm">
+                <option value="">Todas</option>
+                <option *ngFor="let m of listaMaquinasExtrusoras" [value]="m.id">{{ m.codigo }}</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
+            <label>Producto:</label>
+            <select [(ngModel)]="filtroProducto" class="form-control-sm">
+                <option value="">Todos</option>
+                <option *ngFor="let p of listaProductosEX" [value]="p.id">{{ p.name }}</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
+            <label>Estado:</label>
+            <select [(ngModel)]="filtroEstado" class="form-control-sm">
+                <option value="">Todos</option>
+                <option value="EN_ESPERA">En Espera</option>
+                <option value="EN_PROCESO">En Proceso</option>
+                <option value="COMPLETADO">Completado</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
+            <label>Desde:</label>
+            <input type="date" [(ngModel)]="filtroFechaDesde" class="form-control-sm">
+        </div>
+
+        <div class="filtro-grupo">
+            <label>Hasta:</label>
+            <input type="date" [(ngModel)]="filtroFechaHasta" class="form-control-sm">
+        </div>
+
+        <div class="filtro-acciones">
+            <button class="btn-filtrar" (click)="aplicarFiltros()">Filtrar</button>
+            <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar</button>
+        </div>
+    </div>
+
     <div class="card">
         <table>
             <thead>
@@ -24,7 +67,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let ot of listaOrdenes">
+                <tr *ngFor="let ot of listaOrdenesFiltrada">
                     <td style="font-weight: bold;">{{ ot.codigo }}</td>
                     <td>{{ ot.fechaCreacion | date:'dd/MM/yyyy' }}</td>
                     <td>{{ ot.maquinaNombre }}</td>
@@ -51,9 +94,9 @@
                     </td>
                 </tr>
 
-                <tr *ngIf="listaOrdenes.length === 0">
+                <tr *ngIf="listaOrdenesFiltrada.length === 0">
                     <td colspan="7" style="text-align: center; padding: 2rem; color: #95a5a6;">
-                        No hay órdenes registradas actualmente.
+                        No se encontraron órdenes con estos filtros.
                     </td>
                 </tr>
             </tbody>

@@ -23,9 +23,14 @@ export class PlanProdExComponent implements OnInit {
 
   listaMaquinasExtrusoras: Maquina[] = [];
   listaProductosEX: ProductoEX[] = [];
-
+  listaOrdenesFiltrada: OrdenTrabajoEX[] = [];
   usuarioId: number = 1;
   usuarioname: string = 'Cargando...';
+  filtroMaquina: string = '';
+  filtroProducto: string = '';
+  filtroEstado: string = '';
+  filtroFechaDesde: string = '';
+  filtroFechaHasta: string = '';
   nuevaOrden: OrdenTrabajoEX = {
     maquinaId: 0,
     productoId: 0,
@@ -49,7 +54,7 @@ export class PlanProdExComponent implements OnInit {
         
         const payload = JSON.parse(atob(token.split('.')[1]));
 
-        console.log('🔍 LO QUE HAY DENTRO DEL TOKEN:', payload); 
+        
 
         
         if (payload.id) {
@@ -59,15 +64,13 @@ export class PlanProdExComponent implements OnInit {
           this.usuarioId = payload.userId;
         } else {
           console.warn(
-            '⚠️ El token no trae el ID explícitamente. Ver consola.'
+            'El token no trae el ID explícitamente. Ver consola.'
           );
         }
       } catch (e) {
         console.error('Error al decodificar el token:', e);
       }
     }
-
-    console.log('✅ ID DE USUARIO FINAL:', this.usuarioId);
 
     
     this.nuevaOrden.creadaPorId = this.usuarioId;
@@ -86,18 +89,63 @@ export class PlanProdExComponent implements OnInit {
 
   cargarDatosIniciales() {
     this.otService.listar().subscribe((data) => {
+      
       this.listaOrdenes = data;
+      
+      
+      this.listaOrdenes.sort((a, b) => {
+        const pA = a.id || 0;
+        const pB = b.id || 0;
+        return pA - pB;
+      });
+      this.listaOrdenesFiltrada = [...this.listaOrdenes];
     });
 
     this.maquinaService.getMaquinasActivas().subscribe((maquinas) => {
-      this.listaMaquinasExtrusoras = maquinas.filter(
-        (m) => m.tipo === 'Extrusora'
-      );
+      this.listaMaquinasExtrusoras = maquinas.filter((m) => m.tipo === 'Extrusora');
     });
 
     this.productsService.getAll('EX').subscribe((productos) => {
       this.listaProductosEX = productos;
     });
+  }
+
+
+  aplicarFiltros() {
+    this.listaOrdenesFiltrada = this.listaOrdenes.filter(ot => {
+      
+      
+      const coincideMaquina = this.filtroMaquina ? ot.maquinaId == Number(this.filtroMaquina) : true;
+      
+      
+      const coincideProducto = this.filtroProducto ? ot.productoId == Number(this.filtroProducto) : true;
+      
+      
+      const coincideEstado = this.filtroEstado ? ot.estado === this.filtroEstado : true;
+
+     
+      let coincideFecha = true;
+      if (this.filtroFechaDesde && this.filtroFechaHasta) {
+        
+        const fechaOT = new Date(ot.fechaCreacion!); 
+        const desde = new Date(this.filtroFechaDesde);
+        const hasta = new Date(this.filtroFechaHasta);
+        hasta.setHours(23, 59, 59); 
+
+        coincideFecha = fechaOT >= desde && fechaOT <= hasta;
+      }
+
+      return coincideMaquina && coincideProducto && coincideEstado && coincideFecha;
+    });
+  }
+
+  limpiarFiltros() {
+    this.filtroMaquina = '';
+    this.filtroProducto = '';
+    this.filtroEstado = '';
+    this.filtroFechaDesde = '';
+    this.filtroFechaHasta = '';
+    this.listaOrdenesFiltrada = [...this.listaOrdenes];
   }
 
   guardarOrden() {
