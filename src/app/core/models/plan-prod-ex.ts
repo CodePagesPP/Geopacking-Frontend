@@ -48,3 +48,14 @@ export interface TurnoHistorial {
     totalKilosProducidos: number;
     cantidadBobinas: number;
 }
+
+export interface BobinaTransito {
+    id: number;
+    codigoBobina: string;
+    nombreProducto: string;
+    pesoBruto: number;
+    pesoNeto: number;
+    producidoPor: string;
+    fecha: string; 
+    codigoOT: string;
+}

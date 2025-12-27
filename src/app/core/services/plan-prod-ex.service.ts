@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service'; 
-import { BobinaHistorialDTO, OrdenTrabajoEX, TurnoHistorial } from '../models/plan-prod-ex';
+import { BobinaHistorialDTO, BobinaTransito, OrdenTrabajoEX, TurnoHistorial } from '../models/plan-prod-ex';
 
 @Injectable({
   providedIn: 'root'
@@ -84,4 +84,16 @@ descargarReporteStock(desde?: string, hasta?: string): Observable<Blob> {
     params: params
   });
 }
+
+getBobinasTransito(): Observable<BobinaTransito[]> {
+    return this.http.get<BobinaTransito[]>(`${this.apiUrlBobinas}/transito`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  obtenerStockTotal(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrlBobinas}/stock`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
 }

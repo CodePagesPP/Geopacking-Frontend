@@ -134,7 +134,7 @@ export class NavComponent implements OnInit {
             {
               label: 'Productos EX',
               icon: 'arrow_right',
-              route: '/inventario/transito/ex',
+              route: '/inventario/productosTransitoEX',
             },
             {
               label: 'Productos TF',
