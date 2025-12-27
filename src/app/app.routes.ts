@@ -43,7 +43,6 @@ export const routes: Routes = [
         data: { roles: ['ADMIN_ACCESS'] },
       },
 
-      // --- NUEVA RUTA: CONFIGURACIÓN (/config/...) ---
       {
         path: 'config',
         canActivate: [roleGuard], // Protegemos todo el bloque
@@ -93,6 +92,16 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/insumos/insumos.component').then(
                 (m) => m.InsumosComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+          {
+            path: 'productosTransitoEX',
+            title: 'Productos en Transito EX',
+            loadComponent: () =>
+              import('./features/prods-tran-ex/prods-tran-ex.component').then(
+                (m) => m.ProdsTranExComponent
               ),
             canActivate: [roleGuard],
             data: { roles: ['ADMIN_ACCESS'] },

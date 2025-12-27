@@ -1,0 +1,93 @@
+<div class="inventario-container">
+
+    <div class="header-section">
+        <h2 class="page-title">Productos en Tránsito (Extrusión)</h2>
+
+        <div class="stock-card">
+            <span class="stock-label">Stock Total en Piso</span>
+            <div class="stock-value-container">
+                <span class="stock-value">{{ stockTotalAlmacen | number:'1.2-2' }}</span>
+                <span class="stock-unit">Kg</span>
+            </div>
+            <small class="text-muted">Actualizado en tiempo real</small>
+        </div>
+    </div>
+
+    <div class="actions-section">
+        <div class="manual-actions"></div>
+        <div class="filters-container">
+
+            <div class="filter-group">
+                <label>Desde:</label>
+                <div class="input-with-icon">
+                    <input type="date" [(ngModel)]="filtros.fechaInicio">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Hasta:</label>
+                <div class="input-with-icon">
+                    <input type="date" [(ngModel)]="filtros.fechaFin">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Buscar:</label>
+                <div class="input-with-icon">
+                    <input type="text" [(ngModel)]="filtros.busqueda" placeholder="Bobina, Producto, OT...">
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="btn-filter" (click)="aplicarFiltros()">Filtrar</button>
+                <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>CÓDIGO BOBINA</th>
+                    <th>PRODUCTO</th>
+                    <th class="text-right">P. BRUTO</th>
+                    <th class="text-right">P. NETO</th>
+                    <th>PRODUCIDO POR</th>
+                    <th>FECHA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of bobinasFiltradas">
+                    <td class="font-bold text-primary">{{ item.codigoBobina }}</td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold">{{ item.nombreProducto }}</span>
+                            <small class="text-muted" style="font-size: 0.85em;">OT: {{ item.codigoOT }}</small>
+                        </div>
+                    </td>
+                    <td class="text-right">{{ item.pesoBruto | number:'1.2-2' }}</td>
+                    <td class="text-right font-bold">{{ item.pesoNeto | number:'1.2-2' }}</td>
+                    <td>{{ item.producidoPor }}</td>
+                    <td>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                </tr>
+
+                <tr *ngIf="bobinasFiltradas.length === 0 && !isLoading">
+                    <td colspan="6" class="text-center no-data">No se encontraron bobinas.</td>
+                </tr>
+
+                <tr *ngIf="isLoading">
+                    <td colspan="6" class="text-center py-4">Cargando datos...</td>
+                </tr>
+            </tbody>
+
+            <tfoot *ngIf="bobinasFiltradas.length > 0">
+                <tr>
+                    <td colspan="3" class="text-right fw-bold">TOTAL FILTRADO:</td>
+                    <td class="text-right fw-bold">{{ totalKilosFiltrados | number:'1.2-2' }}</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
