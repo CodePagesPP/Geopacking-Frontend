@@ -28,6 +28,7 @@ export interface Bobina {
 }
 
 export interface BobinaHistorialDTO {
+  id: number;
   fecha: string;
   codigoBobina: string;
   operacion: string;

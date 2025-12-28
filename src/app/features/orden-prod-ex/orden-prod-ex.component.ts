@@ -39,7 +39,7 @@ export class OrdenProdEXComponent implements OnInit {
 
   tiposScrappDisponibles: TypeScrapp[] = [];
   usuarioNombre: string = 'Cargando...';
-
+  correlativoBase: number = 0;
   constructor(
     private otService: PlanProdExService, 
     private toolService: ToolService,
@@ -116,14 +116,28 @@ export class OrdenProdEXComponent implements OnInit {
     this.otSeleccionada = ot;
     this.recuperarDatosLocales(ot.id!);
     this.cargarHistorial(ot.id!);
+    this.cargarCorrelativo(ot.id!);
+  }
+
+  cargarCorrelativo(otId: number) {
+     
+      this.otService.obtenerCorrelativoBobina(otId).subscribe({
+          next: (cant) => {
+              this.correlativoBase = cant;
+              console.log('Bobinas previas en BD:', this.correlativoBase);
+          },
+          error: () => this.correlativoBase = 0
+      });
   }
 
 
   registrarBobina() {
     if (!this.otSeleccionada || this.nuevaBobina.pesoNeto <= 0) return;
 
-    const correlativo = this.bobinasTurno.length + 1;
-    const codigoGen = `${this.otSeleccionada.codigo}-B${correlativo}`;
+    
+    const numeroActual = this.correlativoBase + this.bobinasTurno.length + 1;
+    
+    const codigoGen = `${this.otSeleccionada.codigo}-B${numeroActual}`;
 
     this.bobinasTurno.push({
       codigo: codigoGen,
@@ -134,7 +148,6 @@ export class OrdenProdEXComponent implements OnInit {
     });
 
     this.guardarEnLocal(); 
-    
     this.nuevaBobina = { pesoBruto: 0, pesoNeto: 0, horaInicio: '', horaFin: '' };
   }
 

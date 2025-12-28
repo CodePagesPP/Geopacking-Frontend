@@ -19,7 +19,7 @@
 
 .panel-lista {
   flex: 1;
-  max-width: 350px;
+  max-width: 400px;
   background: white;
   padding: 15px;
   border-radius: 8px;
@@ -246,4 +246,151 @@
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid #ddd;
+}
+
+
+.tarjeta-ot {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-left: 5px solid #ccc;
+  padding: 10px 15px; 
+  margin-bottom: 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+
+  
+  display: flex;
+  align-items: center; 
+  gap: 15px;           
+}
+
+
+.tarjeta-ot:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+}
+
+.tarjeta-ot.activa {
+  border-left-color: var(--primary-color);
+  background-color: #f0f7ff; 
+  border-color: #cce5ff;
+}
+
+
+.progreso-box {
+  flex-shrink: 0; 
+  width: 65px;   
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 5px;
+  gap: 5px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.progreso-box .actual { color: #2c3e50; font-size: 0.95rem; }
+.progreso-box .barra { font-size: 0.7rem; color: #adb5bd; margin: 1px 0; }
+.progreso-box .meta { color: #6c757d; font-size: 0.8rem; }
+.progreso-box small { font-size: 0.6rem; color: #999; font-weight: normal; }
+
+.progreso-box.completo {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+
+.info-ot {
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden; 
+}
+
+.info-ot .codigo {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #343a40;
+  margin-bottom: 4px;
+}
+
+.detalles {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.detalles .producto {
+  font-weight: 500;
+  color: #495057;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.detalles .maquina {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+
+.controles-ot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 0; 
+}
+
+
+.flechas-handle {
+  cursor: grab;
+  color: #adb5bd;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+.flechas-handle:hover { color: #6c757d; background-color: #f1f3f5; }
+.flechas-handle:active { cursor: grabbing; }
+
+
+.btn-iniciar {
+  white-space: nowrap; 
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s;
+  background-color: var(--success-color, #198754);
+  color: white;
+  border: none;
+}
+
+.btn-iniciar:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  cursor: not-allowed;
+  border: 1px solid #dee2e6;
+}
+
+.btn-en-proceso {
+  background-color: #ffc107; 
+  color: #000;
+  font-weight: bold;
 }
