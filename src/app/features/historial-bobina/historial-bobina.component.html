@@ -35,6 +35,7 @@
           <th>OPERADOR</th>
           <th>P. BRUTO</th>
           <th>P. NETO</th>
+          <th>ACCIONES</th>
         </tr>
       </thead>
       <tbody>
@@ -46,6 +47,11 @@
           <td>{{ b.operador }}</td>
           <td>{{ b.pesoBruto }} Kg</td>
           <td>{{ b.pesoNeto }} Kg</td>
+          <td>
+            <button class="btn-icon" (click)="imprimirIndividual(b.id)" title="Imprimir Etiqueta/Reporte">
+              🖨
+            </button>
+          </td>
         </tr>
         
         <tr *ngIf="listaFiltrada.length === 0">

@@ -283,3 +283,12 @@ table th {
     font-size: 0.9rem;
     color: #555;
 }
+
+.btn:disabled, button:disabled {
+  background-color: #cccccc !important; 
+  color: #666666 !important;            
+  cursor: not-allowed !important;      
+  border-color: #999999 !important;     
+  opacity: 0.7;                         
+  pointer-events: none;                
+}

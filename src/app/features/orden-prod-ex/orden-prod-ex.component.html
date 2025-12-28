@@ -9,7 +9,12 @@
         cdkDrag>
 
         <div class="custom-placeholder" *cdkDragPlaceholder></div>
-
+        <div class="progreso-box" [class.completo]="(ot.producidoKg || 0) >= (ot.requerimientoKg || 0)">
+           <span class="actual">{{ ot.producidoKg | number:'1.0-0' }}</span>
+           <span class="barra">/</span>
+           <span class="meta">{{ ot.requerimientoKg | number:'1.0-0' }}</span>
+           <small>Kg</small>
+        </div>
         <div class="info-ot">
           <span class="codigo">{{ ot.codigo }}</span>
           <div class="detalles">

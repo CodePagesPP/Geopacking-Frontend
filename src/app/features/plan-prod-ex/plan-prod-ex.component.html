@@ -111,40 +111,50 @@
 
 <div class="modal-overlay" *ngIf="mostrarModal">
   <div class="modal-box">
-        <div class="modal-header">
-            <h3>Generar Orden</h3>
-            <button class="close-btn" (click)="cerrarModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form (ngSubmit)="guardarOrden()">
-                <div class="form-group">
-                    <label class="form-label">Máquina Extrusora</label>
-                    <select class="form-control" [(ngModel)]="nuevaOrden.maquinaId" name="maquina">
-                        <option value="0" disabled selected>-- Seleccione --</option>
-                        <option *ngFor="let maq of listaMaquinasExtrusoras" [value]="maq.id">
-                            {{ maq.codigo }} - {{ maq.marca }} {{ maq.modelo }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Producto EX</label>
-                    <select class="form-control" [(ngModel)]="nuevaOrden.productoId" name="producto">
-                        <option value="0" disabled selected>-- Seleccione --</option>
-                        <option *ngFor="let prod of listaProductosEX" [value]="prod.id">
-                            {{ prod.code }} - {{ prod.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Requerimiento (Kg)</label>
-                    <input type="number" class="form-control" [(ngModel)]="nuevaOrden.requerimientoKg" name="req"
-                        placeholder="Ej: 500">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+      <div class="modal-header">
+          <h3>Generar Orden</h3>
+          <button class="close-btn" (click)="cerrarModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+          <form (ngSubmit)="guardarOrden()" #ordenForm="ngForm">
+
+              <div class="form-group">
+                  <label class="form-label">Máquina Extrusora <span style="color:red">*</span></label>
+                  <select class="form-control" [(ngModel)]="nuevaOrden.maquinaId" name="maquina" required>
+                      <option [value]="0" disabled selected>-- Seleccione --</option>
+                      <option *ngFor="let maq of listaMaquinasExtrusoras" [value]="maq.id">
+                          {{ maq.codigo }} - {{ maq.marca }} {{ maq.modelo }}
+                      </option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                  <label class="form-label">Producto EX <span style="color:red">*</span></label>
+                  <select class="form-control" [(ngModel)]="nuevaOrden.productoId" name="producto" required>
+                      <option [value]="0" disabled selected>-- Seleccione --</option>
+                      <option *ngFor="let prod of listaProductosEX" [value]="prod.id">
+                          {{ prod.code }} - {{ prod.name }}
+                      </option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                  <label class="form-label">Requerimiento (Kg) <span style="color:red">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="nuevaOrden.requerimientoKg" name="req"
+                      placeholder="Ej: 500" required min="1">
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                  
+                  <button type="submit" class="btn btn-primary" 
+                          [disabled]="ordenForm.invalid || nuevaOrden.maquinaId == 0 || nuevaOrden.productoId == 0">
+                      Guardar
+                  </button>
+              </div>
+
+          </form>
+      </div>
+  </div>
 </div>

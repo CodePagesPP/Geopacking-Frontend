@@ -52,7 +52,7 @@ export class HistorialBobinaComponent {
       error: (e) => alert('Error al filtrar')
     });
   } else {
-    // Si no hay fechas, recargamos todo
+  
     this.cargarDatos();
   }
 }
@@ -77,6 +77,20 @@ imprimirReporte() {
       window.URL.revokeObjectURL(url);
     },
     error: (e) => alert('Error al descargar reporte')
+  });
+}
+
+imprimirIndividual(id: number) {
+  this.bobinaService.descargarReporteIndividual(id).subscribe({
+    next: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Reporte_Bobina_${id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: () => alert('Error al descargar')
   });
 }
 }

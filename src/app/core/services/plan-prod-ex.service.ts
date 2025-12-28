@@ -96,4 +96,17 @@ getBobinasTransito(): Observable<BobinaTransito[]> {
       headers: this.authService.getAuthHeaders()
     });
   }
+
+  descargarReporteIndividual(id: number): Observable<Blob> {
+  return this.http.get(`${this.apiUrlBobinas}/reporte-pdf/${id}`, { 
+    responseType: 'blob',
+    headers: this.authService.getAuthHeaders()
+  });
+}
+
+obtenerCorrelativoBobina(otId: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrlBobinas}/conteo/${otId}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
 }
