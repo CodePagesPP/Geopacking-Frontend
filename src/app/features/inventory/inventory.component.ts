@@ -94,6 +94,25 @@ export class InventoryComponent implements OnInit {
       });
   }
 
+  imprimirReporte() {
+    
+    const typeId = this.typeScrappFiltroId ? Number(this.typeScrappFiltroId) : undefined;
+
+    
+    this.inventarioService.descargarReportePDF(this.fechaInicio, this.fechaFin, typeId)
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Reporte_Movimientos_${new Date().getTime()}.pdf`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => alert('Error al generar el PDF')
+      });
+  }
+
   abrirModal(tipo: Operacion): void {
     this.OperacionModal = tipo;
     this.cantidadModal = 0;

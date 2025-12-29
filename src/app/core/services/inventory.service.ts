@@ -40,6 +40,19 @@ export class InventoryService {
     return this.http.get<Page<InventarioMovimiento>>(`${this.apiUrl}/historial`, {headers: this.authService.getAuthHeaders(), params });
   }
 
+  descargarReportePDF(fechaInicio?: string, fechaFin?: string, typeScrappId?: number): Observable<Blob> {
+  let params = new HttpParams();
+  if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+  if (fechaFin) params = params.set('fechaFin', fechaFin);
+  if (typeScrappId) params = params.set('typeScrappId', typeScrappId.toString());
+
+  return this.http.get(`${this.apiUrl}/reporte-pdf`, {
+    headers: this.authService.getAuthHeaders(),
+    params: params,
+    responseType: 'blob'
+  });
+}
+
   obtenerStockActual(): Observable<InventarioStockDTO> {
     return this.http.get<InventarioStockDTO>(`${this.apiUrl}/stock`, {
       headers: this.authService.getAuthHeaders()

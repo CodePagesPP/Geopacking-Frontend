@@ -416,3 +416,16 @@
   font-size: 16px;
   box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
 }
+
+.btn-imprimir-pdf {
+  background-color: #555; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-imprimir-pdf:hover {
+  background-color: #333;
+}
