@@ -10,10 +10,10 @@
 
         <div class="custom-placeholder" *cdkDragPlaceholder></div>
         <div class="progreso-box" [class.completo]="(ot.producidoKg || 0) >= (ot.requerimientoKg || 0)">
-           <span class="actual">{{ ot.producidoKg | number:'1.0-0' }}</span>
-           <span class="barra">/</span>
-           <span class="meta">{{ ot.requerimientoKg | number:'1.0-0' }}</span>
-           <small>Kg</small>
+          <span class="actual">{{ ot.producidoKg | number:'1.0-0' }}</span>
+          <span class="barra">/</span>
+          <span class="meta">{{ ot.requerimientoKg | number:'1.0-0' }}</span>
+          <small>Kg</small>
         </div>
         <div class="info-ot">
           <span class="codigo">{{ ot.codigo }}</span>
@@ -123,7 +123,7 @@
             <label>Material</label>
             <select [(ngModel)]="nuevoMaterial.nombre" class="input-dato">
               <option value="">Seleccionar Material...</option>
-              <option *ngFor="let mat of otSeleccionada?.materialesProducto" [value]="mat.name">
+              <option *ngFor="let mat of otSeleccionada.materialesProducto" [value]="mat.name">
                 {{ mat.name }}
               </option>
             </select>
@@ -133,7 +133,7 @@
             <label>Cantidad (Kg)</label>
             <input type="number" [(ngModel)]="nuevoMaterial.cantidadKg" placeholder="Kg" class="input-dato">
           </div>
-          
+
           <button (click)="registrarMaterial()" class="btn-agregar">+</button>
         </div>
 
@@ -143,7 +143,8 @@
               <th>Material</th>
               <th>Kg</th>
               <th>%</th>
-              <th></th> </tr>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
             <tr *ngFor="let m of materialesTurno; let i = index">
@@ -154,9 +155,10 @@
               <td>
                 {{ totalKilosMaterial > 0 ? ((m.cantidadKg / totalKilosMaterial) * 100 | number:'1.1-1') : '0' }}%
               </td>
-              
+
               <td>
-                  <small (click)="materialesTurno.splice(i,1)" style="color:red; cursor:pointer; font-weight:bold;">X</small>
+                <small (click)="materialesTurno.splice(i,1)"
+                  style="color:red; cursor:pointer; font-weight:bold;">X</small>
               </td>
             </tr>
           </tbody>
@@ -166,7 +168,8 @@
               <td>TOTAL</td>
               <td>{{ totalKilosMaterial | number:'1.2-2' }}</td>
               <td>100%</td>
-              <td></td> </tr>
+              <td></td>
+            </tr>
           </tfoot>
         </table>
       </fieldset>
@@ -181,12 +184,12 @@
               <option *ngFor="let t of tiposScrappDisponibles" [value]="t.name">{{ t.name }}</option>
             </select>
           </div>
-          
+
           <div class="grupo-dato">
             <label>Cantidad (Kg)</label>
             <input type="number" [(ngModel)]="nuevoScrapp.cantidad" placeholder="Kg" class="input-dato">
           </div>
-          
+
           <button (click)="registrarScrapp()" class="btn-agregar" style="background-color: #d9534f;">+</button>
         </div>
 
