@@ -1,0 +1,176 @@
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h2>Plan de Producción <span style="color: #3498db;">Termoformado</span></h2>
+            <small style="color: #7f8c8d;">Gestión de Órdenes de Trabajo TF</small>
+        </div>
+        <button class="btn btn-primary" (click)="abrirModal()">
+            + Nueva Orden
+        </button>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr class="fila-filtros">
+                    <th></th>
+                    <th>
+                        <div class="date-filter-group">
+                            <input type="date" [(ngModel)]="filtroFechaDesde" class="form-control-sm mb-1"
+                                placeholder="Desde" title="Desde">
+                            <input type="date" [(ngModel)]="filtroFechaHasta" class="form-control-sm"
+                                placeholder="Hasta" title="Hasta">
+                        </div>
+                    </th>
+
+                    <th> <select [(ngModel)]="filtroMaquina" class="form-control-sm full-width">
+                            <option value="">Todas</option>
+                            <option *ngFor="let m of listaMaquinasTermoformadoras" [value]="m.id">{{ m.codigo }}
+                            </option>
+                        </select>
+                    </th>
+
+                    <th> <select [(ngModel)]="filtroProducto" class="form-control-sm full-width">
+                            <option value="">Todos</option>
+                            <option *ngFor="let p of listaProductosTF" [value]="p.id">{{ p.name }}</option>
+                        </select>
+                    </th>
+
+                    <th></th>
+                    <th></th>
+                    <th> <select [(ngModel)]="filtroEstado" class="form-control-sm full-width">
+                            <option value="">Todos</option>
+                            <option value="EN_ESPERA">Espera</option>
+                            <option value="EN_PROCESO">Proceso</option>
+                            <option value="COMPLETADO">Completado</option>
+                        </select>
+                    </th>
+
+                    <th style="vertical-align: middle;">
+                        <div class="action-buttons-group">
+                            <button class="btn-filtrar-icon" (click)="aplicarFiltros()" title="Filtrar">
+                                Filtrar
+                            </button>
+                            <button class="btn-limpiar-icon" (click)="limpiarFiltros()" title="Limpiar Filtros">
+                                Limpiar
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+
+                <tr>
+                    <th style="width: 10%;">Código</th>
+                    <th style="width: 15%;">Fecha</th>
+                    <th style="width: 10%;">Máquina</th>
+                    <th style="width: 15%;">Producto TF</th>
+                    <th style="width: 15%;">Base (EX)</th>
+                    <th style="width: 15%;">Progreso (Kg)</th>
+                    <th style="width: 10%;">Estado</th>
+                    <th style="width: 10%;">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let ot of listaOrdenesFiltrada">
+                    <td style="font-weight: bold;">{{ ot.codigo }}</td>
+                    <td>{{ ot.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ ot.maquinaNombre }}</td>
+                    <td style="color: #2980b9; font-weight: 500;">{{ ot.productoNombre }}</td>
+
+                    <td style="color: #7f8c8d; font-style: italic;">
+                        {{ ot.productoBaseNombre || '-' }}
+                    </td>
+
+                    <td>
+                        <div style="font-size: 0.85rem; margin-bottom: 2px;">
+                            {{ ot.producidoKg | number:'1.2-2' }} / {{ ot.requerimientoKg }}
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" [class.success]="ot.estado === 'COMPLETADO'"
+                                [style.width.%]="(ot.producidoKg! / ot.requerimientoKg!) * 100">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge" [class.espera]="ot.estado === 'EN_ESPERA'"
+                            [class.proceso]="ot.estado === 'EN_PROCESO'"
+                            [class.completado]="ot.estado === 'COMPLETADO'">
+                            {{ ot.estado?.replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td>
+                        <small>{{ ot.creadaPorUsername }}</small>
+                    </td>
+                </tr>
+
+                <tr *ngIf="listaOrdenesFiltrada.length === 0">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                        No se encontraron órdenes con estos filtros.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Generar Orden TF</h3>
+            <button class="close-btn" (click)="cerrarModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form (ngSubmit)="guardarOrden()" #ordenForm="ngForm">
+
+                <div class="form-group">
+                    <label class="form-label">Máquina Termoformadora <span style="color:red">*</span></label>
+                    <select class="form-control" [(ngModel)]="nuevaOrden.maquinaId" name="maquina" required>
+                        <option [value]="0" disabled selected>-- Seleccione --</option>
+                        <option *ngFor="let maq of listaMaquinasTermoformadoras" [value]="maq.id">
+                            {{ maq.codigo }} - {{ maq.modelo }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Producto TF <span style="color:red">*</span></label>
+                    <select class="form-control" [(ngModel)]="nuevaOrden.productoId" name="producto" required
+                        (change)="onProductoChange()">
+                        <option [value]="0" disabled selected>-- Seleccione --</option>
+                        <option *ngFor="let prod of listaProductosTF" [value]="prod.id">
+                            {{ prod.code }} - {{ prod.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group"
+                    style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px dashed #ced4da;">
+                    <label class="form-label" style="font-size: 0.85rem; color: #7f8c8d;">
+                        Producto Base (Referencia)
+                    </label>
+                    <input type="text" class="form-control" [value]="productoBaseVisual" disabled
+                        style="background: transparent; border: none; font-weight: bold; color: #2c3e50; padding: 0;"
+                        placeholder="Se mostrará aquí...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Requerimiento (Kg) <span style="color:red">*</span></label>
+                    <input type="number" class="form-control" [(ngModel)]="nuevaOrden.requerimientoKg" name="req"
+                        placeholder="Ej: 500" required min="1">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="ordenForm.invalid || nuevaOrden.maquinaId == 0 || nuevaOrden.productoId == 0">
+                        Guardar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

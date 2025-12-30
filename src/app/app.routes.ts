@@ -137,6 +137,28 @@ export const routes: Routes = [
           },
 
           {
+            path: 'planProduccionTF',
+            title: 'Plan de Producción TF',
+            loadComponent: () =>
+              import('./features/plan-prod-tf/plan-prod-tf.component').then(
+                (m) => m.PlanProdTfComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+
+          {
+            path: 'ordenProduccionTF',
+            title: 'Orden de Producción TF',
+            loadComponent: () =>
+              import('./features/orden-prod-tf/orden-prod-tf.component').then(
+                (m) => m.OrdenProdTfComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+
+          {
             path: 'registroDeMolienda',
             title: 'Registro de Molienda',
             loadComponent: () =>

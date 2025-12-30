@@ -1,0 +1,79 @@
+<div class="contenedor-principal">
+
+    <div class="panel-lista">
+        <div class="header-lista">
+            <h2 class="titulo-panel">OTs TF Pendientes</h2>
+            <span class="badge-count">{{ listaOTs.length }}</span>
+        </div>
+
+        <div class="lista-ots" cdkDropList (cdkDropListDropped)="onDrop($event)">
+
+            <div *ngFor="let ot of listaOTs; let i = index" class="tarjeta-ot"
+                [class.activa]="ot.id === otSeleccionada?.id" cdkDrag>
+
+                <div class="custom-placeholder" *cdkDragPlaceholder></div>
+
+                <div class="progreso-box" [class.completo]="(ot.producidoKg || 0) >= (ot.requerimientoKg || 0)">
+                    <span class="actual">{{ ot.producidoKg | number:'1.0-0' }}</span>
+                    <span class="barra">/</span>
+                    <span class="meta">{{ ot.requerimientoKg | number:'1.0-0' }}</span>
+                    <small>Kg</small>
+                </div>
+
+                <div class="info-ot">
+                    <span class="codigo">{{ ot.codigo }}</span>
+                    <div class="detalles">
+                        <span class="producto" title="{{ ot.productoNombre }}">
+                            {{ ot.productoNombre }}
+                        </span>
+                        <small class="maquina">{{ ot.maquinaNombre }}</small>
+                    </div>
+                    <div class="extra-info" *ngIf="ot.productoBaseNombre">
+                        <small>Base: {{ ot.productoBaseNombre }}</small>
+                    </div>
+                </div>
+
+                <div class="controles-ot">
+                    <div class="flechas-handle" cdkDragHandle title="Arrastrar para reordenar">
+                        <i class="fas fa-bars"></i> <span>☰</span>
+                    </div>
+
+                    <button class="btn-iniciar" (click)="seleccionarOT(ot)"
+                        [disabled]="!esIniciable(i) && ot.id !== otSeleccionada?.id"
+                        [ngStyle]="{'opacity': (!esIniciable(i) && ot.id !== otSeleccionada?.id) ? '0.5' : '1'}"
+                        [class.btn-en-proceso]="ot.id === otSeleccionada?.id">
+
+                        <span *ngIf="ot.id === otSeleccionada?.id">▶ En Proceso</span>
+
+                        <span *ngIf="ot.id !== otSeleccionada?.id">
+                            {{ esIniciable(i) ? 'Iniciar' : 'Espera' }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div *ngIf="listaOTs.length === 0" class="empty-state">
+                <p>No hay órdenes programadas.</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="panel-registro">
+
+        <div *ngIf="!otSeleccionada" class="placeholder-box">
+            <div class="icon-placeholder">⚙️</div>
+            <h3>Selecciona una OT para comenzar</h3>
+            <p>Elige una orden de la lista izquierda (Termoformado) para registrar producción.</p>
+        </div>
+
+        <div *ngIf="otSeleccionada" class="construccion-box">
+            <h3>Producción: {{ otSeleccionada.codigo }}</h3>
+            <p>Panel de registro en construcción...</p>
+            <button class="btn-cancelar" (click)="otSeleccionada = null">Volver</button>
+        </div>
+
+    </div>
+
+</div>
