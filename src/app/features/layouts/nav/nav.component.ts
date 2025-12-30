@@ -61,12 +61,12 @@ export class NavComponent implements OnInit {
             {
               label: 'Plan de Producción TF',
               icon: 'description',
-              route: '/produccion/termoformado/plan',
+              route: '/produccion/planProduccionTF',
             },
             {
               label: 'Órdenes de Producción TF',
               icon: 'assignment',
-              route: '/produccion/termoformado/ordenes',
+              route: '/produccion/ordenProduccionTF',
             },
           ],
         },
