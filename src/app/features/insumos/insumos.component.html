@@ -81,7 +81,13 @@
                             {{ item.operacion }}
                         </span>
                     </td>
-                    <td>{{ item.motivoNombre || '-' }}</td>
+                    <td>
+                        {{ item.motivoNombre || '-' }}
+
+                        <span *ngIf="item.observaciones" (click)="verObservacion(item.observaciones)"
+                            class="icono-observacion" title="Ver observación">
+                            📝 </span>
+                    </td>
                     <td>{{ item.tipoRegistro }}</td>
                     <td>{{ item.materialNombre }}</td>
                     <td class="text-right font-bold">{{ item.cantidad | number:'1.2-2' }}</td>
@@ -139,6 +145,13 @@
                 <div class="form-group" *ngIf="mostrarInputNuevoMotivo">
                     <textarea class="form-control new-motivo-input" formControlName="nuevoMotivoText" rows="2"
                         placeholder="Escriba el nuevo motivo aquí..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nota / Observación</label>
+                    <textarea class="form-control" formControlName="observaciones" rows="3"
+                        placeholder="Detalles adicionales opcionales..." style="resize: none;">
+                    </textarea>
                 </div>
 
             </div>

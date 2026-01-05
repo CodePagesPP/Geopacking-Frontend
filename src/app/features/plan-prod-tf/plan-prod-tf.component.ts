@@ -34,6 +34,9 @@ export class PlanProdTfComponent implements OnInit {
   usuarioId: number = 1;
   usuarioname: string = 'Cargando...';
 
+  esEdicion: boolean = false;
+  idOrdenAEditar: number | null = null;
+
   nuevaOrden: OrdenTrabajoTF = {
     maquinaId: 0,
     productoId: 0,
@@ -134,13 +137,29 @@ export class PlanProdTfComponent implements OnInit {
   }
 
   abrirModal() {
+    this.esEdicion = false;
+    this.idOrdenAEditar = null;
+    this.limpiarFormulario();
     this.mostrarModal = true;
-    this.productoBaseVisual = '';
   }
 
   cerrarModal() {
     this.mostrarModal = false;
     this.limpiarFormulario();
+  }
+
+  editarOrden(ot: OrdenTrabajoTF) {
+    this.esEdicion = true;
+    this.idOrdenAEditar = ot.id!;
+
+    this.nuevaOrden = {
+      ...ot,
+      maquinaId: Number(ot.maquinaId),
+      productoId: Number(ot.productoId)
+    };
+
+    this.onProductoChange();
+    this.mostrarModal = true;
   }
 
   onProductoChange() {
@@ -161,26 +180,62 @@ export class PlanProdTfComponent implements OnInit {
       return;
     }
     if (this.nuevaOrden.requerimientoKg <= 0) {
-      Swal.fire(
-        'Atención',
-        'El requerimiento debe ser mayor a 0 Kg.',
-        'warning'
-      );
+      Swal.fire('Atención', 'El requerimiento debe ser mayor a 0 Kg.', 'warning');
       return;
     }
 
-    Swal.fire({ title: 'Generando...', didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'Procesando...', didOpen: () => Swal.showLoading() });
 
-    this.otService.crear(this.nuevaOrden).subscribe({
-      next: (res) => {
-        Swal.fire('¡Generada!', `OT ${res.codigo} creada.`, 'success');
-        this.cargarDatosIniciales();
-        this.cerrarModal();
-      },
-      error: (e) => {
-        console.error(e);
-        Swal.fire('Error', 'No se pudo generar la orden.', 'error');
-      },
+    if (this.esEdicion && this.idOrdenAEditar) {
+      this.otService.editar(this.idOrdenAEditar, this.nuevaOrden).subscribe({
+        next: (res) => {
+          Swal.fire('Actualizado', `Orden ${res.codigo} actualizada correctamente.`, 'success');
+          this.cargarDatosIniciales();
+          this.cerrarModal();
+        },
+        error: (e) => {
+          console.error(e);
+          Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
+        }
+      });
+    } else {
+      this.otService.crear(this.nuevaOrden).subscribe({
+        next: (res) => {
+          Swal.fire('¡Generada!', `OT ${res.codigo} creada.`, 'success');
+          this.cargarDatosIniciales();
+          this.cerrarModal();
+        },
+        error: (e) => {
+          console.error(e);
+          Swal.fire('Error', 'No se pudo generar la orden.', 'error');
+        },
+      });
+    }
+  }
+
+  eliminarOrden(id: number, codigo: string) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminará la orden ${codigo}. No podrás revertirlo.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.otService.eliminar(id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'La orden ha sido eliminada.', 'success');
+            this.cargarDatosIniciales();
+          },
+          error: (e) => {
+            console.error(e);
+            Swal.fire('Error', 'No se pudo eliminar (quizás ya tiene producción registrada).', 'error');
+          }
+        });
+      }
     });
   }
 

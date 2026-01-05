@@ -427,3 +427,16 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.icono-observacion {
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.icono-observacion:hover {
+    transform: scale(1.2); /* Efecto zoom al pasar el mouse */
+    opacity: 0.8;
+}

@@ -52,7 +52,8 @@ export class InsumosComponent implements OnInit {
       cantidad: [null, [Validators.required, Validators.min(0.01)]],
       fecha: [new Date().toISOString().substring(0, 10), Validators.required],
       motivoSelect: [null],
-      nuevoMotivoText: ['']
+      nuevoMotivoText: [''],
+      observaciones: ['']
     });
   }
 
@@ -124,7 +125,8 @@ export class InsumosComponent implements OnInit {
       cantidad: null,
       materialId: null,
       motivoSelect: null,
-      nuevoMotivoText: ''
+      nuevoMotivoText: '',
+      observaciones: ''
     });
     this.form.get('nuevoMotivoText')?.clearValidators();
     this.form.get('nuevoMotivoText')?.updateValueAndValidity();
@@ -170,7 +172,8 @@ export class InsumosComponent implements OnInit {
       fecha: val.fecha,
       operacion: this.tipoOperacion,
       motivoId: null,
-      nuevoMotivo: null
+      nuevoMotivo: null,
+      observaciones: val.observaciones
     };
 
     if (this.mostrarInputNuevoMotivo) {
@@ -218,5 +221,17 @@ export class InsumosComponent implements OnInit {
     this.filtros = { fechaInicio: '', fechaFin: '', materialId: null };
     this.stockActual = 0;
     this.filtrar();
+  }
+
+  verObservacion(nota: string | undefined): void {
+    if (!nota) return;
+    
+    Swal.fire({
+      title: 'Nota / Observación',
+      text: nota,
+      icon: 'info',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#3498db'
+    });
   }
 }

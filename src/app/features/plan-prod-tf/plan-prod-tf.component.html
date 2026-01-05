@@ -67,7 +67,7 @@
                     <th style="width: 15%;">Base (EX)</th>
                     <th style="width: 15%;">Progreso (Kg)</th>
                     <th style="width: 10%;">Estado</th>
-                    <th style="width: 10%;">Acciones</th>
+                    <th style="width: 10%; text-align: center;" >Acciones</th>
                 </tr>
             </thead>
 
@@ -100,7 +100,17 @@
                         </span>
                     </td>
                     <td>
-                        <small>{{ ot.creadaPorUsername }}</small>
+                        <div class="acciones-container">
+
+                            <button class="btn-icon-action edit" (click)="editarOrden(ot)" title="Editar">
+                                ✎
+                            </button>
+
+                            <button class="btn-icon-action delete" (click)="eliminarOrden(ot.id!, ot.codigo!)"
+                                title="Eliminar">
+                                🗑
+                            </button>
+                        </div>
                     </td>
                 </tr>
 
@@ -116,8 +126,9 @@
 
 <div class="modal-overlay" *ngIf="mostrarModal">
     <div class="modal-box">
+
         <div class="modal-header">
-            <h3>Generar Orden TF</h3>
+            <h3>{{ esEdicion ? 'Editar Orden TF' : 'Generar Orden TF' }}</h3>
             <button class="close-btn" (click)="cerrarModal()">&times;</button>
         </div>
 
@@ -158,7 +169,7 @@
                 <div class="form-group">
                     <label class="form-label">Requerimiento (UND) <span style="color:red">*</span></label>
                     <input type="number" class="form-control" [(ngModel)]="nuevaOrden.requerimientoKg" name="req"
-                        placeholder="Ej: 500" required min="1">
+                        placeholder="Ej: 5000" required min="1">
                 </div>
 
                 <div class="modal-footer">
@@ -166,7 +177,7 @@
 
                     <button type="submit" class="btn btn-primary"
                         [disabled]="ordenForm.invalid || nuevaOrden.maquinaId == 0 || nuevaOrden.productoId == 0">
-                        Guardar
+                        {{ esEdicion ? 'Actualizar' : 'Guardar' }}
                     </button>
                 </div>
 
