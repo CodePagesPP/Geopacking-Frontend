@@ -84,7 +84,7 @@
 
                     <td>
                         <div style="font-size: 0.85rem; margin-bottom: 2px;">
-                            {{ ot.producidoKg | number:'1.2-2' }} / {{ ot.requerimientoKg }}
+                            {{ ot.producidoKg | number:'1.2-2' }} / {{ ot.requerimientoKg | number:'1.2-2'}}
                         </div>
                         <div class="progress-container">
                             <div class="progress-bar" [class.success]="ot.estado === 'COMPLETADO'"

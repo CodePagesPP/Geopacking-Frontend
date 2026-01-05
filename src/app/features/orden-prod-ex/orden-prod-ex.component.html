@@ -1,7 +1,10 @@
 <div class="contenedor-principal">
 
   <div class="panel-lista">
-    <h2 class="titulo-panel">OT Pendientes</h2>
+    <div class="header-lista">
+            <h2 class="titulo-panel">OTs EX Pendientes</h2>
+            <span class="badge-count">{{ listaOTs.length }}</span>
+        </div>
 
     <div class="lista-ots" cdkDropList (cdkDropListDropped)="onDrop($event)">
 
@@ -25,7 +28,7 @@
 
         <div class="controles-ot">
           <div class="flechas-handle" cdkDragHandle>
-            <span class="flecha-icono">☰</span>
+             <i class="fas fa-bars"></i>
           </div>
 
           <button class="btn-iniciar" (click)="seleccionarOT(ot)"
@@ -68,23 +71,23 @@
 
         <div class="form-grid-bobina">
           <div class="grupo-dato">
-            <label>Hora Inicio</label>
+            <label>Hora Inicio <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="time" [(ngModel)]="nuevaBobina.horaInicio" class="input-dato">
           </div>
           <div class="grupo-dato">
-            <label>Hora Fin</label>
+            <label>Hora Fin <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="time" [(ngModel)]="nuevaBobina.horaFin" class="input-dato">
           </div>
 
           <div class="grupo-dato">
-            <label>P. Bruto</label>
+            <label>P. Bruto <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="number" [(ngModel)]="nuevaBobina.pesoBruto" placeholder="0.00" class="input-dato">
           </div>
           <div class="grupo-dato">
-            <label>P. Neto</label>
+            <label>P. Neto <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="number" [(ngModel)]="nuevaBobina.pesoNeto" placeholder="0.00" class="input-dato">
           </div>
-
+          
           <button (click)="registrarBobina()" class="btn-agregar">+</button>
         </div>
 
@@ -97,15 +100,19 @@
                 <th>H.Fin</th>
                 <th>P.Bruto</th>
                 <th>P.Neto</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let b of bobinasTurno">
+              <tr *ngFor="let b of bobinasTurno; let i = index">
                 <td>{{ b.codigo }}</td>
                 <td>{{ b.horaInicio }}</td>
                 <td>{{ b.horaFin }}</td>
                 <td>{{ b.pesoBruto }}</td>
                 <td>{{ b.pesoNeto }}</td>
+                <td>
+                    <small (click)="eliminarBobina(i)" style="color:red; cursor:pointer; font-weight:bold;">X</small>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -120,7 +127,7 @@
         <legend>Registrar Materiales</legend>
         <div class="form-inline">
           <div class="grupo-dato">
-            <label>Material</label>
+            <label>Material <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <select [(ngModel)]="nuevoMaterial.nombre" class="input-dato">
               <option value="">Seleccionar Material...</option>
               <option *ngFor="let mat of otSeleccionada.materialesProducto" [value]="mat.name">
@@ -130,7 +137,7 @@
           </div>
 
           <div class="grupo-dato">
-            <label>Cantidad (Kg)</label>
+            <label>Cantidad (Kg) <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="number" [(ngModel)]="nuevoMaterial.cantidadKg" placeholder="Kg" class="input-dato">
           </div>
 
@@ -157,7 +164,7 @@
               </td>
 
               <td>
-                <small (click)="materialesTurno.splice(i,1)"
+                <small (click)="eliminarMaterial(i)"
                   style="color:red; cursor:pointer; font-weight:bold;">X</small>
               </td>
             </tr>
@@ -178,7 +185,7 @@
         <legend>Registrar Scrapp</legend>
         <div class="form-inline">
           <div class="grupo-dato">
-            <label>Scrapp</label>
+            <label>Scrapp <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <select [(ngModel)]="nuevoScrapp.tipo" class="input-dato">
               <option value="">Tipo Scrapp...</option>
               <option *ngFor="let t of tiposScrappDisponibles" [value]="t.name">{{ t.name }}</option>
@@ -186,7 +193,7 @@
           </div>
 
           <div class="grupo-dato">
-            <label>Cantidad (Kg)</label>
+            <label>Cantidad (Kg) <small style="color:red; cursor:pointer; font-weight:bold;">*</small></label>
             <input type="number" [(ngModel)]="nuevoScrapp.cantidad" placeholder="Kg" class="input-dato">
           </div>
 
@@ -205,7 +212,7 @@
             <tr *ngFor="let s of listaScrapp; let idx = index">
               <td>{{ s.tipo }}</td>
               <td>{{ s.cantidad }}</td>
-              <td><small (click)="listaScrapp.splice(idx,1)" style="color:red; cursor:pointer;">X</small></td>
+              <td><small (click)="eliminarScrapp(idx)" style="color:red; cursor:pointer;">X</small></td>
             </tr>
           </tbody>
         </table>

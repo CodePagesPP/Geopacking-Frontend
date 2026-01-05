@@ -59,16 +59,17 @@
                             </button>
                         </div>
                     </th>
+                    <th></th>
                 </tr>
                 <tr>
-                    <th style="width: 10%;">Código</th> <th style="width: 20%;">Fecha</th>
+                    <th style="width: 10%;">Código</th> 
+                    <th style="width: 10%;">Fecha</th>
                     <th style="width: 15%;">Máquina</th>
                     <th style="width: 15%;">Producto</th>
                     <th style="width: 15%;">Progreso (Kg)</th>
                     <th style="width: 10%;">Estado</th>
-                    <th style="width: 15%;">Acciones</th> </tr>
-
-                
+                    <th style="width: 10%;">Creado por</th>
+                    <th style="width: 10%; text-align: center;">Acciones</th> </tr>
             </thead>
 
             <tbody>
@@ -79,7 +80,7 @@
                     <td>{{ ot.productoNombre }}</td>
                     <td>
                         <div style="font-size: 0.85rem; margin-bottom: 2px;">
-                            {{ ot.producidoKg | number:'1.2-2' }} / {{ ot.requerimientoKg }}
+                            {{ ot.producidoKg | number:'1.2-2' }} / {{ ot.requerimientoKg | number:'1.2-2'}}
                         </div>
                         <div class="progress-container">
                             <div class="progress-bar" [class.success]="ot.estado === 'COMPLETADO'"
@@ -97,6 +98,18 @@
                     <td>
                         <small>{{ ot.creadaPorUsername }}</small>
                     </td>
+                    <td>
+                        <div class="acciones-container">
+                            <button class="btn-icon-action edit" (click)="editarOrden(ot)" title="Editar">
+                                ✎
+                            </button>
+
+                            <button class="btn-icon-action delete" (click)="eliminarOrden(ot)"
+                                title="Eliminar">
+                                🗑
+                            </button>
+                        </div>
+                    </td>
                 </tr>
 
                 <tr *ngIf="listaOrdenesFiltrada.length === 0">
@@ -112,7 +125,7 @@
 <div class="modal-overlay" *ngIf="mostrarModal">
   <div class="modal-box">
       <div class="modal-header">
-          <h3>Generar Orden</h3>
+          <h3>{{ nuevaOrden.id ? 'Editar Orden' : 'Generar Nueva Orden' }}</h3>
           <button class="close-btn" (click)="cerrarModal()">&times;</button>
       </div>
 

@@ -21,6 +21,19 @@ export class PlanProdExService {
     });
   }
 
+
+  editar(id: number, ot: OrdenTrabajoEX): Observable<OrdenTrabajoEX> {
+    return this.http.put<OrdenTrabajoEX>(`${this.apiUrl}/editar/${id}`, ot, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
   listar(): Observable<OrdenTrabajoEX[]> {
     return this.http.get<OrdenTrabajoEX[]>(`${this.apiUrl}`, {
       headers: this.authService.getAuthHeaders()
@@ -88,6 +101,24 @@ descargarReporteStock(desde?: string, hasta?: string): Observable<Blob> {
 getBobinasTransito(): Observable<BobinaTransito[]> {
     return this.http.get<BobinaTransito[]>(`${this.apiUrlBobinas}/transito`, {
       headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  descargarReporteStockPdf(fechaInicio?: string, fechaFin?: string): Observable<Blob> {
+    let params = new HttpParams();
+    
+    
+    if (fechaInicio) {
+      params = params.set('inicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fin', fechaFin);
+    }
+
+    return this.http.get(`${this.apiUrlBobinas}/reporte-tabla-pdf`, {
+      params: params,
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob'
     });
   }
 
