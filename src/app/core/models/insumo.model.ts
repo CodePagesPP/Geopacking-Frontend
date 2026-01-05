@@ -11,6 +11,7 @@ export interface InsumoRegistroDTO {
     
     materialId: number;
     motivoId?: number;
+    observaciones?: string;
 
     materialNombre: string;
     motivoNombre?: string;
@@ -25,6 +26,7 @@ export interface CreateInsumoDTO {
 
     motivoId?: number | null;
     nuevoMotivo?: string | null;
+    observaciones?: string;
 }
 
 export interface PageInsumoDTO {

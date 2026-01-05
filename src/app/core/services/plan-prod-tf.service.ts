@@ -43,4 +43,16 @@ export class PlanProdTfService {
       headers: this.authService.getAuthHeaders()
     });
   }
+
+  editar(id: number, orden: OrdenTrabajoTF): Observable<OrdenTrabajoTF> {
+    return this.http.put<OrdenTrabajoTF>(`${this.apiUrl}/editar/${id}`, orden, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
 }

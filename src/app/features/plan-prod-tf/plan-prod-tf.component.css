@@ -330,3 +330,53 @@ button:disabled {
     opacity: 0.7;
     pointer-events: none;
 }
+
+.acciones-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre botones */
+}
+
+/* Estilo base del botón */
+.btn-icon-action {
+    width: 32px;            /* Ancho fijo */
+    height: 32px;           /* Alto fijo */
+    border: none;           /* Sin bordes grises */
+    border-radius: 6px;     /* Bordes redondeados */
+    padding: 0;             /* IMPORTANTE: Quitar padding interno para que no se deforme */
+    
+    display: flex;          /* Flex para centrar el icono */
+    align-items: center;
+    justify-content: center;
+    
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    font-size: 1.1rem;      /* Tamaño del emoji */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Sombra suave */
+    line-height: 1;         /* Resetear altura de línea para evitar cortes */
+}
+
+/* Efecto Hover (Levantar) */
+.btn-icon-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Botón Editar (Amarillo/Naranja) */
+.btn-icon-action.edit {
+    background-color: #f39c12; 
+}
+.btn-icon-action.edit:hover {
+    background-color: #e67e22;
+}
+
+/* Botón Eliminar (Rojo) */
+.btn-icon-action.delete {
+    background-color: #e74c3c;
+}
+.btn-icon-action.delete:hover {
+    background-color: #c0392b;
+}
