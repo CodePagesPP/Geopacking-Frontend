@@ -427,3 +427,20 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.btn-imprimir {
+  background-color: #555; /* Gris oscuro tipo imagen */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-imprimir:hover {
+  background-color: #333;
+}

@@ -43,20 +43,17 @@ export class PlanProdExComponent implements OnInit {
     private otService: PlanProdExService,
     private maquinaService: MaquinaService,
     private productsService: ProductsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    
+
     const token = localStorage.getItem('token');
 
     if (token) {
       try {
-        
+
         const payload = JSON.parse(atob(token.split('.')[1]));
 
-        
-
-        
         if (payload.id) {
           this.usuarioId = payload.id;
           this.usuarioname = payload.name;
@@ -72,7 +69,6 @@ export class PlanProdExComponent implements OnInit {
       }
     }
 
-    
     this.nuevaOrden.creadaPorId = this.usuarioId;
     this.nuevaOrden.creadaPorUsername = this.usuarioname;
     this.cargarDatosIniciales();
@@ -89,10 +85,7 @@ export class PlanProdExComponent implements OnInit {
 
   cargarDatosIniciales() {
     this.otService.listar().subscribe((data) => {
-      
       this.listaOrdenes = data;
-      
-      
       this.listaOrdenes.sort((a, b) => {
         const pA = a.id || 0;
         const pB = b.id || 0;
@@ -113,28 +106,20 @@ export class PlanProdExComponent implements OnInit {
 
   aplicarFiltros() {
     this.listaOrdenesFiltrada = this.listaOrdenes.filter(ot => {
-      
-      
+
       const coincideMaquina = this.filtroMaquina ? ot.maquinaId == Number(this.filtroMaquina) : true;
-      
-      
+
       const coincideProducto = this.filtroProducto ? ot.productoId == Number(this.filtroProducto) : true;
-      
-      
+
       const coincideEstado = this.filtroEstado ? ot.estado === this.filtroEstado : true;
 
-     
       let coincideFecha = true;
       if (this.filtroFechaDesde && this.filtroFechaHasta) {
-        
-        const fechaOT = new Date(ot.fechaCreacion!); 
-        
-        
+
+        const fechaOT = new Date(ot.fechaCreacion!);
         const desde = new Date(this.filtroFechaDesde + 'T00:00:00');
         const hasta = new Date(this.filtroFechaHasta + 'T23:59:59');
 
-        
-        
         coincideFecha = fechaOT >= desde && fechaOT <= hasta;
       }
 
@@ -152,57 +137,97 @@ export class PlanProdExComponent implements OnInit {
   }
 
   guardarOrden() {
-    if (this.nuevaOrden.maquinaId === 0 || this.nuevaOrden.productoId === 0) {
-      Swal.fire(
-        'Atención',
-        'Debes seleccionar una máquina y un producto.',
-        'warning'
-      );
-      return;
-    }
-    if (this.nuevaOrden.requerimientoKg <= 0) {
-      Swal.fire(
-        'Atención',
-        'El requerimiento debe ser mayor a 0 Kg.',
-        'warning'
-      );
+ 
+    if (!this.nuevaOrden.maquinaId || !this.nuevaOrden.productoId || this.nuevaOrden.requerimientoKg <= 0) {
+      Swal.fire('Atención', 'Complete todos los campos obligatorios correctamente.', 'warning');
       return;
     }
 
     Swal.fire({
-      title: 'Generando Orden...',
-      text: 'Por favor espera',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
+      title: 'Procesando...',
+      didOpen: () => Swal.showLoading()
     });
 
-    this.otService.crear(this.nuevaOrden).subscribe({
-      next: (res) => {
-        Swal.fire({
-          title: '¡Generada!',
-          text: `Orden de Trabajo ${res.codigo} creada correctamente.`,
-          icon: 'success',
-          confirmButtonColor: '#3498db',
+    if (this.nuevaOrden.id) {
+      
+      this.otService.editar(this.nuevaOrden.id, this.nuevaOrden).subscribe({
+        next: (res) => {
+          Swal.fire('Actualizado', `Orden ${res.codigo} actualizada correctamente.`, 'success');
+          this.cerrarModal();
+          this.cargarDatosIniciales();
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Error', 'No se pudo actualizar la orden.', 'error');
+        }
+      });
+
+    } else {
+      
+      this.nuevaOrden.creadaPorId = this.usuarioId; 
+      
+      this.otService.crear(this.nuevaOrden).subscribe({
+        next: (res) => {
+          Swal.fire('Generada', `Orden ${res.codigo} creada correctamente.`, 'success');
+          this.cerrarModal();
+          this.cargarDatosIniciales();
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Error', 'No se pudo crear la orden.', 'error');
+        }
+      });
+    }
+  }
+
+
+  eliminarOrden(ot: OrdenTrabajoEX) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminará la Orden ${ot.codigo}. Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#34495e',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+       
+        this.otService.eliminar(ot.id!).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'La orden ha sido eliminada.', 'success');
+            this.cargarDatosIniciales(); 
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire('Error', 'No se pudo eliminar la orden (quizás ya tiene avance).', 'error');
+          }
         });
 
-        this.cargarDatosIniciales();
-        this.cerrarModal();
-      },
-      error: (e) => {
-        console.error(e);
-        Swal.fire('Error', 'Hubo un problema al generar la orden.', 'error');
-      },
+      }
     });
   }
 
+  
+  editarOrden(ot: OrdenTrabajoEX) {
+   
+    this.nuevaOrden = { ...ot };
+    
+    
+    this.mostrarModal = true;
+  }
+  
+
   limpiarFormulario() {
     this.nuevaOrden = {
+      id: undefined, 
       maquinaId: 0,
       productoId: 0,
       requerimientoKg: 0,
-      creadaPorId: 0,
+      creadaPorId: this.usuarioId, 
+      creadaPorUsername: this.usuarioname
     };
   }
 }

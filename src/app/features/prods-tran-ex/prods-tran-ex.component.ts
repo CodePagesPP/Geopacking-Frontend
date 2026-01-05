@@ -14,7 +14,7 @@ import { BobinaTransito } from '../../core/models/plan-prod-ex';
 export class ProdsTranExComponent implements OnInit{
 
   private planProdService = inject(PlanProdExService);
-
+isGeneratingPdf: boolean = false;
   bobinas: BobinaTransito[] = [];
   bobinasFiltradas: BobinaTransito[] = [];
 
@@ -84,5 +84,38 @@ export class ProdsTranExComponent implements OnInit{
   limpiarFiltros() {
     this.filtros = { fechaInicio: '', fechaFin: '', busqueda: '' };
     this.aplicarFiltros();
+  }
+
+  imprimirReporte() {
+    this.isGeneratingPdf = true;
+
+    
+    const inicio = this.filtros.fechaInicio || undefined;
+    const fin = this.filtros.fechaFin || undefined;
+
+    this.planProdService.descargarReporteStockPdf(inicio, fin).subscribe({
+      next: (blob: Blob) => {
+        
+        const url = window.URL.createObjectURL(blob);
+        
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Reporte_Bobinas_Stock.pdf'; 
+        document.body.appendChild(a);
+        a.click();
+        
+       
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        this.isGeneratingPdf = false;
+      },
+      error: (err) => {
+        console.error('Error al descargar el PDF', err);
+        alert('Hubo un error al generar el reporte PDF.');
+        this.isGeneratingPdf = false;
+      }
+    });
   }
 }

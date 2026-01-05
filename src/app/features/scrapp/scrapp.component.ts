@@ -232,7 +232,7 @@ export class ScrappComponent implements OnInit {
     });
   }
 
-  // --- Helpers de UI ---
+ 
 
   openForm(): void {
     this.isFormOpen = true;

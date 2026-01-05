@@ -139,10 +139,25 @@ export class OrdenProdEXComponent implements OnInit {
   }
 
   registrarBobina() {
-    if (!this.otSeleccionada || this.nuevaBobina.pesoNeto <= 0) return;
+    if (!this.otSeleccionada) return;
+
+    
+    if (
+      !this.nuevaBobina.horaInicio ||
+      !this.nuevaBobina.horaFin ||
+      this.nuevaBobina.pesoBruto <= 0 ||
+      this.nuevaBobina.pesoNeto <= 0
+    ) {
+      alert('Todos los campos de la bobina (Horas y Pesos) son obligatorios.');
+      return;
+    }
+
+    if (this.nuevaBobina.pesoNeto > this.nuevaBobina.pesoBruto) {
+        alert('El Peso Neto no puede ser mayor al Peso Bruto.');
+        return;
+    }
 
     const numeroActual = this.correlativoBase + this.bobinasTurno.length + 1;
-
     const codigoGen = `${this.otSeleccionada.codigo}-B${numeroActual}`;
 
     this.bobinasTurno.push({
@@ -154,6 +169,8 @@ export class OrdenProdEXComponent implements OnInit {
     });
 
     this.guardarEnLocal();
+    
+    
     this.nuevaBobina = {
       pesoBruto: 0,
       pesoNeto: 0,
@@ -163,8 +180,16 @@ export class OrdenProdEXComponent implements OnInit {
   }
 
   registrarMaterial() {
-    if (this.nuevoMaterial.cantidadKg <= 0 || !this.nuevoMaterial.nombre)
-      return;
+    
+    if (!this.nuevoMaterial.nombre || this.nuevoMaterial.nombre === "") {
+        alert('Debe seleccionar un Material.');
+        return;
+    }
+    if (this.nuevoMaterial.cantidadKg <= 0) {
+        alert('La cantidad de material debe ser mayor a 0.');
+        return;
+    }
+
     const materialOriginal = this.otSeleccionada?.materialesProducto?.find(
       (m) => m.name === this.nuevoMaterial.nombre
     );
@@ -180,7 +205,16 @@ export class OrdenProdEXComponent implements OnInit {
   }
 
   registrarScrapp() {
-    if (!this.nuevoScrapp.tipo || this.nuevoScrapp.cantidad <= 0) return;
+   
+    if (!this.nuevoScrapp.tipo || this.nuevoScrapp.tipo === "") {
+        alert('Debe seleccionar un Tipo de Scrapp.');
+        return;
+    }
+    if (this.nuevoScrapp.cantidad <= 0) {
+        alert('La cantidad de scrapp debe ser mayor a 0.');
+        return;
+    }
+
     const scrappOriginal = this.tiposScrappDisponibles.find(
       (t) => t.name === this.nuevoScrapp.tipo
     );
@@ -226,6 +260,23 @@ export class OrdenProdEXComponent implements OnInit {
     return (totalSalida / totalEntrada) * 100;
   }
 
+  eliminarBobina(index: number) {
+    if(!confirm('¿Eliminar esta bobina?')) return;
+    
+    this.bobinasTurno.splice(index, 1);
+    this.guardarEnLocal(); 
+  }
+
+  eliminarMaterial(index: number) {
+    this.materialesTurno.splice(index, 1);
+    this.guardarEnLocal();
+  }
+
+  eliminarScrapp(index: number) {
+    this.listaScrapp.splice(index, 1);
+    this.guardarEnLocal();
+  }
+
   guardarEnLocal() {
     if (!this.otSeleccionada) return;
     const otId = this.otSeleccionada.id;
@@ -267,6 +318,18 @@ export class OrdenProdEXComponent implements OnInit {
     if (!this.otSeleccionada) return;
     if (this.bobinasTurno.length === 0) {
       alert('No hay bobinas registradas. Debe registrar producción.');
+      return;
+    }
+
+    
+    if (this.materialesTurno.length === 0) {
+      alert('No hay materiales registrados. Debe registrar el consumo de material.');
+      return;
+    }
+
+    
+    if (this.listaScrapp.length === 0) {
+      alert('No hay scrapp registrado. Debe registrar.');
       return;
     }
 

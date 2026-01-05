@@ -63,22 +63,7 @@ limpiar() {
   this.cargarDatos(); 
 }
 
-imprimirReporte() {
-  
-  this.bobinaService.descargarReporteStock(this.fechaDesde, this.fechaHasta).subscribe({
-    next: (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Reporte_Bobinas_${this.fechaDesde || 'General'}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    },
-    error: (e) => alert('Error al descargar reporte')
-  });
-}
+
 
 imprimirIndividual(id: number) {
   this.bobinaService.descargarReporteIndividual(id).subscribe({

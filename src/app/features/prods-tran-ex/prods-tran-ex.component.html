@@ -42,6 +42,13 @@
                 <button class="btn-filter" (click)="aplicarFiltros()">Filtrar</button>
                 <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
             </div>
+
+            <div class="acciones">
+                <button class="btn-imprimir" (click)="imprimirReporte()">
+                    <span *ngIf="!isGeneratingPdf">🖨 Imprimir Reporte Stock (PDF)</span>
+                    <span *ngIf="isGeneratingPdf">⏳ Generando...</span>
+                </button>
+            </div>
         </div>
     </div>
 
