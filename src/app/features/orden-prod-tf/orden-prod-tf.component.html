@@ -35,7 +35,7 @@
 
                 <div class="controles-ot">
                     <div class="flechas-handle" cdkDragHandle title="Arrastrar para reordenar">
-                        <i class="fas fa-bars"></i> 
+                        <i class="fas fa-bars"></i>
                     </div>
 
                     <button class="btn-iniciar" (click)="seleccionarOT(ot)"
@@ -68,12 +68,113 @@
             <p>Elige una orden de la lista izquierda (Termoformado) para registrar producción.</p>
         </div>
 
-        <div *ngIf="otSeleccionada" class="construccion-box">
-            <h3>Producción: {{ otSeleccionada.codigo }}</h3>
-            <p>Panel de registro en construcción...</p>
-            <button class="btn-cancelar" (click)="otSeleccionada = null">Volver</button>
+        <div *ngIf="otSeleccionada" class="production-panel">
+
+            <div class="panel-header">
+                <div class="header-row">
+                    <span class="ot-code">ORDEN: {{ otSeleccionada.codigo }}</span>
+                    <span><strong>MÁQUINA:</strong> {{ otSeleccionada.maquinaNombre }}</span>
+                    <span><strong>AVANCE:</strong> {{ otSeleccionada.producidoKg | number:'1.0-0' }} / {{
+                        otSeleccionada.requerimientoKg | number:'1.0-0' }} UND</span>
+                </div>
+                <div class="header-row secondary">
+                    <span><strong>PRODUCTO:</strong> {{ otSeleccionada.productoNombre }}</span>
+                    <span><strong>BASE:</strong> {{ otSeleccionada.productoBaseNombre || 'N/A' }}</span>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="input-section">
+                    <h4 class="section-title">Datos de Bobina</h4>
+                    <div class="form-grid-4">
+                        <div class="form-group">
+                            <label>Ingresar Bobina <small>(Lector)</small></label>
+                            <input type="text" class="form-control focus-input"
+                                [(ngModel)]="registroActual.codigoBobina" (keyup.enter)="buscarBobina()"
+                                placeholder="Escanee código...">
+                        </div>
+                        <div class="form-group">
+                            <label>Lote Bobina</label>
+                            <input type="text" class="form-control" [value]="registroActual.loteBobina" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre Bobina</label>
+                            <input type="text" class="form-control" [value]="registroActual.nombreBobina" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Velocidad (c/m)</label>
+                            <input type="number" class="form-control" [(ngModel)]="registroActual.velocidad">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <div class="form-grid-5">
+                        <div class="form-group">
+                            <label>Hora Inicio</label>
+                            <input type="time" class="form-control" [(ngModel)]="registroActual.horaInicio">
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Fin</label>
+                            <input type="time" class="form-control" [(ngModel)]="registroActual.horaFin">
+                        </div>
+                        <div class="form-group">
+                            <label>Cajas Prod.</label>
+                            <input type="number" class="form-control" [(ngModel)]="registroActual.cajas">
+                        </div>
+                        <div class="form-group">
+                            <label>Rechazo (Kg)</label>
+                            <input type="number" class="form-control" [(ngModel)]="registroActual.rechazoKg">
+                        </div>
+
+                        <div class="form-group btn-container">
+                            <label>&nbsp;</label>
+                            <button class="btn-add" (click)="agregarRegistro()" title="Agregar registro">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="production-table">
+                        <thead>
+                            <tr>
+                                <th>Cod. Bobina</th>
+                                <th>H. Inicio</th>
+                                <th>H. Fin</th>
+                                <th>Cajas</th>
+                                <th>Rechazo (Kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of listaDetalles">
+                                <td>{{ item.codigoBobina }}</td>
+                                <td>{{ item.horaInicio }}</td>
+                                <td>{{ item.horaFin }}</td>
+                                <td>{{ item.cajas }}</td>
+                                <td>{{ item.rechazoKg }}</td>
+                            </tr>
+                            <tr *ngIf="listaDetalles.length === 0">
+                                <td colspan="6" class="text-center-muted">
+                                    No hay registros en esta sesión.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="footer-section">
+                    <label>Observaciones Generales</label>
+                    <textarea rows="2" class="form-control" [(ngModel)]="observacionesGenerales"
+                        placeholder="Alguna incidencia..."></textarea>
+
+                    <button class="btn-save-all" (click)="guardarAvance()">
+                        <i class="fas fa-save"></i> Guardar Avance
+                    </button>
+                </div>
+            </div>
         </div>
-
     </div>
-
 </div>

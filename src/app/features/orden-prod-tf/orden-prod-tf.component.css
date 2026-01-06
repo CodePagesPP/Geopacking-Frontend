@@ -211,6 +211,7 @@
     background-color: var(--success-color);
     color: white;
     border: none;
+    cursor: pointer;
 }
 
 .btn-iniciar:disabled {
@@ -279,4 +280,234 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.production-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.panel-header {
+    background-color: #555;
+    color: white;
+    padding: 15px 20px;
+    flex-shrink: 0;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.header-row.secondary {
+    font-size: 0.85rem;
+    color: #ddd;
+}
+
+.ot-code {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.panel-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #3498db;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-weight: 700;
+}
+
+.input-section {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.form-grid-5 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.focus-input {
+    border-color: #3498db;
+    background-color: #fff;
+}
+
+.btn-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn-add {
+    width: 100%;
+    height: 35px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-add:hover {
+    background-color: #1a5276;
+}
+
+.table-wrapper {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.production-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.production-table th {
+    background-color: #e9ecef;
+    padding: 10px;
+    text-align: left;
+    font-size: 0.8rem;
+    color: #495057;
+    font-weight: bold;
+}
+
+.production-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #212529;
+}
+
+.text-center-muted {
+    text-align: center;
+    color: #adb5bd;
+    font-style: italic;
+    padding: 15px !important;
+}
+
+.footer-section {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.btn-save-all {
+    margin-top: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    float: right;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-save-all:hover {
+    background-color: #218838;
+}
+
+/* ... Todo tu CSS anterior ... */
+
+/* --- AJUSTES PARA PANTALLAS GRANDES (Monitores 27" / Full HD+ / 2K) --- */
+@media (min-width: 1600px) {
+
+    /* 1. Aumentar tamaño de letra general */
+    .panel-body, .form-control, .btn-add, .production-table td {
+        font-size: 1.1rem !important; /* Letra más grande */
+    }
+
+    /* 2. Aumentar espacio interno (relleno) para que no se vea apretado */
+    .panel-body {
+        padding: 40px !important; /* Más aire alrededor */
+    }
+
+    .input-section {
+        padding: 25px !important;
+        margin-bottom: 30px !important;
+    }
+
+    /* 3. Inputs más altos y cómodos */
+    .form-control {
+        padding: 12px !important; /* Input más gordito */
+    }
+
+    .btn-add {
+        height: 45px !important; /* Botón más alto para coincidir */
+    }
+
+    /* 4. Títulos de sección más grandes */
+    .section-title {
+        font-size: 1rem !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* 5. Cabecera de la tabla más legible */
+    .production-table th {
+        font-size: 1rem !important;
+        padding: 15px !important;
+    }
+
+    /* 6. Header superior (Datos de OT) más grande */
+    .panel-header {
+        padding: 25px 30px !important;
+    }
+    
+    .ot-code {
+        font-size: 1.4rem !important;
+    }
+    
+    .header-row {
+        font-size: 1.2rem !important;
+        margin-bottom: 10px !important;
+    }
 }
