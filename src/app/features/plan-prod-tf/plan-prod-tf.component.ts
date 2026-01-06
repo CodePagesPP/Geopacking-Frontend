@@ -111,12 +111,10 @@ export class PlanProdTfComponent implements OnInit {
       if (this.filtroFechaDesde && this.filtroFechaHasta) {
         if (ot.fechaCreacion) {
           const fechaOT = new Date(ot.fechaCreacion);
-          const desde = new Date(this.filtroFechaDesde);
-          const hasta = new Date(this.filtroFechaHasta);
-
-          desde.setHours(0, 0, 0, 0);
-          hasta.setHours(23, 59, 59, 999);
-
+          
+          const desde = new Date(this.filtroFechaDesde + 'T00:00:00');
+          const hasta = new Date(this.filtroFechaHasta + 'T23:59:59'); 
+          
           coincideFecha = fechaOT >= desde && fechaOT <= hasta;
         }
       }
