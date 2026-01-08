@@ -7,10 +7,9 @@
         </div>
 
         <div class="lista-ots" cdkDropList (cdkDropListDropped)="onDrop($event)">
-
             <div *ngFor="let ot of listaOTs; let i = index" class="tarjeta-ot"
                 [class.activa]="ot.id === otSeleccionada?.id" cdkDrag>
-
+                
                 <div class="custom-placeholder" *cdkDragPlaceholder></div>
 
                 <div class="progreso-box" [class.completo]="(ot.producidoKg || 0) >= (ot.requerimientoKg || 0)">
@@ -23,9 +22,7 @@
                 <div class="info-ot">
                     <span class="codigo">{{ ot.codigo }}</span>
                     <div class="detalles">
-                        <span class="producto" title="{{ ot.productoNombre }}">
-                            {{ ot.productoNombre }}
-                        </span>
+                        <span class="producto" title="{{ ot.productoNombre }}">{{ ot.productoNombre }}</span>
                         <small class="maquina">{{ ot.maquinaNombre }}</small>
                     </div>
                     <div class="extra-info" *ngIf="ot.productoBaseNombre">
@@ -34,31 +31,20 @@
                 </div>
 
                 <div class="controles-ot">
-                    <div class="flechas-handle" cdkDragHandle title="Arrastrar para reordenar">
-                        <i class="fas fa-bars"></i>
-                    </div>
-
+                    <div class="flechas-handle" cdkDragHandle><i class="fas fa-bars"></i></div>
                     <button class="btn-iniciar" (click)="seleccionarOT(ot)"
                         [disabled]="!esIniciable(i) && ot.id !== otSeleccionada?.id"
                         [ngStyle]="{'opacity': (!esIniciable(i) && ot.id !== otSeleccionada?.id) ? '0.5' : '1'}"
                         [class.btn-en-proceso]="ot.id === otSeleccionada?.id">
-
                         <span *ngIf="ot.id === otSeleccionada?.id">▶ En Proceso</span>
-
-                        <span *ngIf="ot.id !== otSeleccionada?.id">
-                            {{ esIniciable(i) ? 'Iniciar' : 'Espera' }}
-                        </span>
+                        <span *ngIf="ot.id !== otSeleccionada?.id">{{ esIniciable(i) ? 'Iniciar' : 'Espera' }}</span>
                     </button>
                 </div>
             </div>
 
-            <div *ngIf="listaOTs.length === 0" class="empty-state">
-                <p>No hay órdenes programadas.</p>
-            </div>
-
+            <div *ngIf="listaOTs.length === 0" class="empty-state"><p>No hay órdenes programadas.</p></div>
         </div>
     </div>
-
 
     <div class="panel-registro">
 
@@ -73,12 +59,10 @@
             <div class="panel-header">
                 <div class="header-row">
                     <span class="ot-code">ORDEN: {{ otSeleccionada.codigo }}</span>
-                    <span><strong>MÁQUINA:</strong> {{ otSeleccionada.maquinaNombre }}</span>
-                    <span><strong>AVANCE:</strong> {{ otSeleccionada.producidoKg | number:'1.0-0' }} / {{
-                        otSeleccionada.requerimientoKg | number:'1.0-0' }} UND</span>
+                    <span><strong>PRODUCTO:</strong> {{ otSeleccionada.productoNombre }}</span>
                 </div>
                 <div class="header-row secondary">
-                    <span><strong>PRODUCTO:</strong> {{ otSeleccionada.productoNombre }}</span>
+                    <span><strong>MÁQUINA:</strong> {{ otSeleccionada.maquinaNombre }}</span>
                     <span><strong>BASE:</strong> {{ otSeleccionada.productoBaseNombre || 'N/A' }}</span>
                 </div>
             </div>
@@ -103,8 +87,8 @@
                             <input type="text" class="form-control" [value]="registroActual.nombreBobina" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Velocidad (c/m)</label>
-                            <input type="number" class="form-control" [(ngModel)]="registroActual.velocidad">
+                            <label>Velocidad (CPM)</label>
+                            <input type="number" class="form-control" [(ngModel)]="registroActual.velocidad" id="inputVelocidad">
                         </div>
                     </div>
                 </div>
@@ -146,7 +130,7 @@
                                 <th>H. Fin</th>
                                 <th>Cajas</th>
                                 <th>Rechazo (Kg)</th>
-                            </tr>
+                                <th>Acciones</th> </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of listaDetalles">
@@ -155,11 +139,15 @@
                                 <td>{{ item.horaFin }}</td>
                                 <td>{{ item.cajas }}</td>
                                 <td>{{ item.rechazoKg }}</td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-print" (click)="imprimirEtiquetasFila(item)" 
+                                            title="Imprimir Etiquetas">
+                                        🖨️
+                                    </button>
+                                </td>
                             </tr>
                             <tr *ngIf="listaDetalles.length === 0">
-                                <td colspan="6" class="text-center-muted">
-                                    No hay registros en esta sesión.
-                                </td>
+                                <td colspan="6" class="text-center-muted">No hay registros en esta sesión.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -170,9 +158,15 @@
                     <textarea rows="2" class="form-control" [(ngModel)]="observacionesGenerales"
                         placeholder="Alguna incidencia..."></textarea>
 
-                    <button class="btn-save-all" (click)="guardarAvance()">
-                        <i class="fas fa-save"></i> Guardar Avance
-                    </button>
+                    <div class="footer-buttons">
+                        <button class="btn-secondary" (click)="imprimirReporteGeneral()">
+                            📄 Reporte PDF
+                        </button>
+
+                        <button class="btn-save-all" (click)="guardarAvance()">
+                            <i class="fas fa-save"></i> Guardar Avance
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
