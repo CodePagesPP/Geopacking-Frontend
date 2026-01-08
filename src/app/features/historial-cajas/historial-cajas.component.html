@@ -1,0 +1,71 @@
+<div class="contenedor-historial">
+    
+    <div class="header-section">
+        <h2>Historial de Cajas (Termoformado)</h2>
+    </div>
+
+    <div class="filtros-box">
+        <div class="rango-fechas">
+            <div class="input-group">
+                <label>Desde:</label>
+                <input type="date" class="form-control" [(ngModel)]="fechaDesde">
+            </div>
+            
+            <div class="input-group">
+                <label>Hasta:</label>
+                <input type="date" class="form-control" [(ngModel)]="fechaHasta">
+            </div>
+
+            <button class="btn-filtrar" (click)="filtrar()">Filtrar</button>
+            <button class="btn-limpiar" (click)="limpiar()">Limpiar</button>
+        </div>
+    </div>
+
+    <div class="tabla-container">
+        <table class="tabla-historial">
+            <thead>
+                <tr>
+                    <th>FECHA</th>
+                    <th>COD. BOBINA</th>
+                    <th>OPERACIÓN (OT)</th>
+                    <th>PRODUCTO</th>
+                    <th>CAJAS</th>
+                    <th>OPERADOR</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of listaCajas">
+                    <td style="font-weight: 500; color: #555;">
+                        {{ item.fecha | date:'dd/MM/yyyy' }} <small>{{ item.hora | slice:0:5 }}</small>
+                    </td>
+                    
+                    <td class="dato-destacado">{{ item.codigoBobina }}</td>
+                    <td>{{ item.otCodigo }}</td>
+                    <td class="texto-azul">{{ item.producto }}</td>
+                    <td class="dato-negrita">{{ item.cajas }}</td>
+                    
+                    <td style="text-transform: capitalize;">{{ item.operador }}</td>
+                    
+                    <td class="text-center">
+                        <button class="btn-reimprimir" (click)="reimprimirEtiqueta(item)" title="Reimprimir">
+                            🖨️
+                        </button>
+                    </td>
+                </tr>
+                
+                <tr *ngIf="listaCajas.length === 0 && !cargando">
+                    <td colspan="7" class="empty-state">
+                        No se encontraron registros en este rango.
+                    </td>
+                </tr>
+                
+                <tr *ngIf="cargando">
+                    <td colspan="7" class="empty-state">
+                        Cargando datos...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

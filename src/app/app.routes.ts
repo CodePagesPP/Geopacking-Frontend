@@ -11,7 +11,6 @@ export const routes: Routes = [
     component: NavComponent,
     canActivate: [authGuard],
     children: [
-      // --- RUTAS PRINCIPALES ---
       {
         path: 'dashboard',
         title: 'Dashboard',
@@ -49,7 +48,7 @@ export const routes: Routes = [
         data: { roles: ['ADMIN_ACCESS'] },
         children: [
           {
-            path: 'maquinas', // URL: /config/maquinas
+            path: 'maquinas',
             title: 'Configuración Máquinas',
             loadComponent: () =>
               import('./features/machines/machines.component').then(
@@ -57,7 +56,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: 'materiales', // URL: /config/materiales (Antes 'tools')
+            path: 'materiales',
             title: 'Configuración Materiales',
             loadComponent: () =>
               import('./features/tools/tools.component').then(
@@ -65,7 +64,7 @@ export const routes: Routes = [
               ),
           },
           {
-            path: 'usuarios', // URL: /config/usuarios (Antes 'workers')
+            path: 'usuarios',
             title: 'Configuración Usuarios',
             loadComponent: () =>
               import('./features/workers/workers.component').then(
@@ -73,9 +72,8 @@ export const routes: Routes = [
               ),
           },
           {
-            path: 'roles', // URL: /config/roles
+            path: 'roles',
             title: 'Roles y Accesos',
-            // Si aún no tienes componente de roles, redirige o usa uno temporal
             redirectTo: 'usuarios',
           },
         ],
@@ -196,7 +194,17 @@ export const routes: Routes = [
               ),
             canActivate: [roleGuard],
             data: { roles: ['ADMIN_ACCESS'] },
-          }
+          },
+          {
+            path: 'historial-cajas',
+            title: 'Historial Cajas',
+            loadComponent: () =>
+              import('./features/historial-cajas/historial-cajas.component').then(
+                (m) => m.HistorialCajasComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
         ],
       },
       {

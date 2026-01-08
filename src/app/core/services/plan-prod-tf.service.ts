@@ -55,4 +55,54 @@ export class PlanProdTfService {
       headers: this.authService.getAuthHeaders()
     });
   }
+
+  registrarAvance(detalles: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/avance`, detalles, {
+      headers: this.authService.getAuthHeaders(),
+    });
+  }
+
+  descargarEtiquetas(detalleId: number, inicioSecuencia: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/etiquetas/${detalleId}?inicioSecuencia=${inicioSecuencia}`, {
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  descargarReporte(otId: number, observaciones: string = ''): Observable<Blob> {
+    const obsParam = encodeURIComponent(observaciones);
+    return this.http.get(`${this.apiUrl}/reporte/${otId}?observaciones=${obsParam}`, {
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  obtenerInfoBobina(codigo: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/buscar-bobina/${codigo}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+  
+  imprimirEtiquetasSimuladas(registro: any, inicioSecuencia: number): Observable<Blob> {
+    const payload = {
+        ...registro,
+        otId: registro.otId
+    };
+    
+    return this.http.post(`${this.apiUrl}/etiquetas/simular?inicioSecuencia=${inicioSecuencia}`, payload, {
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  listarHistorial(fechaInicio?: string, fechaFin?: string): Observable<any[]> {
+    let params = '';
+    if (fechaInicio && fechaFin) {
+      params = `?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+    }
+    
+    return this.http.get<any[]>(`${this.apiUrl}/historial${params}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
 }

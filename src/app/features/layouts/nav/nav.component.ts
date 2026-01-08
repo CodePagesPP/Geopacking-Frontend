@@ -129,7 +129,6 @@ export class NavComponent implements OnInit {
           label: 'Productos en Tránsito',
           icon: 'local_shipping',
           expanded: false,
-          // Aquí simulo las pestañas como submenús para acceso directo
           children: [
             {
               label: 'Productos EX',
@@ -174,7 +173,8 @@ export class NavComponent implements OnInit {
       icon: 'bar_chart',
       children: [
         { label: 'General', icon: 'analytics', route: '/reportes/general' },
-        { label: 'Historial Bobinas', icon: 'analytics', route: '/reportes/historial-bobinas' }
+        { label: 'Historial Reporte Bobinas', icon: 'analytics', route: '/reportes/historial-bobinas' },
+        { label: 'Historial Reporte Cajas', icon: 'analytics', route: '/reportes/historial-cajas' }
       ],
     },
     {
