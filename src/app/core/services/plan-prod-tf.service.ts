@@ -62,6 +62,25 @@ export class PlanProdTfService {
     });
   }
 
+
+  listarInventarioTF(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/inventario/tf`, {
+      headers: this.authService.getAuthHeaders(),
+    });
+}
+
+listarInventarioPT(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/inventario/pt`, {
+      headers: this.authService.getAuthHeaders(),
+    });
+}
+
+enviarATerminados(id: number): Observable<void> {
+  return this.http.post<void>(`${this.apiUrl}/inventario/mover-a-pt/${id}`, {}, {
+    headers: this.authService.getAuthHeaders()
+  });
+}
+
   descargarEtiquetas(detalleId: number, inicioSecuencia: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/etiquetas/${detalleId}?inicioSecuencia=${inicioSecuencia}`, {
       headers: this.authService.getAuthHeaders(),
