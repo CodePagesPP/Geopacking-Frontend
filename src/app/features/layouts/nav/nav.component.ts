@@ -123,7 +123,7 @@ export class NavComponent implements OnInit {
         {
           label: 'Productos Terminados',
           icon: 'check_circle',
-          route: '/inventario/terminados',
+          route: '/inventario/productos-terminados',
         },
         {
           label: 'Productos en Tránsito',
@@ -138,7 +138,7 @@ export class NavComponent implements OnInit {
             {
               label: 'Productos TF',
               icon: 'arrow_right',
-              route: '/inventario/transito/tf',
+              route: '/inventario/productosTransitoTF',
             },
           ],
         },

@@ -1,0 +1,84 @@
+<div class="inventario-container">
+
+  <div class="header-section">
+    <div>
+      <h2 class="page-title">Inventario Productos Terminados</h2>
+      <p style="color: #6b7280; margin-top: 5px;">Lotes finalizados y almacenados listos para despacho.</p>
+    </div>
+    
+    <div class="stock-card stock-pt"> <span class="stock-label">Total Productos Terminados</span>
+      <div class="stock-value-container">
+        <span class="stock-value">{{ stockTotal | number:'1.0-0' }}</span>
+        <span class="stock-unit">Cajas</span>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="actions-section">
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>Buscar Lote/Producto:</label>
+        <div class="input-with-icon">
+          <input type="text" [(ngModel)]="busqueda" placeholder="Código o Nombre..." (keyup)="filtrar()">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+      
+      <div class="filter-buttons">
+        <button class="btn-filter" (click)="filtrar()">Refrescar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="table-container">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>LOTE PRODUCCIÓN</th>
+          <th>PRODUCTO</th>
+          <th>CANTIDAD (CAJAS)</th>
+          <th>FECHA INGRESO</th>
+          <th>ESTADO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of inventarioFiltrado">
+          <td class="font-medium">
+            <span class="lote-badge">{{ item.loteProduccion }}</span>
+          </td>
+
+          <td>
+            <div class="producto-cell">
+              <span class="prod-name">{{ item.nombreProducto }}</span>
+            </div>
+          </td>
+
+          <td class="font-bold" style="font-size: 1.1em;">
+            {{ item.cantidad }}
+          </td>
+
+          <td>{{ item.fechaProduccion | date:'dd/MM/yyyy HH:mm' }}</td>
+
+          <td>
+            <span class="status-badge status-pt">
+              <i class="fas fa-check-circle"></i> TERMINADO
+            </span>
+          </td>
+        </tr>
+
+        <tr *ngIf="inventarioFiltrado.length === 0">
+          <td colspan="5" class="text-center no-data">
+            <i class="fas fa-clipboard-check" style="font-size: 24px; margin-bottom: 10px; display: block; color: #10b981;"></i>
+            No hay productos terminados registrados.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="pagination-container" *ngIf="inventarioFiltrado.length > 10">
+    <span style="margin-right: auto;">Mostrando {{inventarioFiltrado.length}} registros</span>
+  </div>
+
+</div>

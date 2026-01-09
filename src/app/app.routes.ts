@@ -95,6 +95,16 @@ export const routes: Routes = [
             data: { roles: ['ADMIN_ACCESS'] },
           },
           {
+            path: 'productos-terminados',
+            title: 'Productos Terminados',
+            loadComponent: () =>
+              import('./features/prods-terminados/prods-terminados.component').then(
+                (m) => m.ProdsTerminadosComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
+          {
             path: 'productosTransitoEX',
             title: 'Productos en Transito EX',
             loadComponent: () =>
@@ -104,6 +114,16 @@ export const routes: Routes = [
             canActivate: [roleGuard],
             data: { roles: ['ADMIN_ACCESS'] },
           },
+          {
+            path: 'productosTransitoTF',
+            title: 'Productos en Transito TF',
+            loadComponent: () =>
+              import('./features/prods-tran-tf/prods-tran-tf.component').then(
+                (m) => m.ProdsTranTfComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          }
         ],
       },
 
