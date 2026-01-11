@@ -583,3 +583,33 @@
         height: 50px !important;
     }
 }
+
+/* --- NUEVO GRID DE 7 COLUMNAS (Para que todo entre en una fila) --- */
+.form-grid-7 {
+    display: grid;
+    /* Esto crea 7 columnas de igual tamaño */
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 10px; /* Espacio entre cuadritos */
+    align-items: end; /* Alinea todo abajo (para que el botón cuadre con los inputs) */
+    margin-bottom: 0;
+}
+
+/* Ajuste para los inputs dentro de este grid */
+.form-grid-7 .form-control,
+.form-grid-7 .form-select {
+    font-size: 0.85rem; /* Letra un pelín más chica para que quepa */
+    padding: 6px;
+}
+
+/* El botón ocupará todo el ancho de su columna */
+.form-grid-7 .btn-container {
+    width: 100%;
+}
+
+/* --- RESPONSIVE (Si la pantalla es chica, bajamos filas) --- */
+@media (max-width: 1366px) {
+    .form-grid-7 {
+        /* En pantallas de laptop normal, bajamos a 4 columnas */
+        grid-template-columns: repeat(4, 1fr); 
+    }
+}

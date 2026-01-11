@@ -9,6 +9,7 @@ import { OrdenTrabajoTF } from '../../core/models/plan-prod-tf';
 import { PlanProdTfService } from '../../core/services/plan-prod-tf.service';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { ProductoTF } from '../../core/models/products.model';
 
 @Component({
   selector: 'app-orden-prod-tf',
@@ -30,6 +31,8 @@ export class OrdenProdTfComponent implements OnInit {
     horaFin: '',
     cajas: 0,
     rechazoKg: 0,
+    pesoPromedio: 0,
+    bobinaFin: false
   };
 
   listaDetalles: any[] = [];
@@ -122,6 +125,11 @@ agregarRegistro() {
         Swal.fire('Cantidad Inválida', 'La cantidad de cajas debe ser mayor a 0.', 'warning');
         return;
     }
+
+    if (!this.registroActual.pesoPromedio || this.registroActual.pesoPromedio <= 0) {
+        Swal.fire('Falta Peso', 'Ingrese el peso promedio (g).', 'warning');
+        return;
+    }
     
     const inicioSecuencia = this.contadorCajasAcumulado + 1;
     this.contadorCajasAcumulado += this.registroActual.cajas;
@@ -134,6 +142,8 @@ agregarRegistro() {
     
     this.registroActual.cajas = 0;
     this.registroActual.rechazoKg = 0;
+    this.registroActual.pesoPromedio = 0;
+    this.registroActual.bobinaFin = false;
     this.registroActual.horaInicio = this.registroActual.horaFin; 
     this.registroActual.horaFin = '';
   }
@@ -148,6 +158,8 @@ agregarRegistro() {
       horaFin: '',
       cajas: 0,
       rechazoKg: 0,
+      pesoPromedio: 0,
+      bobinaFin: false
     };
   }
 
@@ -166,6 +178,8 @@ agregarRegistro() {
       horaFin: item.horaFin,
       cajas: item.cajas,
       rechazoKg: item.rechazoKg,
+      pesoPromedio: item.pesoPromedio,
+      bobinaFin: item.bobinaFin,
     }));
 
     Swal.fire({ title: 'Guardando...', didOpen: () => Swal.showLoading() });

@@ -47,7 +47,7 @@
     <table class="custom-table">
       <thead>
         <tr>
-          <th>LOTE PRODUCCIÓN</th> <th>PRODUCTO</th>        <th>CANTIDAD (CAJAS)</th> <th>FECHA PRODUCCIÓN</th>
+          <th>LOTE PRODUCCIÓN</th> <th>COD. PRODUCTO</th> <th>PRODUCTO</th>        <th>CANTIDAD (CAJAS)</th> <th>FECHA PRODUCCIÓN</th>
           <th>ESTADO</th>
           <th class="text-right">ACCIONES</th>
         </tr>
@@ -56,6 +56,10 @@
         <tr *ngFor="let item of inventarioFiltrado">
           <td class="font-medium">
             <span class="lote-badge">{{ item.loteProduccion }}</span>
+          </td>
+
+          <td class="font-medium">
+            <span class="lote-badge">{{ item.codProducto }}</span>
           </td>
 
           <td>

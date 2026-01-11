@@ -19,4 +19,5 @@ export interface OrdenTrabajoTF {
     producidoKg?: number;
     estado?: 'EN_ESPERA' | 'EN_PROCESO' | 'COMPLETADO';
     prioridad?: number;
+    empaque?: string;
 }
