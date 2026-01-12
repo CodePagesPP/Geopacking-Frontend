@@ -466,3 +466,71 @@
 .custom-table th { background-color: #f9fafb; color: #6b7280; padding: 15px 25px; font-size: 12px; font-weight: 600; }
 .custom-table td { padding: 15px 25px; border-bottom: 1px solid #f3f4f6; }
 .table-container { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+
+/* Botón Rojo de Salida */
+.btn-salida {
+    background-color: #ef4444;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.btn-salida:hover { background-color: #dc2626; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
+    display: flex; justify-content: center; align-items: center;
+}
+.modal-content {
+    background: white; width: 500px; padding: 25px; border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280; }
+
+/* Buscador */
+.input-group-search { display: flex; gap: 5px; }
+.form-control { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; }
+.btn-search { background: #3b82f6; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; }
+
+/* Panel de Acción (Resultado búsqueda) */
+.result-section { background: #f9fafb; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #e5e7eb; }
+.action-panel { margin-top: 15px; }
+.info-product { font-size: 14px; margin-bottom: 10px; color: #374151; }
+.badge-stock { background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+/* Fila de Input Cantidad y Botón + */
+.input-qty-row { display: flex; align-items: flex-end; gap: 10px; }
+.qty-wrapper { flex: 1; }
+.qty-wrapper label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #4b5563; }
+.btn-plus { 
+    background: #10b981; color: white; border: none; 
+    width: 42px; height: 42px; border-radius: 6px; 
+    cursor: pointer; font-size: 18px; display: flex; 
+    align-items: center; justify-content: center; 
+}
+.btn-plus:hover { background: #059669; }
+.btn-plus:disabled { background: #d1d5db; cursor: not-allowed; }
+
+/* Tabla Pequeña */
+.mini-table-container { margin-top: 10px; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
+.mini-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mini-table th { background: #f3f4f6; padding: 8px; text-align: left; font-weight: 600; }
+.mini-table td { padding: 8px; border-bottom: 1px solid #eee; }
+.text-muted { text-align: center; color: #9ca3af; padding: 15px; }
+.trash-icon { color: #ef4444; cursor: pointer; transition: transform 0.2s; }
+.trash-icon:hover { transform: scale(1.2); }
+
+/* Footer */
+.modal-footer { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
+.btn-confirm { background: #2563eb; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; }
+.btn-confirm:disabled { background: #93c5fd; cursor: not-allowed; }
+.btn-cancel { background: #e5e7eb; color: #374151; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; }
