@@ -124,4 +124,18 @@ enviarATerminados(id: number): Observable<void> {
       headers: this.authService.getAuthHeaders()
     });
   }
+
+
+  buscarPorCodigo(codigo: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/inventario/buscar-producto?codigo=${codigo}`,  {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  registrarSalida(payload: any): Observable<Blob> {
+    return this.http.post(`${this.apiUrl}/inventario/registrar-salida`, payload, {
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob' 
+    });
+  }
 }
