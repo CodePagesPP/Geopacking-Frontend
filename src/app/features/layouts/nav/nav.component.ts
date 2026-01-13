@@ -174,7 +174,8 @@ export class NavComponent implements OnInit {
       children: [
         { label: 'General', icon: 'analytics', route: '/reportes/general' },
         { label: 'Historial Reporte Bobinas', icon: 'analytics', route: '/reportes/historial-bobinas' },
-        { label: 'Historial Reporte Cajas', icon: 'analytics', route: '/reportes/historial-cajas' }
+        { label: 'Historial Reporte Cajas', icon: 'analytics', route: '/reportes/historial-cajas' },
+        { label: 'Historial Salida Productos Terminados TF', icon: 'analytics', route: '/reportes/historial-salida' }
       ],
     },
     {

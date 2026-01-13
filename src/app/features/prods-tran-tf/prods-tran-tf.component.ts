@@ -17,7 +17,12 @@ export class ProdsTranTfComponent {
   
   stockTotal: number = 0;
   busqueda: string = '';
-
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
+  fechaInicio: string = '';
+  fechaFin: string = '';
   constructor(private otService: PlanProdTfService) {}
 
   ngOnInit(): void {
@@ -25,28 +30,53 @@ export class ProdsTranTfComponent {
   }
 
   cargarInventario() {
-    
-    this.otService.listarInventarioTF().subscribe({
+    this.otService.listarInventarioTF(
+        this.currentPage,
+        this.pageSize,
+        this.fechaInicio,
+        this.fechaFin,
+        this.busqueda
+    ).subscribe({
       next: (data) => {
-        this.inventarioOriginal = data;
-        console.log('Inventario cargado:', this.inventarioOriginal);
-        this.filtrar();
+        
+        this.inventarioFiltrado = data.content;
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
       },
       error: (err) => console.error('Error cargando inventario', err)
+    });
+
+    this.otService.obtenerStockTotal(
+        "EN_TF",
+        this.fechaInicio,
+        this.fechaFin,
+        this.busqueda
+    ).subscribe({
+        next: (total) => {
+            this.stockTotal = total || 0; // Actualizamos la tarjeta
+        },
+        error: (err) => console.error(err)
     });
   }
 
   filtrar() {
-    const term = this.busqueda.toLowerCase().trim();
-    
-    
-    this.inventarioFiltrado = this.inventarioOriginal.filter(item => 
-      item.loteProduccion.toLowerCase().includes(term) ||
-      item.nombreProducto.toLowerCase().includes(term)
-    );
+    this.currentPage = 0; 
+    this.cargarInventario();
+  }
 
-    
-    this.stockTotal = this.inventarioFiltrado.reduce((acc, item) => acc + (item.cantidad || 0), 0);
+  limpiarFiltros() {
+    this.busqueda = '';
+    this.fechaInicio = '';
+    this.fechaFin = '';
+    this.filtrar();
+  }
+
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.currentPage + delta;
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPages) {
+      this.currentPage = nuevaPagina;
+      this.cargarInventario();
+    }
   }
 
   enviarAPt(item: any) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { OrdenTrabajoTF } from '../models/plan-prod-tf';
 import { Observable } from 'rxjs';
@@ -63,17 +63,48 @@ export class PlanProdTfService {
   }
 
 
-  listarInventarioTF(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/inventario/tf`, {
-      headers: this.authService.getAuthHeaders(),
+  listarInventarioTF(page: number, size: number, fechaInicio?: string, fechaFin?: string, busqueda?: string): Observable<any> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+
+  if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+  if (fechaFin) params = params.set('fechaFin', fechaFin);
+  if (busqueda) params = params.set('busqueda', busqueda);
+
+  return this.http.get<any>(`${this.apiUrl}/inventario/tf`, {
+    headers: this.authService.getAuthHeaders(),
+    params 
+  });
+}
+
+listarInventarioPT(page: number, size: number, fechaInicio?: string, fechaFin?: string, busqueda?: string): Observable<any> {
+    let params = new HttpParams()
+        .set('page', page.toString())
+        .set('size', size.toString());
+
+    if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+    if (fechaFin) params = params.set('fechaFin', fechaFin);
+    if (busqueda) params = params.set('busqueda', busqueda);
+
+    return this.http.get<any>(`${this.apiUrl}/inventario/pt`, { 
+        headers: this.authService.getAuthHeaders(), // Si usas auth
+        params 
     });
 }
 
-listarInventarioPT(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/inventario/pt`, {
-      headers: this.authService.getAuthHeaders(),
+obtenerStockTotal(estado: string, fechaInicio?: string, fechaFin?: string, busqueda?: string): Observable<number> {
+    let params = new HttpParams().set('estado', estado);
+
+    if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+    if (fechaFin) params = params.set('fechaFin', fechaFin);
+    if (busqueda) params = params.set('busqueda', busqueda);
+
+    return this.http.get<number>(`${this.apiUrl}/inventario/stock-total`, { 
+        headers: this.authService.getAuthHeaders(), // Si aplica
+        params 
     });
-}
+  }
 
 enviarATerminados(id: number): Observable<void> {
   return this.http.post<void>(`${this.apiUrl}/inventario/mover-a-pt/${id}`, {}, {
@@ -136,6 +167,24 @@ enviarATerminados(id: number): Observable<void> {
     return this.http.post(`${this.apiUrl}/inventario/registrar-salida`, payload, {
       headers: this.authService.getAuthHeaders(),
       responseType: 'blob' 
+    });
+  }
+
+  listarHistorialSalidas(page: number, size: number, fechaInicio?: string, fechaFin?: string): Observable<any> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+
+  if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
+  if (fechaFin) params = params.set('fechaFin', fechaFin);
+
+  return this.http.get<any>(`${this.apiUrl}/inventario/historial-salidas`, { params, headers: this.authService.getAuthHeaders() });
+}
+
+  reimprimirSalida(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/inventario/reimprimir-salida/${id}`, {
+      headers: this.authService.getAuthHeaders(),
+      responseType: 'blob'
     });
   }
 }

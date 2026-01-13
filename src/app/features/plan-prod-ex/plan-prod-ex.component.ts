@@ -31,6 +31,12 @@ export class PlanProdExComponent implements OnInit {
   filtroEstado: string = '';
   filtroFechaDesde: string = '';
   filtroFechaHasta: string = '';
+
+  currentPage: number = 0; // Backend usa base 0
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
+
   nuevaOrden: OrdenTrabajoEX = {
     maquinaId: 0,
     productoId: 0,
@@ -84,15 +90,7 @@ export class PlanProdExComponent implements OnInit {
   }
 
   cargarDatosIniciales() {
-    this.otService.listar().subscribe((data) => {
-      this.listaOrdenes = data;
-      this.listaOrdenes.sort((a, b) => {
-        const pA = a.id || 0;
-        const pB = b.id || 0;
-        return pA - pB;
-      });
-      this.listaOrdenesFiltrada = [...this.listaOrdenes];
-    });
+    this.cargarOrdenes();
 
     this.maquinaService.getMaquinasActivas().subscribe((maquinas) => {
       this.listaMaquinasExtrusoras = maquinas.filter((m) => m.tipo === 'Extrusora');
@@ -103,28 +101,29 @@ export class PlanProdExComponent implements OnInit {
     });
   }
 
+  cargarOrdenes() {
+    const filters = {
+      maquinaId: this.filtroMaquina || null,
+      productoId: this.filtroProducto || null,
+      estado: this.filtroEstado || null,
+      fechaDesde: this.filtroFechaDesde || null,
+      fechaHasta: this.filtroFechaHasta || null
+    };
+
+    this.otService.listar(this.currentPage, this.pageSize, filters).subscribe({
+      next: (data) => {
+        this.listaOrdenes = data.content; 
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
+      },
+      error: (err) => console.error('Error cargando ordenes', err)
+    });
+  }
+
 
   aplicarFiltros() {
-    this.listaOrdenesFiltrada = this.listaOrdenes.filter(ot => {
-
-      const coincideMaquina = this.filtroMaquina ? ot.maquinaId == Number(this.filtroMaquina) : true;
-
-      const coincideProducto = this.filtroProducto ? ot.productoId == Number(this.filtroProducto) : true;
-
-      const coincideEstado = this.filtroEstado ? ot.estado === this.filtroEstado : true;
-
-      let coincideFecha = true;
-      if (this.filtroFechaDesde && this.filtroFechaHasta) {
-
-        const fechaOT = new Date(ot.fechaCreacion!);
-        const desde = new Date(this.filtroFechaDesde + 'T00:00:00');
-        const hasta = new Date(this.filtroFechaHasta + 'T23:59:59');
-
-        coincideFecha = fechaOT >= desde && fechaOT <= hasta;
-      }
-
-      return coincideMaquina && coincideProducto && coincideEstado && coincideFecha;
-    });
+    this.currentPage = 0;
+    this.cargarOrdenes();
   }
 
   limpiarFiltros() {
@@ -133,7 +132,15 @@ export class PlanProdExComponent implements OnInit {
     this.filtroEstado = '';
     this.filtroFechaDesde = '';
     this.filtroFechaHasta = '';
-    this.listaOrdenesFiltrada = [...this.listaOrdenes];
+    this.aplicarFiltros();
+  }
+
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.currentPage + delta;
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPages) {
+      this.currentPage = nuevaPagina;
+      this.cargarOrdenes();
+    }
   }
 
   guardarOrden() {
