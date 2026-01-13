@@ -73,7 +73,7 @@
             </thead>
 
             <tbody>
-                <tr *ngFor="let ot of listaOrdenesFiltrada">
+                <tr *ngFor="let ot of listaOrdenes">
                     <td style="font-weight: bold;">{{ ot.codigo }}</td>
                     <td>{{ ot.fechaCreacion | date:'dd/MM/yyyy' }}</td>
                     <td>{{ ot.maquinaNombre }}</td>
@@ -100,25 +100,44 @@
                     </td>
                     <td>
                         <div class="acciones-container">
-                            <button class="btn-icon-action edit" (click)="editarOrden(ot)" title="Editar">
+                            <button *ngIf="ot.estado !== 'EN_PROCESO' && ot.estado !== 'COMPLETADO'"
+                                    class="btn-icon-action edit" (click)="editarOrden(ot)" title="Editar">
                                 ✎
                             </button>
 
-                            <button class="btn-icon-action delete" (click)="eliminarOrden(ot)"
-                                title="Eliminar">
-                                🗑
-                            </button>
+                            <span *ngIf="ot.estado === 'EN_PROCESO' || ot.estado === 'COMPLETADO'" 
+                                    class="icon-disabled" title="No editable">
+                                🔒
+                            </span>
+
+                            <button class="btn-icon-action delete" (click)="eliminarOrden(ot)">🗑</button>
                         </div>
                     </td>
                 </tr>
 
-                <tr *ngIf="listaOrdenesFiltrada.length === 0">
+                <tr *ngIf="listaOrdenes.length === 0">
                     <td colspan="7" style="text-align: center; padding: 2rem; color: #95a5a6;">
                         No se encontraron órdenes con estos filtros.
                     </td>
                 </tr>
             </tbody>
+
+            
         </table>
+        <div class="pagination-container" *ngIf="totalPages > 0">
+                <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(-1)">
+                    <
+                </button>
+                
+                <span class="page-info">
+                    Página <strong>{{ currentPage + 1 }}</strong> de <strong>{{ totalPages }}</strong>
+                    (Total: {{ totalElements }})
+                </span>
+                
+                <button class="btn-page" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(1)">
+                    >
+                </button>
+            </div>
     </div>
 </div>
 
