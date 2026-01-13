@@ -14,7 +14,6 @@ import { FormsModule } from '@angular/forms';
 export class ProdsTerminadosComponent {
 inventarioOriginal: any[] = [];
   inventarioFiltrado: any[] = [];
-  
   stockTotal: number = 0;
   busqueda: string = '';
   mostrarModalSalida = false;
@@ -23,6 +22,14 @@ inventarioOriginal: any[] = [];
   loteSeleccionado: any = null;
   cantidadRetirar: number | null = null;
   listaSalida: any[] = [];
+  motivoSalida: string = '';
+comentariosSalida: string = '';
+currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
+  fechaInicio: string = '';
+  fechaFin: string = '';
   constructor(private otService: PlanProdTfService) {}
 
   ngOnInit(): void {
@@ -30,25 +37,53 @@ inventarioOriginal: any[] = [];
   }
 
   cargarInventarioPT() {
-    
-    this.otService.listarInventarioPT().subscribe({
+    this.otService.listarInventarioPT(
+        this.currentPage, 
+        this.pageSize, 
+        this.fechaInicio, 
+        this.fechaFin, 
+        this.busqueda
+    ).subscribe({
       next: (data) => {
-        this.inventarioOriginal = data;
-        this.filtrar();
+        this.inventarioFiltrado = data.content;
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
+        
       },
-      error: (err) => console.error('Error cargando inventario PT', err)
+      error: (err) => console.error(err)
+    });
+
+    this.otService.obtenerStockTotal(
+        "EN_PT",
+        this.fechaInicio,
+        this.fechaFin,
+        this.busqueda
+    ).subscribe({
+        next: (total) => {
+            this.stockTotal = total || 0;
+        },
+        error: (err) => console.error(err)
     });
   }
 
   filtrar() {
-    const term = this.busqueda.toLowerCase().trim();
-    
-    this.inventarioFiltrado = this.inventarioOriginal.filter(item => 
-      item.loteProduccion.toLowerCase().includes(term) ||
-      item.nombreProducto.toLowerCase().includes(term)
-    );
+    this.currentPage = 0; // Resetear a pág 1 al filtrar
+    this.cargarInventarioPT();
+  }
 
-    this.stockTotal = this.inventarioFiltrado.reduce((acc, item) => acc + (item.cantidad || 0), 0);
+  limpiarFiltros() {
+    this.busqueda = '';
+    this.fechaInicio = '';
+    this.fechaFin = '';
+    this.filtrar();
+  }
+
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.currentPage + delta;
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPages) {
+      this.currentPage = nuevaPagina;
+      this.cargarInventarioPT();
+    }
   }
 
   abrirModalSalida() {
@@ -71,16 +106,15 @@ inventarioOriginal: any[] = [];
   buscarProducto() {
     if (!this.codigoBusqueda) return;
 
-    // Llama al endpoint de búsqueda por código
     this.otService.buscarPorCodigo(this.codigoBusqueda).subscribe({
       next: (data) => {
         this.lotesEncontrados = data;
         if (data.length === 0) {
             Swal.fire('No encontrado', 'No hay stock con ese código', 'warning');
         } else if (data.length === 1) {
-            this.loteSeleccionado = data[0]; // Auto-seleccionar si es único
+            this.loteSeleccionado = data[0]; 
         } else {
-            this.loteSeleccionado = null; // Si hay varios, que elija el usuario
+            this.loteSeleccionado = null; 
         }
         this.cantidadRetirar = null;
       },
@@ -96,24 +130,24 @@ inventarioOriginal: any[] = [];
         return;
     }
 
-    // Verificar duplicados en la lista temporal
+    
     const yaExiste = this.listaSalida.find(x => x.id === this.loteSeleccionado.id);
     if (yaExiste) {
         Swal.fire('Atención', 'Este lote ya está en la lista', 'warning');
         return;
     }
 
-    // Agregar a la "tablita"
+    
     this.listaSalida.push({
         ...this.loteSeleccionado,
         cantidadRetirar: this.cantidadRetirar
     });
 
-    // Limpiar inputs parciales para seguir agregando
+    
     this.loteSeleccionado = null;
     this.cantidadRetirar = null;
-    this.lotesEncontrados = []; // Opcional: limpiar búsqueda
-    this.codigoBusqueda = '';   // Opcional: limpiar código
+    this.lotesEncontrados = []; 
+    this.codigoBusqueda = '';   
   }
 
   borrarDeLista(index: number) {
@@ -121,10 +155,20 @@ inventarioOriginal: any[] = [];
   }
 
   confirmarSalida() {
-    if (this.listaSalida.length === 0) return;
+   
+    if (this.listaSalida.length === 0) {
+        Swal.fire('Lista vacía', 'Debe agregar al menos un producto.', 'warning');
+        return;
+    }
+    if (!this.motivoSalida) {
+        Swal.fire('Falta Motivo', 'Debe seleccionar un motivo de salida.', 'warning');
+        return;
+    }
 
-    // Solo mandamos items, el backend pondrá "VENTA"
+   
     const request = {
+        motivo: this.motivoSalida,        
+        comentarios: this.comentariosSalida, 
         items: this.listaSalida.map(item => ({
             inventarioId: item.id,
             cantidadRetirar: item.cantidadRetirar
@@ -133,20 +177,21 @@ inventarioOriginal: any[] = [];
 
     Swal.fire({ title: 'Procesando...', didOpen: () => Swal.showLoading() });
 
+    
     this.otService.registrarSalida(request).subscribe({
         next: (blob) => {
             Swal.close();
             Swal.fire('Éxito', 'Salida registrada correctamente', 'success');
 
-            // Descargar PDF
+           
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Salida_Venta_${new Date().getTime()}.pdf`;
+            a.download = `Salida_${this.motivoSalida}_${new Date().getTime()}.pdf`;
             a.click();
 
             this.cerrarModalSalida();
-            this.cargarInventarioPT(); // Refrescar tabla principal
+            this.cargarInventarioPT();
         },
         error: (err) => {
             console.error(err);

@@ -7,7 +7,7 @@
     </div>
     
     <div class="stock-card">
-      <span class="stock-label">Stock Total en Planta</span>
+      <span class="stock-label">Stock</span>
       <div class="stock-value-container">
         <span class="stock-value">{{ stockTotal | number:'1.0-0' }}</span>
         <span class="stock-unit">Cajas</span>
@@ -15,23 +15,30 @@
     </div>
   </div>
 
- 
   <div class="actions-section">
-
-     
-
-    
     <div class="filters-container">
+      
       <div class="filter-group">
+        <label>Desde:</label>
+        <input type="date" [(ngModel)]="fechaInicio" class="form-control-sm">
+      </div>
+
+      <div class="filter-group">
+        <label>Hasta:</label>
+        <input type="date" [(ngModel)]="fechaFin" class="form-control-sm">
+      </div>
+
+      <div class="filter-group search-group">
         <label>Buscar Lote/Producto:</label>
         <div class="input-with-icon">
-          <input type="text" [(ngModel)]="busqueda" placeholder="Código o Nombre..." (keyup)="filtrar()">
+          <input type="text" [(ngModel)]="busqueda" placeholder="Código o Nombre..." (keyup.enter)="filtrar()">
           <i class="fas fa-search"></i>
         </div>
       </div>
 
       <div class="filter-buttons">
-        <button class="btn-filter" (click)="filtrar()">Refrescar</button>
+        <button class="btn-filter" (click)="filtrar()">Filtrar</button>
+        <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
       </div>
     </div>
   </div>
@@ -40,7 +47,11 @@
     <table class="custom-table">
       <thead>
         <tr>
-          <th>LOTE PRODUCCIÓN</th> <th>COD. PRODUCTO</th> <th>PRODUCTO</th>        <th>CANTIDAD (CAJAS)</th> <th>FECHA PRODUCCIÓN</th>
+          <th>LOTE PRODUCCIÓN</th> 
+          <th>COD. PRODUCTO</th> 
+          <th>PRODUCTO</th>        
+          <th>CANTIDAD (CAJAS)</th> 
+          <th>FECHA PRODUCCIÓN</th>
           <th>ESTADO</th>
           <th class="text-right">ACCIONES</th>
         </tr>
@@ -79,17 +90,24 @@
         </tr>
 
         <tr *ngIf="inventarioFiltrado.length === 0">
-          <td colspan="6" class="text-center no-data">
+          <td colspan="7" class="text-center no-data">
             <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
-            No hay lotes pendientes en planta.
+            No se encontraron registros.
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="pagination-container" *ngIf="inventarioFiltrado.length > 10">
-    <span style="margin-right: auto;">Mostrando {{inventarioFiltrado.length}} registros</span>
-    </div>
+  <div class="pagination-bar" *ngIf="totalPages > 0">
+    <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(-1)"><</button>
+    
+    <span class="page-info">
+        Página <strong>{{ currentPage + 1 }}</strong> de <strong>{{ totalPages }}</strong> 
+        (Total: {{totalElements}})
+    </span>
+    
+    <button class="btn-page" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(1)">></button>
+  </div>
 
 </div>

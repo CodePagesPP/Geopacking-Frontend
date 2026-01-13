@@ -6,14 +6,13 @@
       <p style="color: #6b7280; margin-top: 5px;">Lotes finalizados y almacenados listos para despacho.</p>
     </div>
     
-    <div class="stock-card stock-pt"> <span class="stock-label">Total Productos Terminados</span>
-      <div class="stock-value-container">
+    <div class="stock-card stock-pt"> 
+      <span class="stock-label">Stock</span> <div class="stock-value-container">
         <span class="stock-value">{{ stockTotal | number:'1.0-0' }}</span>
         <span class="stock-unit">Cajas</span>
       </div>
     </div>
   </div>
-
   
   <div class="actions-section">
     <div class="manual-actions">
@@ -21,18 +20,31 @@
         <i class="fas fa-minus-circle"></i> Generar Salida
       </button>
     </div>
+
     <div class="filters-container">
-      <div class="filter-group">
-        <label>Buscar Lote/Producto:</label>
-        <div class="input-with-icon">
-          <input type="text" [(ngModel)]="busqueda" placeholder="Código o Nombre..." (keyup)="filtrar()">
-          <i class="fas fa-search"></i>
+        
+        <div class="filter-group">
+            <label>Desde:</label>
+            <input type="date" [(ngModel)]="fechaInicio" class="form-control-sm">
         </div>
-      </div>
+
+        <div class="filter-group">
+            <label>Hasta:</label>
+            <input type="date" [(ngModel)]="fechaFin" class="form-control-sm">
+        </div>
+
+        <div class="filter-group search-group">
+            <label>Buscar:</label>
+            <div class="input-with-icon">
+                <input type="text" [(ngModel)]="busqueda" placeholder="Lote o Producto..." (keyup.enter)="filtrar()">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
       
-      <div class="filter-buttons">
-        <button class="btn-filter" (click)="filtrar()">Refrescar</button>
-      </div>
+        <div class="filter-buttons">
+            <button class="btn-filter" (click)="filtrar()">Filtrar</button>
+            <button class="btn-clear" (click)="limpiarFiltros()">Limpiar</button>
+        </div>
     </div>
   </div>
   
@@ -50,26 +62,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of inventarioFiltrado">
-          <td class="font-medium">
-            <span class="lote-badge">{{ item.loteProduccion }}</span>
-          </td>
-
-          <td class="font-medium">
-            <span class="lote-badge">{{ item.codProducto }}</span>
-          </td>
-
-          <td>
-            <div class="producto-cell">
-              <span class="prod-name">{{ item.nombreProducto }}</span>
-            </div>
-          </td>
-
-          <td class="font-bold" style="font-size: 1.1em;">
-            {{ item.cantidad }}
-          </td>
-
+          <td class="font-medium"><span class="lote-badge">{{ item.loteProduccion }}</span></td>
+          <td class="font-medium"><span class="lote-badge">{{ item.codProducto }}</span></td>
+          <td><span class="prod-name">{{ item.nombreProducto }}</span></td>
+          <td class="font-bold" style="font-size: 1.1em;">{{ item.cantidad }}</td>
           <td>{{ item.fechaProduccion | date:'dd/MM/yyyy HH:mm' }}</td>
-
           <td>
             <span class="status-badge status-pt">
               <i class="fas fa-check-circle"></i> TERMINADO
@@ -78,108 +75,263 @@
         </tr>
 
         <tr *ngIf="inventarioFiltrado.length === 0">
-          <td colspan="5" class="text-center no-data">
-            <i class="fas fa-clipboard-check" style="font-size: 24px; margin-bottom: 10px; display: block; color: #10b981;"></i>
-            No hay productos terminados registrados.
+          <td colspan="6" class="text-center no-data">
+            No se encontraron registros.
           </td>
         </tr>
       </tbody>
     </table>
   </div>
   
-  <div class="pagination-container" *ngIf="inventarioFiltrado.length > 10">
-    <span style="margin-right: auto;">Mostrando {{inventarioFiltrado.length}} registros</span>
+  <div class="pagination-bar" *ngIf="totalPages > 0">
+    <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(-1)"><</button>
+    <span class="page-info">Página <strong>{{ currentPage + 1 }}</strong> de <strong>{{ totalPages }}</strong> (Total: {{totalElements}})</span>
+    <button class="btn-page" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(1)">></button>
   </div>
 
+  </div>
 
   <div class="modal-overlay" *ngIf="mostrarModalSalida">
+
   <div class="modal-content">
+
     <div class="modal-header">
-      <h3>Registrar Salida (Venta)</h3>
+
+      <h3>Registrar Salida</h3>
+
       <button class="close-btn" (click)="cerrarModalSalida()">&times;</button>
+
     </div>
 
+
+
     <div class="modal-body">
-      
-      <div class="form-section">
-        <label>Código Producto TF:</label>
-        <div class="input-group-search">
-          <input type="text" [(ngModel)]="codigoBusqueda" (keyup.enter)="buscarProducto()" 
-                 placeholder="Escanee o escriba código..." class="form-control" autofocus>
-          <button class="btn-search" (click)="buscarProducto()">
-            🔍
-          </button>
+
+     
+
+      <div class="form-section-header" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+
+        <div class="row-inputs" style="display: flex; gap: 15px;">
+
+           
+
+            <div class="form-group" style="flex: 1;">
+
+                <label style="font-weight: 600; font-size: 13px; display: block; margin-bottom: 5px;">
+
+                    Motivo de Salida <span style="color: red;">*</span>
+
+                </label>
+
+                <select [(ngModel)]="motivoSalida" class="form-control">
+
+                    <option value="" disabled selected>-- Seleccione --</option>
+
+                    <option value="Venta">Venta</option>
+
+                    <option value="Bonificación">Bonificación</option>
+
+                    <option value="Merma">Merma</option>
+
+                    <option value="Ajuste">Ajuste</option>
+
+                    <option value="Muestras">Muestras</option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group" style="flex: 2;">
+
+                <label style="font-weight: 600; font-size: 13px; display: block; margin-bottom: 5px;">
+
+                    Comentarios / Observaciones
+
+                </label>
+
+                <input type="text" [(ngModel)]="comentariosSalida" class="form-control"
+
+                       placeholder="Ej: Nro Guía, Cliente, etc..." />
+
+            </div>
+
         </div>
+
       </div>
+
+
+
+      <div class="form-section">
+
+        <label>Código Producto TF:</label>
+
+        <div class="input-group-search">
+
+          <input type="text" [(ngModel)]="codigoBusqueda" (keyup.enter)="buscarProducto()"
+
+                 placeholder="Escanee o escriba código..." class="form-control" >
+
+          <button class="btn-search" (click)="buscarProducto()">
+
+            🔍
+
+          </button>
+
+        </div>
+
+      </div>
+
+
 
       <div class="result-section" *ngIf="lotesEncontrados.length > 0">
-        
+
+       
+
         <div class="form-group">
+
             <label>Seleccionar Lote Disponible:</label>
+
             <select [(ngModel)]="loteSeleccionado" class="form-control">
+
                 <option [ngValue]="null" disabled>-- Elija un lote --</option>
+
                 <option *ngFor="let l of lotesEncontrados" [ngValue]="l">
+
                     Lote: {{l.loteProduccion}} | Stock: {{l.cantidad}}
+
                 </option>
+
             </select>
+
         </div>
+
+
 
         <div class="action-panel" *ngIf="loteSeleccionado">
+
             <div class="info-product">
+
                 <p><strong>Producto:</strong> {{loteSeleccionado.nombreProducto}}</p>
+
                 <p><strong>Stock Disp:</strong> <span class="badge-stock">{{loteSeleccionado.cantidad}}</span></p>
+
             </div>
 
+
+
             <div class="input-qty-row">
+
                 <div class="qty-wrapper">
+
                     <label>Retirar:</label>
+
                     <input type="number" [(ngModel)]="cantidadRetirar" min="1" [max]="loteSeleccionado.cantidad" class="form-control qty-input">
+
                 </div>
-                
+
+               
+
                 <button class="btn-plus" (click)="agregarALista()" [disabled]="!cantidadRetirar || cantidadRetirar <= 0">
+
                     <i class="fas fa-plus"></i>
+
                 </button>
+
             </div>
+
         </div>
+
       </div>
+
+
 
       <hr>
 
-      <h4>Items Agregados</h4>
+
+
+      <h4>Items a Procesar</h4>
+
       <div class="mini-table-container">
+
         <table class="mini-table">
+
             <thead>
+
             <tr>
+
                 <th>Lote</th>
+
                 <th>Producto</th>
+
                 <th>Retiro</th>
+
                 <th></th>
+
             </tr>
+
             </thead>
+
             <tbody>
+
             <tr *ngFor="let item of listaSalida; let i = index">
+
                 <td>{{ item.loteProduccion }}</td>
+
                 <td style="font-size: 0.9em;">{{ item.nombreProducto }}</td>
+
                 <td style="color: #dc2626; font-weight: bold;">- {{ item.cantidadRetirar }}</td>
+
                 <td style="text-align: center;">
+
                     <i class="fas fa-trash trash-icon" (click)="borrarDeLista(i)"></i>
+
                 </td>
+
             </tr>
+
             <tr *ngIf="listaSalida.length === 0">
-                <td colspan="4" class="text-muted">No hay ítems en la lista.</td>
+
+                <td colspan="4" class="text-muted" style="text-align: center; padding: 10px; color: #888;">
+
+                    No hay ítems en la lista.
+
+                </td>
+
             </tr>
+
             </tbody>
+
         </table>
+
       </div>
 
+
+
     </div>
 
+
+
     <div class="modal-footer">
+
       <button class="btn-cancel" (click)="cerrarModalSalida()">Cancelar</button>
-      <button class="btn-confirm" (click)="confirmarSalida()" [disabled]="listaSalida.length === 0">
+
+     
+
+      <button class="btn-confirm" (click)="confirmarSalida()"
+
+              [disabled]="listaSalida.length === 0 || !motivoSalida">
+
         💾 Confirmar y Generar PDF
+
       </button>
+
     </div>
+
   </div>
+
 </div>
-</div>
+
+
+

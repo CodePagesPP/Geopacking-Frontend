@@ -225,6 +225,16 @@ export const routes: Routes = [
             canActivate: [roleGuard],
             data: { roles: ['ADMIN_ACCESS'] },
           },
+          {
+            path: 'historial-salida',
+            title: 'Historial Salida Productos Terminados TF',
+            loadComponent: () =>
+              import('./features/historial-salida/historial-salida.component').then(
+                (m) => m.HistorialSalidaComponent
+              ),
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN_ACCESS'] },
+          },
         ],
       },
       {

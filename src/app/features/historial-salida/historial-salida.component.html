@@ -1,0 +1,66 @@
+<div class="historial-container">
+    
+    <div class="header-section">
+        <h2>Historial de Salidas (Productos Terminados)</h2>
+        
+        <div class="filter-bar">
+            <div class="date-group">
+                <label>Desde:</label>
+                <input type="date" [(ngModel)]="fechaInicio" class="form-control">
+            </div>
+            <div class="date-group">
+                <label>Hasta:</label>
+                <input type="date" [(ngModel)]="fechaFin" class="form-control">
+            </div>
+            <button class="btn-filter" (click)="filtrar()">Filtrar</button>
+            <button class="btn-clear" (click)="limpiarFiltros()">❌</button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>N° MOV</th>
+                    <th>FECHA</th>
+                    <th>USUARIO</th>
+                    <th>MOTIVO</th>
+                    <th>COMENTARIOS</th>
+                    <th>ITEMS</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let mov of historial">
+                    <td class="font-bold">#{{ mov.id }}</td>
+                    <td>{{ mov.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td><span class="user-badge">{{ mov.registradoPor }}</span></td>
+                    <td><span class="motivo-badge">{{ mov.motivo }}</span></td>
+                    <td class="text-muted">{{ mov.comentarios || '-' }}</td>
+                    <td>{{ mov.detalles ? mov.detalles.length : '-' }}</td>
+                    <td>
+                        <button class="btn-print" (click)="imprimirReporte(mov)">🖨️</button>
+                    </td>
+                </tr>
+                <tr *ngIf="historial.length === 0 && !cargando">
+                    <td colspan="7" class="text-center-muted">No se encontraron movimientos.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-bar" *ngIf="totalPages > 0">
+        <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(-1)">
+             <
+        </button>
+        
+        <span class="page-info">
+            Página <strong>{{ currentPage + 1 }}</strong> de <strong>{{ totalPages }}</strong>
+            (Total: {{ totalElements }})
+        </span>
+        
+        <button class="btn-page" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(1)">
+            > 
+        </button>
+    </div>
+</div>
