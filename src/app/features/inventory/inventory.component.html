@@ -68,6 +68,7 @@
       <thead>
         <tr>
           <th>CÓDIGO</th>
+          <th>OP CONSUMO</th>
           <th>OPERACIÓN</th>
           <th>MOTIVO</th> 
           <th>TIPO DE REGISTRO</th>
@@ -80,6 +81,9 @@
       <tbody>
         <tr *ngFor="let mov of movimientos">
           <td class="font-medium">{{ mov.codigoMovimiento }}</td>
+          <td style="font-weight: bold; color: #2c3e50;">
+            {{ mov.codigoOT || '-' }}
+        </td>
           <td>
             <span class="status-badge" [ngClass]="mov.operacion === 'INGRESO' ? 'status-ingreso' : 'status-salida'">
               {{ mov.operacion }}

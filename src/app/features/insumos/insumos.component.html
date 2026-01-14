@@ -66,6 +66,7 @@
                 <tr>
                     <th>FECHA</th>
                     <th>OPERACIÓN</th>
+                    <th>OP CONSUMO</th>
                     <th>MOTIVO</th>
                     <th>TIPO DE REGISTRO</th>
                     <th>MATERIAL</th>
@@ -81,6 +82,11 @@
                             {{ item.operacion }}
                         </span>
                     </td>
+
+                    <td style="font-weight: bold; color: #2c3e50;">
+                        {{ item.codigoOT || '-' }}
+                    </td>
+                    
                     <td>
                         {{ item.motivoNombre || '-' }}
 

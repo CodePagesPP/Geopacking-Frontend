@@ -16,6 +16,7 @@ export interface InsumoRegistroDTO {
     materialNombre: string;
     motivoNombre?: string;
     registradoPorNombre?: string;
+    codigoOT?: string;
 }
 
 export interface CreateInsumoDTO {

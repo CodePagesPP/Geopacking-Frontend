@@ -187,4 +187,10 @@ enviarATerminados(id: number): Observable<void> {
       responseType: 'blob'
     });
   }
+
+  iniciarOrden(id: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/iniciar/${id}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
 }
