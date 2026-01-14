@@ -25,6 +25,7 @@ export interface InventarioMovimiento {
     registradoPorNombre: string;
     motivoNombre?: string;
     nota?: string;
+    codigoOT?: string;
 }
 
 export interface InventarioManualDTO {
