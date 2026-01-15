@@ -10,7 +10,6 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
-  private adminUrl = `${environment.apiUrl}/admin`;
   private tokenKey = 'token'
   constructor(private http: HttpClient, private router: Router) {}
 

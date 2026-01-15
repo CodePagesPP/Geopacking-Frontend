@@ -67,7 +67,6 @@ export class OrdenProdEXComponent implements OnInit {
     this.authService.getUserInfo().subscribe({
       next: (user: any) => {
         this.usuarioNombre = `${user.name} ${user.lastName}`;
-        console.log('Usuario cargado:', this.usuarioNombre);
       },
       error: (err) => {
         console.error('Error al obtener perfil', err);
@@ -80,7 +79,6 @@ export class OrdenProdEXComponent implements OnInit {
     this.otService.listarot().subscribe({
       next: (data) => {
         this.listaOTs = data;
-        console.log('OTs cargadas:', data);
       },
       error: (err) => {
         console.error('Error al conectar con el backend:', err);
@@ -93,7 +91,6 @@ export class OrdenProdEXComponent implements OnInit {
     this.toolService.getAll('TypeScrapp').subscribe({
       next: (data) => {
         this.tiposScrappDisponibles = data;
-        console.log('Tipos de scrapp cargados:', data);
       },
       error: (err) => console.error('Error al cargar tipos de scrapp', err),
     });
@@ -132,7 +129,6 @@ export class OrdenProdEXComponent implements OnInit {
     this.otService.obtenerCorrelativoBobina(otId).subscribe({
       next: (cant) => {
         this.correlativoBase = cant;
-        console.log('Bobinas previas en BD:', this.correlativoBase);
       },
       error: () => (this.correlativoBase = 0),
     });

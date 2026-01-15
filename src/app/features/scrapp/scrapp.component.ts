@@ -124,7 +124,7 @@ export class ScrappComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.registros = data.registros;
-          console.log(this.registros);
+          
           this.totalPesoBruto = data.totalPesoBruto;
           this.totalPesoNeto = data.totalPesoNeto;
 

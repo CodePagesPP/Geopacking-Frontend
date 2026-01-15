@@ -145,16 +145,14 @@ export class MachinesComponent implements OnInit{
       const origenes = (maquina as Molino).origenes || [];
       const origenIds = origenes.map(o => o.id);
       
-      console.log('Intentando marcar IDs:', origenIds);
 
      setTimeout(() => {
         const control = this.maquinaForm.get('origenIds');
         if (control) {
             control.setValue(origenIds);
-            control.updateValueAndValidity(); // Fuerza a Angular a revisar este campo
-            console.log('Valor establecido en el control:', control.value);
+            control.updateValueAndValidity(); 
         }
-      }, 50); // 50ms es imperceptible para el humano pero una eternidad para la máquina
+      }, 50);
     }
 
     this.maquinaForm.get('tipo')?.disable();

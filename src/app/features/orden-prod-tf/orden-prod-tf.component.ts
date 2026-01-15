@@ -81,7 +81,6 @@ export class OrdenProdTfComponent implements OnInit {
       : '';
     if (!codigo) return;
 
-    console.log('Consultando BD por bobina:', codigo);
 
     this.otService.obtenerInfoBobina(codigo).subscribe({
       next: (data) => {

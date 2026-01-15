@@ -20,11 +20,22 @@ export class PlanProdTfService {
     });
   }
 
-  listar(): Observable<OrdenTrabajoTF[]> {
-    return this.http.get<OrdenTrabajoTF[]>(`${this.apiUrl}`, {
-      headers: this.authService.getAuthHeaders()
-    });
-  }
+  listar(page: number, size: number, filters: any): Observable<any> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+
+  if (filters.maquinaId) params = params.set('maquinaId', filters.maquinaId);
+  if (filters.productoId) params = params.set('productoId', filters.productoId);
+  if (filters.estado) params = params.set('estado', filters.estado);
+  if (filters.fechaDesde) params = params.set('fechaDesde', filters.fechaDesde);
+  if (filters.fechaHasta) params = params.set('fechaHasta', filters.fechaHasta);
+
+  return this.http.get<any>(this.apiUrl, { 
+      headers: this.authService.getAuthHeaders(),
+      params 
+  });
+}
 
   listarot(): Observable<OrdenTrabajoTF[]> {
     return this.http.get<OrdenTrabajoTF[]>(`${this.apiUrl}/ot`, {

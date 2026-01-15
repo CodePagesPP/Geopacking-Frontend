@@ -16,8 +16,6 @@
       <button class="btn-filtrar" (click)="filtrar()">Filtrar</button>
       <button class="btn-limpiar" (click)="limpiar()">Limpiar</button>
     </div>
-
-    
   </div>
 
   <div class="tabla-container">
@@ -35,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let b of listaFiltrada">
+        <tr *ngFor="let b of listaBobinas">
           <td>{{ b.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
           <td style="font-weight: bold;">{{ b.codigoBobina }}</td>
           <td>{{ b.operacion }}</td>
@@ -44,17 +42,32 @@
           <td>{{ b.pesoBruto }} Kg</td>
           <td>{{ b.pesoNeto }} Kg</td>
           <td>
-            <button class="btn-icon" (click)="imprimirIndividual(b.id)" title="Imprimir Etiqueta/Reporte">
+            <button class="btn-icon" (click)="imprimirIndividual(b.id)" title="Imprimir Etiqueta">
               🖨
             </button>
           </td>
         </tr>
         
-        <tr *ngIf="listaFiltrada.length === 0">
-          <td colspan="7" class="vacio">No hay registros para mostrar.</td>
+        <tr *ngIf="listaBobinas.length === 0">
+          <td colspan="8" class="vacio">No hay registros para mostrar.</td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="pagination-bar" *ngIf="totalPages > 0">
+    <button class="btn-page" [disabled]="currentPage === 0" (click)="cambiarPagina(-1)">
+        Anterior
+    </button>
+    
+    <span class="page-info">
+        Página <strong>{{ currentPage + 1 }}</strong> de <strong>{{ totalPages }}</strong> 
+        (Total: {{ totalElements }})
+    </span>
+    
+    <button class="btn-page" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(1)">
+        Siguiente
+    </button>
   </div>
 
 </div>

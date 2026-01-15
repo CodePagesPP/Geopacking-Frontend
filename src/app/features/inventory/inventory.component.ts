@@ -86,7 +86,6 @@ export class InventoryComponent implements OnInit {
       .subscribe({
         next: (page: Page<InventarioMovimiento>) => {
           this.movimientos = page.content;
-          console.log(this.movimientos)
           this.totalPages = page.totalPages;
           this.totalElements = page.totalElements;
         },

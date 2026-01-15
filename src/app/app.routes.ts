@@ -19,7 +19,7 @@ export const routes: Routes = [
             (m) => m.DashboardComponent
           ),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS'] },
+        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
       },
       {
         path: 'products',
@@ -130,7 +130,7 @@ export const routes: Routes = [
       {
         path: 'produccion',
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS'] },
+        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
         children: [
           {
             path: 'planProduccionEX',
@@ -151,7 +151,7 @@ export const routes: Routes = [
                 (m) => m.OrdenProdEXComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
           },
 
           {
@@ -173,7 +173,7 @@ export const routes: Routes = [
                 (m) => m.OrdenProdTfComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
           },
 
           {
@@ -184,7 +184,7 @@ export const routes: Routes = [
                 (m) => m.ScrappComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
           },
           
           {
@@ -203,7 +203,7 @@ export const routes: Routes = [
       {
         path: 'reportes',
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS'] },
+        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
         children: [
           {
             path: 'historial-bobinas',
@@ -213,7 +213,7 @@ export const routes: Routes = [
                 (m) => m.HistorialBobinaComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
           },
           {
             path: 'historial-cajas',
@@ -223,7 +223,7 @@ export const routes: Routes = [
                 (m) => m.HistorialCajasComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
           },
           {
             path: 'historial-salida',
@@ -246,35 +246,6 @@ export const routes: Routes = [
           ),
         canActivate: [roleGuard],
         data: { roles: ['ADMIN_ACCESS'] },
-      },
-    ],
-  },
-
-  // --- RUTAS OPERADOR ---
-  {
-    path: 'o',
-    component: NavOperatorComponent,
-    canActivate: [authGuard],
-    children: [
-      {
-        path: 'dashboard',
-        title: 'Dashboard',
-        loadComponent: () =>
-          import(
-            './features/dashboard-operator/dashboard-operator.component'
-          ).then((m) => m.DashboardOperatorComponent),
-        canActivate: [roleGuard],
-        data: { roles: ['OPERATOR_ACCESS'] },
-      },
-      {
-        path: 'scrapp',
-        title: 'Scrapp',
-        loadComponent: () =>
-          import('./features/scrapp/scrapp.component').then(
-            (m) => m.ScrappComponent
-          ),
-        canActivate: [roleGuard],
-        data: { roles: ['OPERATOR_ACCESS'] },
       },
     ],
   },

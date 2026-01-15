@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PlanProdTfService } from '../../core/services/plan-prod-tf.service';
-import { ToolService } from '../../core/services/tool.service';
 import { OrdenTrabajoTF } from '../../core/models/plan-prod-tf';
 import Swal from 'sweetalert2';
 import { MaquinaService } from '../../core/services/machine.service';
@@ -19,15 +18,24 @@ import { ProductoTF } from '../../core/models/products.model';
 })
 export class PlanProdTfComponent implements OnInit {
   mostrarModal: boolean = false;
-  listaOrdenes: OrdenTrabajoTF[] = [];
+  
+  // CAMBIO: listaOrdenes ahora contendrá solo la página actual traída del backend
+  listaOrdenes: OrdenTrabajoTF[] = []; 
+  
+  // Variables de Paginación
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
 
-  listaOrdenesFiltrada: OrdenTrabajoTF[] = [];
+  // Filtros
   filtroMaquina: string = '';
   filtroProducto: string = '';
   filtroEstado: string = '';
   filtroFechaDesde: string = '';
   filtroFechaHasta: string = '';
 
+  // Listas Auxiliares
   listaMaquinasTermoformadoras: Maquina[] = [];
   listaProductosTF: ProductoTF[] = [];
 
@@ -55,7 +63,8 @@ export class PlanProdTfComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerUsuarioDelToken();
-    this.cargarDatosIniciales();
+    this.cargarListasAuxiliares(); // Cargar combos (maquinas, productos)
+    this.cargarDatos(); // Cargar tabla paginada
   }
 
   obtenerUsuarioDelToken() {
@@ -77,62 +86,66 @@ export class PlanProdTfComponent implements OnInit {
     this.nuevaOrden.creadaPorUsername = this.usuarioname;
   }
 
-  cargarDatosIniciales() {
-      this.otService.listar().subscribe((data) => {
-        this.listaOrdenes = data;
-        this.listaOrdenes.sort((a, b) => (a.id || 0) - (b.id || 0));
-        this.listaOrdenesFiltrada = [...this.listaOrdenes];
-      });
+  // CAMBIO: Separar la carga de listas auxiliares de la carga de datos de la tabla
+  cargarListasAuxiliares() {
+    this.maquinaService.getMaquinasActivas().subscribe((maquinas) => {
+      this.listaMaquinasTermoformadoras = maquinas.filter((m) => m.tipo === 'Termoformadora');
+    });
 
-      this.maquinaService.getMaquinasActivas().subscribe((maquinas) => {
-        this.listaMaquinasTermoformadoras = maquinas.filter((m) => m.tipo === 'Termoformadora');
-      });
-
-      this.productsService.getAll('TF').subscribe((productos) => {
-        this.listaProductosTF = productos;
-      });
-    }
-
-  aplicarFiltros() {
-    this.listaOrdenesFiltrada = this.listaOrdenes.filter((ot) => {
-      const coincideMaquina = this.filtroMaquina
-        ? ot.maquinaId == Number(this.filtroMaquina)
-        : true;
-
-      const coincideProducto = this.filtroProducto
-        ? ot.productoId == Number(this.filtroProducto)
-        : true;
-
-      const coincideEstado = this.filtroEstado
-        ? ot.estado === this.filtroEstado
-        : true;
-
-      let coincideFecha = true;
-      if (this.filtroFechaDesde && this.filtroFechaHasta) {
-        if (ot.fechaCreacion) {
-          const fechaOT = new Date(ot.fechaCreacion);
-          
-          const desde = new Date(this.filtroFechaDesde + 'T00:00:00');
-          const hasta = new Date(this.filtroFechaHasta + 'T23:59:59'); 
-          
-          coincideFecha = fechaOT >= desde && fechaOT <= hasta;
-        }
-      }
-
-      return (
-        coincideMaquina && coincideProducto && coincideEstado && coincideFecha
-      );
+    this.productsService.getAll('TF').subscribe((productos) => {
+      this.listaProductosTF = productos;
     });
   }
 
+  // CAMBIO: Método principal para cargar datos paginados y filtrados desde backend
+  cargarDatos() {
+    const filters = {
+      maquinaId: this.filtroMaquina || null,
+      productoId: this.filtroProducto || null,
+      estado: this.filtroEstado || null,
+      fechaDesde: this.filtroFechaDesde || null,
+      fechaHasta: this.filtroFechaHasta || null
+    };
+
+    this.otService.listar(this.currentPage, this.pageSize, filters).subscribe({
+      next: (data) => {
+        this.listaOrdenes = data.content; // Asignamos el contenido de la página actual
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
+      },
+      error: (e) => {
+        console.error('Error cargando datos', e);
+        // Opcional: Mostrar alerta de error
+      }
+    });
+  }
+
+  // CAMBIO: Al aplicar filtros, reseteamos a la página 1 y recargamos desde backend
+  aplicarFiltros() {
+    this.currentPage = 0;
+    this.cargarDatos();
+  }
+
+  // CAMBIO: Limpiar filtros y recargar
   limpiarFiltros() {
     this.filtroMaquina = '';
     this.filtroProducto = '';
     this.filtroEstado = '';
     this.filtroFechaDesde = '';
     this.filtroFechaHasta = '';
-    this.listaOrdenesFiltrada = [...this.listaOrdenes];
+    this.aplicarFiltros();
   }
+
+  // CAMBIO: Método para manejar el cambio de página
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.currentPage + delta;
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPages) {
+      this.currentPage = nuevaPagina;
+      this.cargarDatos();
+    }
+  }
+
+  // ... (El resto de métodos: abrirModal, cerrarModal, editarOrden, guardarOrden, etc. SE MANTIENEN IGUAL) ...
 
   abrirModal() {
     this.esEdicion = false;
@@ -188,7 +201,7 @@ export class PlanProdTfComponent implements OnInit {
       this.otService.editar(this.idOrdenAEditar, this.nuevaOrden).subscribe({
         next: (res) => {
           Swal.fire('Actualizado', `Orden ${res.codigo} actualizada correctamente.`, 'success');
-          this.cargarDatosIniciales();
+          this.cargarDatos(); // Recargar tabla paginada
           this.cerrarModal();
         },
         error: (e) => {
@@ -200,7 +213,7 @@ export class PlanProdTfComponent implements OnInit {
       this.otService.crear(this.nuevaOrden).subscribe({
         next: (res) => {
           Swal.fire('¡Generada!', `OT ${res.codigo} creada.`, 'success');
-          this.cargarDatosIniciales();
+          this.cargarDatos(); // Recargar tabla paginada
           this.cerrarModal();
         },
         error: (e) => {
@@ -226,7 +239,7 @@ export class PlanProdTfComponent implements OnInit {
         this.otService.eliminar(id).subscribe({
           next: () => {
             Swal.fire('Eliminado', 'La orden ha sido eliminada.', 'success');
-            this.cargarDatosIniciales();
+            this.cargarDatos(); // Recargar tabla paginada
           },
           error: (e) => {
             console.error(e);

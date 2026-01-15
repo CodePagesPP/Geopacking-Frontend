@@ -13,9 +13,14 @@ import { BobinaHistorialDTO } from '../../core/models/plan-prod-ex';
 })
 export class HistorialBobinaComponent {
   listaBobinas: BobinaHistorialDTO[] = [];
-  listaFiltrada: BobinaHistorialDTO[] = [];
   fechaDesde: string = '';
   fechaHasta: string = '';
+
+  
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
 
   constructor(private bobinaService: PlanProdExService) { }
 
@@ -24,46 +29,40 @@ export class HistorialBobinaComponent {
   }
 
   cargarDatos() {
-    
-    this.bobinaService.obtenerHistorialBobinas(this.fechaDesde, this.fechaHasta).subscribe({
+    this.bobinaService.obtenerHistorialBobinas(
+      this.currentPage, 
+      this.pageSize, 
+      this.fechaDesde, 
+      this.fechaHasta
+    ).subscribe({
       next: (data) => {
-        console.log('Datos recibidos:', data);
-        
-        this.listaBobinas = data;     
-        this.listaFiltrada = data;    
-        
-        
+        // En Spring Boot 'Page', la lista está en 'content'
+        this.listaBobinas = data.content; 
+        this.totalElements = data.totalElements;
+        this.totalPages = data.totalPages;
       },
       error: (e) => console.error(e)
     });
   }
 
   filtrar() {
-  if (this.fechaDesde && this.fechaHasta) {
-    
-    this.bobinaService.obtenerHistorialBobinas(this.fechaDesde, this.fechaHasta).subscribe({
-      next: (data) => {
-         
-         this.listaFiltrada = data; 
-         
-         
-         this.listaBobinas = data;
-      },
-      error: (e) => alert('Error al filtrar')
-    });
-  } else {
-  
+    this.currentPage = 0; // Al filtrar, volvemos a la página 1
     this.cargarDatos();
   }
-}
 
-limpiar() {
-  this.fechaDesde = '';
-  this.fechaHasta = '';
-  this.cargarDatos(); 
-}
+  limpiar() {
+    this.fechaDesde = '';
+    this.fechaHasta = '';
+    this.filtrar(); // Reutilizamos filtrar para resetear y cargar
+  }
 
-
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.currentPage + delta;
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPages) {
+      this.currentPage = nuevaPagina;
+      this.cargarDatos();
+    }
+  }
 
 imprimirIndividual(id: number) {
   this.bobinaService.descargarReporteIndividual(id).subscribe({

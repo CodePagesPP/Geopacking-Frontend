@@ -13,31 +13,30 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class LoginComponent {
   credentials: AuthRequest = { dni: '', password: '' };
-   error: string | null = null;
-   
-   constructor(private authService: AuthService, private router: Router) {}
+  error: string | null = null;
+  loading: boolean = false;
 
-   onSubmit(): void {
+  constructor(private authService: AuthService, private router: Router) {}
+
+  onSubmit(): void {
+    this.loading = true;
+    this.error = null;
+
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
+        
         localStorage.setItem('token', res.token);
 
-        const roles = this.authService.getAuthorities();
-
-        const adminRoles = ['ADMIN_ACCESS'];
-
-        if (roles.some(role => adminRoles.includes(role))) {
-          this.router.navigate(['/dashboard']);
-        } else if (roles.includes('OPERATOR_ACCESS')) {
-          this.router.navigate(['/o/dashboard']);
-        } else if (roles.includes('REPORT_ACCESS')) {
-          this.router.navigate(['/r/dashboard']);
-        } else {
-          this.router.navigate(['/login']);
-        }
+        
+        this.router.navigate(['/dashboard']);
+        
+        this.loading = false;
       },
       error: (err) => {
-        this.error = err.message;
+        console.error(err);
+        
+        this.error = 'Credenciales incorrectas o error de conexión.';
+        this.loading = false;
       },
     });
   }

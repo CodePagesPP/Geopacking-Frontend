@@ -84,16 +84,16 @@ finalizarTurno(datos: any): Observable<Blob> {
     });
   }
 
-  obtenerHistorialBobinas(desde?: string, hasta?: string): Observable<BobinaHistorialDTO[]> {
-  let params = new HttpParams();
-  if (desde && hasta) {
-    params = params.set('inicio', desde).set('fin', hasta);
-  }
+  obtenerHistorialBobinas(page: number, size: number, fechaDesde?: string, fechaHasta?: string): Observable<any> {
+  let params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
 
-  return this.http.get<BobinaHistorialDTO[]>(`${this.apiUrlBobinas}/historial`, {
-    headers: this.authService.getAuthHeaders(),
-    params: params 
-  });
+  if (fechaDesde) params = params.set('inicio', fechaDesde);
+  if (fechaHasta) params = params.set('fin', fechaHasta);
+
+  
+  return this.http.get<any>(`${this.apiUrlBobinas}/historial`, {headers: this.authService.getAuthHeaders(), params });
 }
 
 descargarReporteStock(desde?: string, hasta?: string): Observable<Blob> {
