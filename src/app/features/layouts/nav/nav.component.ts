@@ -30,7 +30,7 @@ export class NavComponent implements OnInit {
 
   readonly ADMIN = 'ADMIN_ACCESS';
   readonly OPERADOR = 'OPERATOR_ACCESS';
-
+  readonly AYUDANTE = 'AYUDANTE_ACCESS';
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
@@ -49,12 +49,12 @@ export class NavComponent implements OnInit {
         label: 'Dashboard',
         icon: 'dashboard_customize',
         route: '/dashboard',
-        roles: [this.ADMIN, this.OPERADOR], 
+        roles: [this.ADMIN, this.OPERADOR, this.AYUDANTE], 
       },
       {
         label: 'Producción',
         icon: 'factory',
-        roles: [this.ADMIN, this.OPERADOR],
+        roles: [this.ADMIN, this.OPERADOR, this.AYUDANTE],
         children: [
           {
             label: 'Extrusión',
@@ -103,7 +103,7 @@ export class NavComponent implements OnInit {
                 label: 'Registro de Molienda',
                 icon: 'edit_note',
                 route: '/produccion/registroDeMolienda',
-                roles: [this.ADMIN, this.OPERADOR], 
+                roles: [this.ADMIN, this.OPERADOR, this.AYUDANTE], 
               },
               {
                 label: 'Listado de Registro',

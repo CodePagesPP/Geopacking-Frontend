@@ -19,7 +19,7 @@ export const routes: Routes = [
             (m) => m.DashboardComponent
           ),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
+        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS', 'AYUDANTE_ACCESS'] },
       },
       {
         path: 'products',
@@ -130,7 +130,7 @@ export const routes: Routes = [
       {
         path: 'produccion',
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
+        data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS', 'AYUDANTE_ACCESS'] },
         children: [
           {
             path: 'planProduccionEX',
@@ -184,7 +184,7 @@ export const routes: Routes = [
                 (m) => m.ScrappComponent
               ),
             canActivate: [roleGuard],
-            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS'] },
+            data: { roles: ['ADMIN_ACCESS', 'OPERATOR_ACCESS',  'AYUDANTE_ACCESS'] },
           },
           
           {
